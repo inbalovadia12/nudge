@@ -1,0 +1,52 @@
+{
+  "name": "PurchaseVerdict",
+  "type": "object",
+  "properties": {
+    "product_name": {
+      "type": "string"
+    },
+    "product_url": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "verdict_tier": {
+      "type": "string",
+      "enum": [
+        "green",
+        "amber",
+        "red"
+      ]
+    },
+    "verdict_message": {
+      "type": "string"
+    },
+    "supporting_details": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "action_taken": {
+      "type": "string",
+      "enum": [
+        "bought",
+        "saved",
+        "none"
+      ],
+      "default": "none"
+    },
+    "category": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "product_name",
+    "price",
+    "verdict_tier"
+  ]
+}

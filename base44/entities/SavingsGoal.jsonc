@@ -1,0 +1,45 @@
+{
+  "name": "SavingsGoal",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "target_amount": {
+      "type": "number"
+    },
+    "current_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "icon": {
+      "type": "string",
+      "default": "target"
+    },
+    "is_primary": {
+      "type": "boolean",
+      "default": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "target_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "color": {
+      "type": "string",
+      "default": "cyan"
+    }
+  },
+  "required": [
+    "name",
+    "target_amount"
+  ]
+}

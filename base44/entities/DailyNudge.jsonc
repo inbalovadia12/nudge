@@ -1,0 +1,20 @@
+{
+  "name": "DailyNudge",
+  "type": "object",
+  "properties": {
+    "message": {
+      "type": "string"
+    },
+    "nudge_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "category": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "message",
+    "nudge_date"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "UserProfile",
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string"
+    },
+    "monthly_income": {
+      "type": "number"
+    },
+    "strictness": {
+      "type": "string",
+      "enum": [
+        "gentle",
+        "moderate",
+        "strict"
+      ],
+      "default": "moderate"
+    },
+    "onboarding_complete": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "first_name"
+  ]
+}

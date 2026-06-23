@@ -1,0 +1,71 @@
+import { Link, useLocation } from 'react-router-dom';
+import { Home, Target, MessageCircle, ScanSearch } from 'lucide-react';
+import Logo from './Logo';
+import { useAuth } from '@/lib/AuthContext';
+
+const navItems = [
+  { label: 'Home', path: '/', icon: Home },
+  { label: 'Goals', path: '/goals', icon: Target },
+  { label: 'Assistant', path: '/assistant', icon: MessageCircle },
+];
+
+export default function Sidebar() {
+  const location = useLocation();
+  const { user } = useAuth();
+
+  return (
+    <aside className="hidden lg:flex flex-col w-64 border-r border-border bg-sidebar fixed h-screen z-30">
+      <div className="p-6">
+        <Logo />
+      </div>
+
+      <div className="px-4 pb-6">
+        <Link
+          to="/check"
+          className={`flex items-center justify-center gap-2.5 rounded-2xl px-4 py-3 font-semibold text-sm transition-all ${
+            location.pathname === '/check'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-primary/10 text-primary hover:bg-primary/20'
+          }`}
+        >
+          <ScanSearch className="w-4 h-4" />
+          Check a purchase
+        </Link>
+      </div>
+
+      <nav className="flex-1 px-4 space-y-1">
+        {navItems.map((item) => {
+          const active = location.pathname === item.path;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
+                active
+                  ? 'bg-sidebar-accent text-foreground'
+                  : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'
+              }`}
+            >
+              <item.icon className="w-4 h-4" />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="p-4 border-t border-sidebar-border">
+        <div className="flex items-center gap-3 px-2">
+          <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center text-primary font-semibold text-sm">
+            {(user?.full_name || user?.email || 'U')[0].toUpperCase()}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate">
+              {user?.full_name || 'User'}
+            </p>
+            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}

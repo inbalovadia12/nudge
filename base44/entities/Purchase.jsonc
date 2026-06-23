@@ -1,0 +1,49 @@
+{
+  "name": "Purchase",
+  "type": "object",
+  "properties": {
+    "amount": {
+      "type": "number"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "dining",
+        "shopping",
+        "entertainment",
+        "transport",
+        "groceries",
+        "bills",
+        "health",
+        "travel",
+        "tech",
+        "other"
+      ],
+      "default": "other"
+    },
+    "merchant": {
+      "type": "string"
+    },
+    "purchase_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "estimate",
+        "verdict"
+      ],
+      "default": "manual"
+    },
+    "verdict_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "amount",
+    "category",
+    "merchant"
+  ]
+}

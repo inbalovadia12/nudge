@@ -1,0 +1,37 @@
+{
+  "name": "SavedItem",
+  "type": "object",
+  "properties": {
+    "product_name": {
+      "type": "string"
+    },
+    "product_url": {
+      "type": "string"
+    },
+    "price_at_save": {
+      "type": "number"
+    },
+    "current_price": {
+      "type": "number"
+    },
+    "goal_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "watching",
+        "purchased",
+        "dismissed"
+      ],
+      "default": "watching"
+    },
+    "image_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "product_name",
+    "price_at_save"
+  ]
+}
