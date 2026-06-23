@@ -1,12 +1,38 @@
+import { useState, useEffect } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
-import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
 import Sidebar from './Sidebar';
 import BottomNav from './BottomNav';
 
 export default function Layout() {
-  const { user } = useAuth();
+  const [checking, setChecking] = useState(true);
+  const [onboarded, setOnboarded] = useState(false);
 
-  if (user && !user.onboarded) {
+  useEffect(() => {
+    async function check() {
+      try {
+        const profiles = await base44.entities.UserProfile.list();
+        if (profiles.length > 0 && profiles[0].onboarding_complete) {
+          setOnboarded(true);
+        }
+      } catch {
+        // If we can't check, let the user through
+        setOnboarded(true);
+      }
+      setChecking(false);
+    }
+    check();
+  }, []);
+
+  if (checking) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-canvas">
+        <div className="w-8 h-8 border-4 border-surface-3 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!onboarded) {
     return <Navigate to="/onboarding" replace />;
   }
 
