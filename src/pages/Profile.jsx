@@ -6,7 +6,8 @@ import { useAuth } from '@/lib/AuthContext';
 import { useTheme } from 'next-themes';
 import { usePremiumStatus } from '@/lib/usePremium';
 import { clearUserDataCache } from '@/lib/nudgeUtils';
-import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check } from 'lucide-react';
+import ConnectPlaid from '@/components/ConnectPlaid';
+import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark } from 'lucide-react';
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -17,6 +18,18 @@ export default function Profile() {
   const [editingIncome, setEditingIncome] = useState(false);
   const [incomeValue, setIncomeValue] = useState('');
   const [incomeSaved, setIncomeSaved] = useState(false);
+  const [bankConnected, setBankConnected] = useState(false);
+
+  useEffect(() => {
+    if (profile) setBankConnected(!!profile.connected_bank || !!profile.plaid_access_token);
+  }, [profile]);
+
+  const handleDisconnectBank = async () => {
+    if (!profile?.id) return;
+    await base44.functions.invoke('plaid', { action: 'disconnect' });
+    clearUserDataCache();
+    setBankConnected(false);
+  };
 
   useEffect(() => {
     if (profile?.strictness) setStrictness(profile.strictness);
@@ -198,10 +211,25 @@ export default function Profile() {
         </div>
       </div>
 
+      {/* Bank connection via Plaid */}
+      <div className="rounded-3xl border border-border bg-card p-6 mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Landmark className="w-4 h-4 text-primary" />
+          <h2 className="text-sm font-semibold">Bank Account</h2>
+        </div>
+        <p className="text-xs text-muted-foreground mb-4">
+          Connect your bank via Plaid to automatically track transactions, balances, and bills.
+        </p>
+        <ConnectPlaid
+          connected={bankConnected}
+          onConnected={() => { setBankConnected(true); clearUserDataCache(); }}
+          onDisconnect={handleDisconnectBank}
+        />
+      </div>
+
       {/* Settings list */}
       <div className="rounded-3xl border border-border bg-card p-2 mb-6">
         {[
-          { icon: CreditCard, label: 'Connected accounts', desc: 'Bank, cards, Apple Wallet' },
           { icon: Shield, label: 'Privacy & Security', desc: 'Data and security settings' },
         ].map((item, i) => (
           <button key={i} className="w-full flex items-center gap-3 p-4 hover:bg-secondary/50 rounded-2xl transition-colors">

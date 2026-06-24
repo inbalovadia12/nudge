@@ -50,6 +50,12 @@
     "connected_bank": {
       "type": "boolean",
       "default": false
+    },
+    "plaid_access_token": {
+      "type": "string"
+    },
+    "plaid_item_id": {
+      "type": "string"
     }
   },
   "required": [
