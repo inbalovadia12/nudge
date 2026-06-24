@@ -1,6 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Target, MessageCircle, ScanSearch, BarChart3, Wallet, CalendarDays, TrendingUp, User, Tag, CreditCard, Trophy, Clock, LogOut } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import Logo from './Logo';
 import { useAuth } from '@/lib/AuthContext';
 
@@ -25,7 +24,7 @@ const premiumItems = [
 
 export default function Sidebar() {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r border-border bg-sidebar fixed h-screen z-30">
@@ -98,7 +97,7 @@ export default function Sidebar() {
             <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
           <button
-            onClick={() => base44.auth.logout('/login')}
+            onClick={() => logout(false)}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-danger hover:bg-danger/5 transition-colors"
             title="Sign out"
           >

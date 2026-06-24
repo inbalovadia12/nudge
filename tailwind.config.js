@@ -71,7 +71,13 @@ module.exports = {
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
-  			}
+  			},
+  			surface: {
+  				'1': 'hsl(var(--surface-1))',
+  				'2': 'hsl(var(--surface-2))',
+  				'3': 'hsl(var(--surface-3))'
+  			},
+  			canvas: 'hsl(var(--canvas))'
   		},
   		fontFamily: {
   			heading: ['var(--font-heading)'],

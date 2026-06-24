@@ -8,7 +8,7 @@ import { usePremiumStatus } from '@/lib/usePremium';
 import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog } from 'lucide-react';
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const { isPremium, profile, loading } = usePremiumStatus();
   const [strictness, setStrictness] = useState('moderate');
@@ -157,7 +157,7 @@ export default function Profile() {
       </div>
 
       {/* Sign out */}
-      <button onClick={() => base44.auth.logout('/login')}
+      <button onClick={() => logout(false)}
         className="w-full flex items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3 text-sm font-medium text-danger hover:bg-danger/5 transition-colors">
         <LogOut className="w-4 h-4" />
         Sign out

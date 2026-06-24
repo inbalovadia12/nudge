@@ -6,13 +6,14 @@ import SavingsRing from '@/components/SavingsRing';
 import PurchaseItem from '@/components/PurchaseItem';
 import NudgeCard from '@/components/NudgeCard';
 import { getGreeting, formatCurrency, formatDateLong, getFinancialContext, buildContextString } from '@/lib/nudgeUtils';
-import { ScanSearch, ArrowRight } from 'lucide-react';
+import { ScanSearch, ArrowRight, Target, TrendingDown, Wallet, CalendarClock } from 'lucide-react';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [primaryGoal, setPrimaryGoal] = useState(null);
   const [purchases, setPurchases] = useState([]);
+  const [ctx, setCtx] = useState(null);
   const [nudge, setNudge] = useState('');
   const [nudgeLoading, setNudgeLoading] = useState(true);
   const navigate = useNavigate();
@@ -20,22 +21,22 @@ export default function Home() {
   useEffect(() => {
     async function load() {
       try {
-        const ctx = await getFinancialContext();
-        if (!ctx.profile?.onboarding_complete) {
+        const finCtx = await getFinancialContext();
+        if (!finCtx.profile?.onboarding_complete) {
           navigate('/onboarding');
           return;
         }
-        setProfile(ctx.profile);
-        setPrimaryGoal(ctx.primaryGoal);
-        setPurchases(ctx.purchases.slice(0, 5));
+        setProfile(finCtx.profile);
+        setPrimaryGoal(finCtx.primaryGoal);
+        setPurchases(finCtx.purchases.slice(0, 5));
+        setCtx(finCtx);
         setLoading(false);
 
-        // Generate daily nudge
         try {
           const response = await base44.integrations.Core.InvokeLLM({
             prompt: `You are Nudge, a calm AI purchase coach. Based on the user's financial data, give ONE short, encouraging observation (max 2 sentences). Never negative or guilt-inducing. Never use the word "budget". Be specific with numbers.
 
-Financial context: ${buildContextString(ctx)}
+Financial context: ${buildContextString(finCtx)}
 
 Return just the observation text, nothing else. No quotes.`,
           });
@@ -46,6 +47,7 @@ Return just the observation text, nothing else. No quotes.`,
         setNudgeLoading(false);
       } catch (err) {
         setLoading(false);
+        setNudgeLoading(false);
       }
     }
     load();
@@ -54,30 +56,83 @@ Return just the observation text, nothing else. No quotes.`,
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-surface-3 border-t-primary rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" />
       </div>
     );
   }
 
   const progress = primaryGoal ? Math.round((primaryGoal.current_amount / primaryGoal.target_amount) * 100) : 0;
   const greeting = getGreeting(profile?.first_name || 'there');
+  const monthlyIncome = profile?.monthly_income || 0;
+  const totalSpent = ctx?.totalSpent || 0;
+  const balance = ctx?.balance || 0;
+  const spentPct = monthlyIncome > 0 ? Math.min(100, Math.round((totalSpent / monthlyIncome) * 100)) : 0;
+
+  const now = new Date();
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const daysUntilPayday = daysInMonth - now.getDate();
 
   return (
-    <div className="p-6 lg:p-10 max-w-2xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-10 max-w-2xl mx-auto pb-24 lg:pb-10">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl font-bold text-foreground">{greeting}.</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">{greeting}.</h1>
       </motion.div>
 
+      {/* Spending summary */}
+      {monthlyIncome > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="mt-4 rounded-2xl border border-border bg-card p-4 sm:p-5"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Wallet className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">This month</span>
+            </div>
+            {daysUntilPayday > 0 && (
+              <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                <CalendarClock className="w-3 h-3" />
+                {daysUntilPayday} days to payday
+              </span>
+            )}
+          </div>
+          <div className="grid grid-cols-3 gap-2 mb-3">
+            <div>
+              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Income</p>
+              <p className="text-sm sm:text-base font-semibold text-foreground">{formatCurrency(monthlyIncome)}</p>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Spent</p>
+              <p className="text-sm sm:text-base font-semibold text-foreground">{formatCurrency(totalSpent)}</p>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Left</p>
+              <p className={`text-sm sm:text-base font-semibold ${balance >= 0 ? 'text-success' : 'text-danger'}`}>{formatCurrency(balance)}</p>
+            </div>
+          </div>
+          <div className="h-2 rounded-full bg-muted overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${spentPct}%` }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className={`h-full rounded-full ${spentPct > 80 ? 'bg-danger' : 'bg-primary'}`}
+            />
+          </div>
+        </motion.div>
+      )}
+
       {/* Savings Ring */}
-      {primaryGoal && (
+      {primaryGoal ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1, duration: 0.4 }}
-          className="flex flex-col items-center py-8"
+          className="flex flex-col items-center py-6 sm:py-8"
         >
-          <SavingsRing progress={progress} size={180} strokeWidth={12} sublabel="there" />
-          <h2 className="text-xl font-semibold text-foreground mt-4">{primaryGoal.name}</h2>
+          <SavingsRing progress={progress} size={160} strokeWidth={12} sublabel="there" />
+          <h2 className="text-lg sm:text-xl font-semibold text-foreground mt-4">{primaryGoal.name}</h2>
           <p className="text-sm text-muted-foreground mt-1 text-center">
             {formatCurrency(primaryGoal.current_amount)} of {formatCurrency(primaryGoal.target_amount)}
           </p>
@@ -87,6 +142,19 @@ Return just the observation text, nothing else. No quotes.`,
             </p>
           )}
         </motion.div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mt-4"
+        >
+          <Link to="/goals" className="block rounded-2xl border border-dashed border-border bg-card p-6 text-center hover:border-primary/30 transition-colors">
+            <Target className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+            <p className="text-sm font-medium text-foreground">Set a savings goal</p>
+            <p className="text-xs text-muted-foreground mt-1">Give your money a purpose</p>
+          </Link>
+        </motion.div>
       )}
 
       {/* Check CTA */}
@@ -94,27 +162,27 @@ Return just the observation text, nothing else. No quotes.`,
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="mb-6"
+        className="mb-6 mt-4"
       >
         <Link
           to="/check"
-          className="block bg-surface-1 border border-border rounded-2xl p-5 hover:border-primary/30 transition-colors group"
+          className="block bg-card border border-border rounded-2xl p-4 sm:p-5 hover:border-primary/30 transition-colors group"
         >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <ScanSearch className="w-6 h-6 text-primary" />
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <ScanSearch className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
             </div>
-            <div className="flex-1">
-              <p className="font-medium text-foreground">Thinking about a purchase?</p>
-              <p className="text-sm text-muted-foreground">Get a quick check before you buy.</p>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-foreground text-sm sm:text-base">Thinking about a purchase?</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Get a quick check before you buy.</p>
             </div>
-            <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+            <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all flex-shrink-0" />
           </div>
         </Link>
       </motion.div>
 
       {/* Recent purchases */}
-      {purchases.length > 0 && (
+      {purchases.length > 0 ? (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -122,8 +190,21 @@ Return just the observation text, nothing else. No quotes.`,
           className="mb-6"
         >
           <h3 className="text-sm font-medium text-muted-foreground mb-3">Recent</h3>
-          <div className="bg-surface-1 border border-border rounded-2xl p-4 divide-y divide-border/50">
+          <div className="bg-card border border-border rounded-2xl p-2 sm:p-4 divide-y divide-border/50">
             {purchases.map(p => <PurchaseItem key={p.id} purchase={p} />)}
+          </div>
+        </motion.div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mb-6"
+        >
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">Recent</h3>
+          <div className="bg-card border border-dashed border-border rounded-2xl p-6 text-center">
+            <TrendingDown className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground">No purchases yet — they'll show up here once you log them.</p>
           </div>
         </motion.div>
       )}
