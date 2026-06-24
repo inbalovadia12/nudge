@@ -26,6 +26,12 @@ import Deals from '@/pages/Deals';
 import Profile from '@/pages/Profile';
 import Challenges from '@/pages/Challenges';
 import RegretTracker from '@/pages/RegretTracker';
+import FutureFeed from '@/pages/FutureFeed';
+import MoneyLeaks from '@/pages/MoneyLeaks';
+import ShoppingShield from '@/pages/ShoppingShield';
+import FinancialHealth from '@/pages/FinancialHealth';
+import NotificationCenter from '@/pages/NotificationCenter';
+import FinancialTwin from '@/pages/FinancialTwin';
 import Splash from '@/components/Splash';
 import { ThemeProvider } from 'next-themes';
 
@@ -59,6 +65,12 @@ function App() {
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/challenges" element={<Challenges />} />
                   <Route path="/insights/regret" element={<RegretTracker />} />
+                  <Route path="/insights/future-feed" element={<FutureFeed />} />
+                  <Route path="/insights/money-leaks" element={<MoneyLeaks />} />
+                  <Route path="/insights/health" element={<FinancialHealth />} />
+                  <Route path="/insights/financial-twin" element={<FinancialTwin />} />
+                  <Route path="/notifications" element={<NotificationCenter />} />
+                  <Route path="/shield" element={<ShoppingShield />} />
                 </Route>
               </Route>
               <Route path="*" element={<PageNotFound />} />

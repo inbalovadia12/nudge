@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Target, MessageCircle, ScanSearch, BarChart3, Wallet, CalendarDays, TrendingUp, User, Tag, CreditCard, Trophy, Clock, LogOut } from 'lucide-react';
+import { Home, Target, MessageCircle, ScanSearch, BarChart3, Wallet, CalendarDays, TrendingUp, User, Tag, CreditCard, Trophy, Clock, LogOut, Shield, Heart, Brain, Bell, Droplets, Calendar } from 'lucide-react';
 import Logo from './Logo';
 import { useAuth } from '@/lib/AuthContext';
 
@@ -9,10 +9,15 @@ const navItems = [
   { label: 'Goals', path: '/goals', icon: Target },
   { label: 'Challenges', path: '/challenges', icon: Trophy },
   { label: 'Assistant', path: '/assistant', icon: MessageCircle },
+  { label: 'Future Feed', path: '/insights/future-feed', icon: Calendar },
+  { label: 'Notifications', path: '/notifications', icon: Bell },
   { label: 'Profile', path: '/profile', icon: User },
 ];
 
 const premiumItems = [
+  { label: 'Financial Health', path: '/insights/health', icon: Heart },
+  { label: 'Shopping Shield', path: '/shield', icon: Shield },
+  { label: 'Financial Twin', path: '/insights/financial-twin', icon: Brain },
   { label: 'Paycheck Flow', path: '/insights/paycheck', icon: Wallet },
   { label: 'Heatmap', path: '/insights/heatmap', icon: CalendarDays },
   { label: 'Regret Tracker', path: '/insights/regret', icon: Clock },
@@ -20,6 +25,7 @@ const premiumItems = [
   { label: 'Subscriptions', path: '/insights/subscriptions', icon: CreditCard },
   { label: 'Personality', path: '/insights/personality', icon: User },
   { label: 'Deals', path: '/insights/deals', icon: Tag },
+  { label: 'Money Leaks', path: '/insights/money-leaks', icon: Droplets },
 ];
 
 export default function Sidebar() {

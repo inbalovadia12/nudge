@@ -6,7 +6,7 @@ import SavingsRing from '@/components/SavingsRing';
 import PurchaseItem from '@/components/PurchaseItem';
 import NudgeCard from '@/components/NudgeCard';
 import { getGreeting, formatCurrency, formatDateLong, getFinancialContext, buildContextString } from '@/lib/nudgeUtils';
-import { ScanSearch, ArrowRight, Target, TrendingDown, Wallet, CalendarClock } from 'lucide-react';
+import { ScanSearch, ArrowRight, Target, TrendingDown, Wallet, CalendarClock, Shield } from 'lucide-react';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -157,26 +157,39 @@ Return just the observation text, nothing else. No quotes.`,
         </motion.div>
       )}
 
-      {/* Check CTA */}
+      {/* Quick actions */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="mb-6 mt-4"
+        className="mb-6 mt-4 grid grid-cols-2 gap-3"
       >
         <Link
           to="/check"
-          className="block bg-card border border-border rounded-2xl p-4 sm:p-5 hover:border-primary/30 transition-colors group"
+          className="block bg-card border border-border rounded-2xl p-4 hover:border-primary/30 transition-colors group"
         >
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <ScanSearch className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+          <div className="flex flex-col items-start gap-2">
+            <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
+              <ScanSearch className="w-5 h-5 text-primary" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-medium text-foreground text-sm sm:text-base">Thinking about a purchase?</p>
-              <p className="text-xs sm:text-sm text-muted-foreground">Get a quick check before you buy.</p>
+            <div>
+              <p className="font-medium text-foreground text-sm">Check a purchase</p>
+              <p className="text-xs text-muted-foreground">Before you buy</p>
             </div>
-            <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all flex-shrink-0" />
+          </div>
+        </Link>
+        <Link
+          to="/shield"
+          className="block bg-card border border-border rounded-2xl p-4 hover:border-primary/30 transition-colors group"
+        >
+          <div className="flex flex-col items-start gap-2">
+            <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Shield className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <p className="font-medium text-foreground text-sm">Shopping Shield</p>
+              <p className="text-xs text-muted-foreground">Protect before you shop</p>
+            </div>
           </div>
         </Link>
       </motion.div>

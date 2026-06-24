@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency } from '@/lib/nudgeUtils';
+import { Sparkles } from 'lucide-react';
 import { usePremiumStatus } from '@/lib/usePremium';
 import HealthScoreRing from '@/components/HealthScoreRing';
 import HabitCard from '@/components/HabitCard';
 import BillItem from '@/components/BillItem';
 import DataMaturityBar from '@/components/DataMaturityBar';
 import PaywallCard from '@/components/PaywallCard';
-import { Wallet, CalendarDays, TrendingUp, User, Tag, ChevronRight, AlertTriangle } from 'lucide-react';
+import { Wallet, CalendarDays, TrendingUp, User, Tag, ChevronRight, AlertTriangle, Heart, Brain, Calendar, Droplets } from 'lucide-react';
 
 export default function Insights() {
   const { isPremium, profile, loading } = usePremiumStatus();
@@ -49,6 +50,10 @@ export default function Insights() {
   const totalBills = bills.reduce((s, b) => s + (b.amount || 0), 0);
 
   const premiumNavItems = [
+    { label: 'Financial Health', desc: 'Your holistic money score', path: '/insights/health', icon: Heart },
+    { label: 'Financial Twin', desc: 'Ask "what if" — get projections', path: '/insights/financial-twin', icon: Brain },
+    { label: 'Future Feed', desc: 'Upcoming financial events', path: '/insights/future-feed', icon: Calendar },
+    { label: 'Money Leaks', desc: 'Small drips adding up', path: '/insights/money-leaks', icon: Droplets },
     { label: 'Paycheck Flow', desc: 'Watch where every dollar goes', path: '/insights/paycheck', icon: Wallet },
     { label: 'Spending Heatmap', desc: 'See your patterns spatially', path: '/insights/heatmap', icon: CalendarDays },
     { label: 'Simulator', desc: 'What if you changed one thing?', path: '/insights/simulator', icon: TrendingUp },
@@ -57,8 +62,13 @@ export default function Insights() {
   ];
 
   return (
-    <div className="p-6 max-w-4xl mx-auto pb-24 lg:pb-6">
-      <h1 className="text-2xl font-bold font-heading mb-6">Insights</h1>
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto pb-24 lg:pb-6">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold font-heading">Insights</h1>
+        <div className="inline-flex items-center gap-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
+          <Sparkles className="w-3 h-3" /> Beta
+        </div>
+      </div>
 
       {/* Data maturity */}
       <div className="mb-6">
@@ -122,7 +132,7 @@ export default function Insights() {
       {/* Premium features */}
       <div className="mb-6">
         <h2 className="text-sm font-semibold mb-3">Premium insights</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {premiumNavItems.map((item, i) => (
             <motion.div
               key={item.path}
@@ -147,17 +157,14 @@ export default function Insights() {
         </div>
       </div>
 
-      {/* Paywall teaser for free users */}
-      {!isPremium && (
-        <div className="mt-8">
-          <PaywallCard
-            title="Ready to go deeper?"
-            description="You've seen the surface. Premium shows you why you spend the way you do — and what would change if you didn't."
-            trialDays={trialDays}
-            onUpgrade={() => window.location.href = '/insights/paycheck'}
-          />
-        </div>
-      )}
+      {/* Premium Beta banner */}
+      <div className="mt-8">
+        <PaywallCard
+          title="Premium Beta is active"
+          description="Every feature is unlocked. Explore freely — thank you for helping test Nudge Premium."
+          onUpgrade={() => window.location.href = '/insights/paycheck'}
+        />
+      </div>
     </div>
   );
 }

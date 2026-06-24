@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Target, ScanSearch, BarChart3, User } from 'lucide-react';
+import { Home, Target, ScanSearch, BarChart3, User, MessageCircle } from 'lucide-react';
 
 function NavItem({ item, active }) {
   return (
@@ -19,8 +19,8 @@ export default function BottomNav() {
   const location = useLocation();
   const items = [
     { label: 'Home', path: '/', icon: Home },
-    { label: 'Goals', path: '/goals', icon: Target },
     { label: 'Insights', path: '/insights', icon: BarChart3 },
+    { label: 'Assistant', path: '/assistant', icon: MessageCircle },
     { label: 'Profile', path: '/profile', icon: User },
   ];
 
@@ -28,7 +28,7 @@ export default function BottomNav() {
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-lg border-t border-border">
       <div className="flex items-center justify-around px-2 py-2 pb-3">
         <NavItem item={items[0]} active={location.pathname === '/'} />
-        <NavItem item={items[1]} active={location.pathname === '/goals'} />
+        <NavItem item={items[1]} active={location.pathname.startsWith('/insights')} />
 
         <Link to="/check" className="flex flex-col items-center -mt-7">
           <div
@@ -43,8 +43,8 @@ export default function BottomNav() {
           <span className="text-[10px] font-medium mt-0.5 text-primary">Check</span>
         </Link>
 
-        <NavItem item={items[2]} active={location.pathname.startsWith('/insights')} />
-        <NavItem item={items[3]} active={location.pathname === '/profile'} />
+        <NavItem item={items[2]} active={location.pathname === '/assistant'} />
+        <NavItem item={items[3]} active={location.pathname === '/profile' || location.pathname.startsWith('/notifications') || location.pathname.startsWith('/shield')} />
       </div>
     </nav>
   );
