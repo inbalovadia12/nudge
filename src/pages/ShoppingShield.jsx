@@ -4,11 +4,14 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency, clearUserDataCache } from '@/lib/nudgeUtils';
 import { getFinancialContext } from '@/lib/nudgeUtils';
+import { usePremiumStatus } from '@/lib/usePremium';
 import BlockListManager from '@/components/shield/BlockListManager';
 import InterceptionQuestions from '@/components/shield/InterceptionQuestions';
+import PaywallScreen from '@/components/PaywallScreen';
 import { ArrowLeft, Shield, TrendingUp, Target, Clock, AlertTriangle, Check, Plus, Eye, Globe, ArrowRight } from 'lucide-react';
 
 export default function ShoppingShield() {
+  const { isPremium } = usePremiumStatus();
   const [loading, setLoading] = useState(true);
   const [ctx, setCtx] = useState(null);
   const [recentImpulse, setRecentImpulse] = useState([]);
@@ -19,6 +22,7 @@ export default function ShoppingShield() {
   const [blockedApps, setBlockedApps] = useState([]);
   const [interceptApp, setInterceptApp] = useState(null);
   const [urlCheckResult, setUrlCheckResult] = useState(null);
+  const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -132,6 +136,8 @@ export default function ShoppingShield() {
         <BlockListManager
           screenTimeConnected={screenTimeConnected}
           onConnectScreenTime={handleConnectScreenTime}
+          isPremium={isPremium}
+          onHitLimit={() => setShowPaywall(true)}
         />
       </div>
 
@@ -294,6 +300,11 @@ export default function ShoppingShield() {
           onProceed={handleInterceptProceed}
           onBack={() => { setInterceptApp(null); setUrlInput(''); }}
         />
+      )}
+
+      {/* Premium Paywall */}
+      {showPaywall && (
+        <PaywallScreen onClose={() => setShowPaywall(false)} />
       )}
     </div>
   );

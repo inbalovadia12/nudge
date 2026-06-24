@@ -9,11 +9,12 @@ import HealthScoreRing from '@/components/HealthScoreRing';
 import HabitCard from '@/components/HabitCard';
 import BillItem from '@/components/BillItem';
 import DataMaturityBar from '@/components/DataMaturityBar';
-import PaywallCard from '@/components/PaywallCard';
-import { Wallet, CalendarDays, TrendingUp, User, Tag, ChevronRight, AlertTriangle, Heart, Brain, Calendar, Droplets } from 'lucide-react';
+import PaywallScreen from '@/components/PaywallScreen';
+import { Wallet, CalendarDays, TrendingUp, User, Tag, ChevronRight, AlertTriangle, Heart, Brain, Calendar, Droplets, Crown } from 'lucide-react';
 
 export default function Insights() {
   const { isPremium, profile, loading } = usePremiumStatus();
+  const [showPaywall, setShowPaywall] = useState(false);
   const [healthScore, setHealthScore] = useState(null);
   const [habits, setHabits] = useState([]);
   const [bills, setBills] = useState([]);
@@ -157,14 +158,31 @@ export default function Insights() {
         </div>
       </div>
 
-      {/* Premium Beta banner */}
-      <div className="mt-8">
-        <PaywallCard
-          title="Premium Beta is active"
-          description="Every feature is unlocked. Explore freely — thank you for helping test Nudge Premium."
-          onUpgrade={() => window.location.href = '/insights/paycheck'}
-        />
-      </div>
+      {/* Premium upsell */}
+      {!isPremium && (
+        <div className="mt-8">
+          <button
+            onClick={() => setShowPaywall(true)}
+            className="w-full rounded-3xl border-2 border-primary/30 bg-primary/5 p-6 text-left hover:bg-primary/10 transition-colors group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-primary/15 flex items-center justify-center flex-shrink-0">
+                <Crown className="w-7 h-7 text-primary" />
+              </div>
+              <div className="flex-1">
+                <p className="text-base font-bold text-foreground mb-0.5">Unlock Advanced Insights</p>
+                <p className="text-sm text-muted-foreground">Get spending heatmaps, AI financial twin, unlimited shopping blocks, and more.</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform flex-shrink-0" />
+            </div>
+          </button>
+        </div>
+      )}
+
+      {/* Full-screen paywall */}
+      {showPaywall && (
+        <PaywallScreen onClose={() => setShowPaywall(false)} />
+      )}
     </div>
   );
 }

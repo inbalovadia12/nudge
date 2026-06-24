@@ -17,7 +17,9 @@ const popularSites = [
   { app_name: 'Target', block_url: 'target.com', category: 'shopping', app_type: 'website' },
 ];
 
-export default function BlockListManager({ screenTimeConnected, onConnectScreenTime }) {
+const FREE_BLOCK_LIMIT = 3;
+
+export default function BlockListManager({ screenTimeConnected, onConnectScreenTime, isPremium = false, onHitLimit }) {
   const [blockedApps, setBlockedApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -45,6 +47,10 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
       await base44.entities.BlockedApp.delete(existing.id);
       setBlockedApps(prev => prev.filter(b => b.id !== existing.id));
     } else {
+      if (!isPremium && blockedApps.length >= FREE_BLOCK_LIMIT) {
+        onHitLimit?.();
+        return;
+      }
       const created = await base44.entities.BlockedApp.create({
         app_name: site.app_name,
         block_url: site.block_url,
@@ -65,6 +71,10 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
 
   async function addCustom() {
     if (!customName || !customUrl) return;
+    if (!isPremium && blockedApps.length >= FREE_BLOCK_LIMIT) {
+      onHitLimit?.();
+      return;
+    }
     setSaving(true);
     const url = customUrl.replace(/^https?:\/\//, '').replace(/^www\./, '');
     const created = await base44.entities.BlockedApp.create({
@@ -159,7 +169,10 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
           </div>
           <div>
             <p className="text-xl font-bold text-foreground">Block Apps & Sites</p>
-            <p className="text-xs text-muted-foreground">{blockedApps.length} {blockedApps.length === 1 ? 'item' : 'items'} on your blocklist</p>
+            <p className="text-xs text-muted-foreground">
+              {blockedApps.length} {blockedApps.length === 1 ? 'item' : 'items'} on your blocklist
+              {!isPremium && ` · ${FREE_BLOCK_LIMIT - blockedApps.length} free slots left`}
+            </p>
           </div>
         </div>
         <button
@@ -205,6 +218,27 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Free tier limit notice */}
+      {!isPremium && blockedApps.length >= FREE_BLOCK_LIMIT && (
+        <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4 mb-5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Lock className="w-5 h-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-foreground">Free limit reached</p>
+              <p className="text-xs text-muted-foreground">You've used all {FREE_BLOCK_LIMIT} free blocks. Upgrade for unlimited blocking.</p>
+            </div>
+            <button
+              onClick={onHitLimit}
+              className="text-xs font-bold text-primary-foreground bg-primary px-3 py-2 rounded-lg hover:bg-primary/90 transition-colors flex-shrink-0"
+            >
+              Upgrade
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Popular sites grid */}
       <p className="text-base font-bold text-foreground mb-3">Quick Add</p>
