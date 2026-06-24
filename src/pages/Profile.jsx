@@ -101,8 +101,13 @@ export default function Profile() {
           </div>
         </div>
         {!isPremium && (
-          <Link to="/insights" className="block w-full bg-primary text-primary-foreground rounded-2xl py-2.5 text-sm font-semibold text-center hover:bg-primary/90 transition-colors">
+          <Link to="/pricing" className="block w-full bg-primary text-primary-foreground rounded-2xl py-2.5 text-sm font-semibold text-center hover:bg-primary/90 transition-colors">
             {trialDays > 0 ? 'Continue trial' : 'Upgrade to Premium'}
+          </Link>
+        )}
+        {isPremium && (
+          <Link to="/pricing" className="block w-full text-sm font-medium text-primary text-center py-2 hover:underline">
+            Manage subscription
           </Link>
         )}
       </div>

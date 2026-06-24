@@ -1,14 +1,16 @@
-import { Sparkles, Check, FlaskConical } from 'lucide-react';
+import { Sparkles, Check, Crown } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
-export default function PaywallCard({ title = 'Premium feature', description = 'Unlock deeper insights and tools to change your spending.', onUpgrade }) {
+export default function PaywallCard({ title = 'Premium feature', description = 'Unlock deeper insights and tools to change your spending.' }) {
+  const navigate = useNavigate();
   const features = [
-    'Paycheck flow visualization',
+    'Shopping Shield with app blocker',
+    'Subscription tracker & cleanup',
     'Spending heatmap',
-    'Financial simulator',
-    'Cancellation suggestions',
-    'AI personality profile',
-    'Smart deal alerts',
+    'Paycheck flow visualization',
+    'Deal alerts & price tracking',
+    'Financial Health Score',
   ];
 
   return (
@@ -18,10 +20,10 @@ export default function PaywallCard({ title = 'Premium feature', description = '
         animate={{ scale: 1, opacity: 1 }}
         className="w-14 h-14 rounded-2xl bg-primary/15 flex items-center justify-center mx-auto mb-4"
       >
-        <FlaskConical className="w-7 h-7 text-primary" />
+        <Crown className="w-7 h-7 text-primary" />
       </motion.div>
       <div className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-3">
-        Premium Beta Active
+        <Sparkles className="w-3 h-3" /> Nudge Premium
       </div>
       <h3 className="text-lg font-bold text-foreground mb-1">{title}</h3>
       <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{description}</p>
@@ -44,13 +46,13 @@ export default function PaywallCard({ title = 'Premium feature', description = '
       </div>
 
       <button
-        onClick={onUpgrade}
+        onClick={() => navigate('/pricing')}
         className="w-full bg-primary text-primary-foreground rounded-2xl py-3 text-sm font-semibold hover:bg-primary/90 transition-colors"
       >
-        Explore feature
+        View Plans
       </button>
-      <p className="text-[11px] text-muted-foreground/70 mt-3 flex items-center justify-center gap-1">
-        <Sparkles className="w-3 h-3" /> Thank you for helping test Nudge Premium.
+      <p className="text-[11px] text-muted-foreground/70 mt-3">
+        From $4.99/mo · Cancel anytime
       </p>
     </div>
   );

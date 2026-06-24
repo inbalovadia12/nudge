@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Plus, Trash2, Globe, Smartphone, Shield, Check, Loader2, Lock, MessageCircleQuestion } from 'lucide-react';
+import { Plus, Trash2, Globe, Smartphone, Shield, Check, Loader2, Lock, MessageCircleQuestion, Info } from 'lucide-react';
 import InterceptionQuestions from './InterceptionQuestions';
 
 const popularSites = [
@@ -25,6 +25,7 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
   const [customUrl, setCustomUrl] = useState('');
   const [saving, setSaving] = useState(false);
   const [interceptApp, setInterceptApp] = useState(null);
+  const [showBlocked, setShowBlocked] = useState(null);
 
   useEffect(() => {
     loadBlocked();
@@ -91,8 +92,7 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
     if (app.gate_mode === 'intercept') {
       setInterceptApp(app);
     } else {
-      // Block mode — just show it's blocked
-      window.open(`https://${app.block_url}`, '_blank');
+      setShowBlocked(app);
     }
   }
 
@@ -139,6 +139,15 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
               Connect
             </button>
           )}
+        </div>
+      </div>
+
+      {/* Info banner */}
+      <div className="rounded-2xl border border-warning/30 bg-warning/5 p-4 mb-4 flex items-start gap-3">
+        <Info className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" />
+        <div>
+          <p className="text-xs font-medium text-foreground mb-0.5">Blocking works within Nudge</p>
+          <p className="text-xs text-muted-foreground">This blocklist intercepts sites when you check them through Nudge's URL checker. To block sites across your entire browser or device, connect Apple Screen Time above or use a browser extension.</p>
         </div>
       </div>
 
@@ -257,17 +266,31 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
                   </button>
                 </div>
 
-                {/* Try opening button (for intercept mode) */}
-                {app.gate_mode === 'intercept' && (
-                  <button
-                    onClick={() => handleAppClick(app)}
-                    className="w-full mt-3 text-sm text-primary font-semibold py-2 rounded-xl bg-primary/10 hover:bg-primary/15 transition-colors"
-                  >
-                    Try opening {app.app_name} →
-                  </button>
-                )}
+                {/* Try opening button */}
+                <button
+                  onClick={() => handleAppClick(app)}
+                  className={`w-full mt-3 text-sm font-semibold py-2 rounded-xl transition-colors ${app.gate_mode === 'intercept' ? 'text-primary bg-primary/10 hover:bg-primary/15' : 'text-danger bg-danger/10 hover:bg-danger/15'}`}
+                >
+                  Try opening {app.app_name} →
+                </button>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Blocked modal */}
+      {showBlocked && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setShowBlocked(null)}>
+          <div className="bg-card rounded-2xl border border-border p-6 max-w-sm w-full text-center" onClick={e => e.stopPropagation()}>
+            <div className="w-14 h-14 rounded-2xl bg-danger/10 flex items-center justify-center mx-auto mb-4">
+              <Lock className="w-7 h-7 text-danger" />
+            </div>
+            <h3 className="text-lg font-bold mb-2">Blocked by Nudge</h3>
+            <p className="text-sm text-muted-foreground mb-4">This site is on your blocklist. To visit it, remove it from your blocklist or switch to "Ask questions" mode.</p>
+            <button onClick={() => setShowBlocked(null)} className="w-full text-sm font-medium py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+              Go back
+            </button>
           </div>
         </div>
       )}

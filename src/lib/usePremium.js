@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getFinancialContext } from '@/lib/nudgeUtils';
 
-// Premium Beta: all features unlocked for all users
-const PREMIUM_BETA = true;
+// Premium Beta: disabled — real paywalls active
+const PREMIUM_BETA = false;
 
 export function isPremiumUser(profile) {
   if (PREMIUM_BETA) return true;

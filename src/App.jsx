@@ -33,6 +33,7 @@ import FinancialHealth from '@/pages/FinancialHealth';
 import NotificationCenter from '@/pages/NotificationCenter';
 import FinancialTwin from '@/pages/FinancialTwin';
 import ConnectedAccounts from '@/pages/ConnectedAccounts';
+import Pricing from '@/pages/Pricing';
 import PlaidSandbox from '@/pages/PlaidSandbox';
 import Splash from '@/components/Splash';
 import { ThemeProvider } from 'next-themes';
@@ -74,6 +75,7 @@ function App() {
                   <Route path="/notifications" element={<NotificationCenter />} />
                   <Route path="/shield" element={<ShoppingShield />} />
                   <Route path="/connected-accounts" element={<ConnectedAccounts />} />
+                  <Route path="/pricing" element={<Pricing />} />
                   <Route path="/plaid-sandbox" element={<PlaidSandbox />} />
                 </Route>
               </Route>

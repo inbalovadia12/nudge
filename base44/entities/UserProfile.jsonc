@@ -62,6 +62,24 @@
     },
     "plaid_last_sync_date": {
       "type": "string"
+    },
+    "checkout_id": {
+      "type": "string"
+    },
+    "subscription_id": {
+      "type": "string"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active",
+        "canceled",
+        "expired"
+      ]
+    },
+    "subscription_plan": {
+      "type": "string"
     }
   },
   "required": [
