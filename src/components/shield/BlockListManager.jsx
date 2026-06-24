@@ -143,15 +143,19 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
       </div>
 
       {/* Blocked apps count */}
-      <div className="flex items-center justify-between mb-3">
-        <p className="text-sm font-medium text-foreground">Blocked apps & sites</p>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Lock className="w-5 h-5 text-primary" />
+          <p className="text-lg font-bold text-foreground">Block Apps & Sites</p>
+        </div>
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+          className="flex items-center gap-1.5 text-sm font-semibold text-primary bg-primary/10 px-3 py-2 rounded-xl hover:bg-primary/15 transition-colors"
         >
-          <Plus className="w-3.5 h-3.5" /> Add custom
+          <Plus className="w-4 h-4" /> Add custom
         </button>
       </div>
+      <p className="text-sm text-muted-foreground mb-5">Tap to add or remove. Switch between <span className="font-semibold text-foreground">Block</span> (fully blocked) and <span className="font-semibold text-foreground">Ask Questions</span> (intercept before allowing).</p>
 
       {/* Custom add form */}
       <AnimatePresence>
@@ -189,7 +193,8 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
       </AnimatePresence>
 
       {/* Popular sites grid */}
-      <div className="grid grid-cols-2 gap-2 mb-4">
+      <p className="text-sm font-bold text-foreground mb-3">Quick Add</p>
+      <div className="grid grid-cols-2 gap-2.5 mb-5">
         {popularSites.map(site => {
           const isBlocked = blockedApps.some(b => b.block_url === site.block_url);
           return (
@@ -211,10 +216,10 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
       {/* Currently blocked list with gate mode toggle */}
       {blockedApps.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-muted-foreground mb-2">YOUR BLOCKLIST ({blockedApps.length})</p>
-          <div className="space-y-2">
+          <p className="text-sm font-bold text-foreground mb-3">🛡️ Your Blocklist ({blockedApps.length})</p>
+          <div className="space-y-3">
             {blockedApps.map(app => (
-              <div key={app.id} className="rounded-xl border border-border bg-card p-3">
+              <div key={app.id} className="rounded-2xl border-2 border-border bg-card p-4">
                 <div className="flex items-center gap-3">
                   {app.app_type === 'app' ? <Smartphone className="w-4 h-4 text-muted-foreground flex-shrink-0" /> : <Globe className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
                   <div className="flex-1 min-w-0">

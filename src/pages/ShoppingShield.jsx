@@ -5,7 +5,8 @@ import { base44 } from '@/api/base44Client';
 import { formatCurrency, clearUserDataCache } from '@/lib/nudgeUtils';
 import { getFinancialContext } from '@/lib/nudgeUtils';
 import BlockListManager from '@/components/shield/BlockListManager';
-import { ArrowLeft, Shield, TrendingUp, Target, Clock, AlertTriangle, Check, Plus, Eye } from 'lucide-react';
+import InterceptionQuestions from '@/components/shield/InterceptionQuestions';
+import { ArrowLeft, Shield, TrendingUp, Target, Clock, AlertTriangle, Check, Plus, Eye, Globe, ArrowRight } from 'lucide-react';
 
 export default function ShoppingShield() {
   const [loading, setLoading] = useState(true);
@@ -14,6 +15,10 @@ export default function ShoppingShield() {
   const [shieldActive, setShieldActive] = useState(false);
   const [decision, setDecision] = useState(null);
   const [screenTimeConnected, setScreenTimeConnected] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+  const [blockedApps, setBlockedApps] = useState([]);
+  const [interceptApp, setInterceptApp] = useState(null);
+  const [urlCheckResult, setUrlCheckResult] = useState(null);
 
   useEffect(() => {
     async function load() {
@@ -23,11 +28,39 @@ export default function ShoppingShield() {
         setScreenTimeConnected(finCtx.profile?.connected_apple_screen_time || false);
         const impulse = finCtx.purchases.filter(p => p.source === 'manual' || p.category === 'shopping').slice(0, 3);
         setRecentImpulse(impulse);
+        const apps = await base44.entities.BlockedApp.filter({ is_active: true });
+        setBlockedApps(apps);
       } catch {}
       setLoading(false);
     }
     load();
   }, []);
+
+  function checkUrl(rawUrl) {
+    const url = rawUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').toLowerCase();
+    const match = blockedApps.find(app => {
+      const blockUrl = app.block_url.toLowerCase();
+      return url.includes(blockUrl) || blockUrl.includes(url);
+    });
+    if (match) {
+      if (match.gate_mode === 'intercept') {
+        setInterceptApp(match);
+        setUrlCheckResult(null);
+      } else {
+        setUrlCheckResult({ blocked: true, app: match });
+      }
+    } else {
+      setUrlCheckResult({ blocked: false });
+    }
+  }
+
+  function handleInterceptProceed() {
+    if (interceptApp) {
+      window.open(`https://${interceptApp.block_url}`, '_blank');
+    }
+    setInterceptApp(null);
+    setUrlInput('');
+  }
 
   async function handleConnectScreenTime() {
     try {
@@ -173,13 +206,62 @@ export default function ShoppingShield() {
             </div>
           )}
 
-          {/* App & Website Blocker */}
+          {/* URL Interception Checker */}
           <div className="mt-6">
             <div className="flex items-center gap-2 mb-1">
-              <Shield className="w-4 h-4 text-primary" />
-              <h2 className="text-sm font-semibold text-foreground">Block apps & websites</h2>
+              <Globe className="w-5 h-5 text-primary" />
+              <h2 className="text-lg font-bold text-foreground">Check a URL</h2>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">Choose which shopping apps and sites to block while the shield is active.</p>
+            <p className="text-sm text-muted-foreground mb-4">Heading to a shopping site? Paste the link here first — if it's on your blocklist, the shield will intercept it.</p>
+            <div className="flex gap-2 mb-3">
+              <input
+                type="text"
+                value={urlInput}
+                onChange={e => setUrlInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && urlInput) checkUrl(urlInput); }}
+                placeholder="amazon.com, ebay.com, ..."
+                className="flex-1 bg-surface-1 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary"
+              />
+              <button
+                onClick={() => urlInput && checkUrl(urlInput)}
+                disabled={!urlInput}
+                className="bg-primary text-primary-foreground px-4 py-3 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-primary/90 transition-colors flex items-center gap-1"
+              >
+                Check <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+            {urlCheckResult?.blocked && (
+              <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border-2 border-danger/30 bg-danger/5 p-4 mb-3">
+                <div className="flex items-center gap-3">
+                  <Shield className="w-5 h-5 text-danger flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-foreground">Blocked: {urlCheckResult.app.app_name}</p>
+                    <p className="text-xs text-muted-foreground">This site is on your blocklist. Try a different site or remove it from your blocklist to proceed.</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            {urlCheckResult?.blocked === false && (
+              <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border-2 border-success/30 bg-success/5 p-4 mb-3">
+                <div className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-success flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-foreground">Not blocked</p>
+                    <p className="text-xs text-muted-foreground">This URL isn't on your blocklist.</p>
+                  </div>
+                  <button
+                    onClick={() => window.open(urlInput.startsWith('http') ? urlInput : `https://${urlInput}`, '_blank')}
+                    className="text-xs font-medium text-primary px-3 py-1.5 rounded-lg bg-primary/10 hover:bg-primary/15"
+                  >
+                    Open
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </div>
+
+          {/* App & Website Blocker */}
+          <div className="mt-8">
             <BlockListManager
               screenTimeConnected={screenTimeConnected}
               onConnectScreenTime={handleConnectScreenTime}
@@ -210,6 +292,16 @@ export default function ShoppingShield() {
             Activate the shield to get a quick financial context check before entering shopping apps or websites.
           </p>
         </div>
+      )}
+
+      {/* Interception Questions Modal */}
+      {interceptApp && (
+        <InterceptionQuestions
+          appName={interceptApp.app_name}
+          appUrl={interceptApp.block_url}
+          onProceed={handleInterceptProceed}
+          onBack={() => { setInterceptApp(null); setUrlInput(''); }}
+        />
       )}
     </div>
   );

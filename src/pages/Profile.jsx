@@ -5,7 +5,8 @@ import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useTheme } from 'next-themes';
 import { usePremiumStatus } from '@/lib/usePremium';
-import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog } from 'lucide-react';
+import { clearUserDataCache } from '@/lib/nudgeUtils';
+import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check } from 'lucide-react';
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -13,15 +14,31 @@ export default function Profile() {
   const { isPremium, profile, loading } = usePremiumStatus();
   const [strictness, setStrictness] = useState('moderate');
   const [notifications, setNotifications] = useState({ daily: true, bills: true, deals: true, overspending: true });
+  const [editingIncome, setEditingIncome] = useState(false);
+  const [incomeValue, setIncomeValue] = useState('');
+  const [incomeSaved, setIncomeSaved] = useState(false);
 
   useEffect(() => {
     if (profile?.strictness) setStrictness(profile.strictness);
+    if (profile?.monthly_income) setIncomeValue(String(profile.monthly_income));
   }, [profile]);
 
   const updateStrictness = async (value) => {
     setStrictness(value);
     if (profile?.id) {
       await base44.entities.UserProfile.update(profile.id, { strictness: value });
+      clearUserDataCache();
+    }
+  };
+
+  const saveIncome = async () => {
+    const income = parseFloat(incomeValue) || 0;
+    if (profile?.id) {
+      await base44.entities.UserProfile.update(profile.id, { monthly_income: income });
+      clearUserDataCache();
+      setEditingIncome(false);
+      setIncomeSaved(true);
+      setTimeout(() => setIncomeSaved(false), 2000);
     }
   };
 
@@ -73,6 +90,48 @@ export default function Profile() {
           <Link to="/insights" className="block w-full bg-primary text-primary-foreground rounded-2xl py-2.5 text-sm font-semibold text-center hover:bg-primary/90 transition-colors">
             {trialDays > 0 ? 'Continue trial' : 'Upgrade to Premium'}
           </Link>
+        )}
+      </div>
+
+      {/* Financial Details — editable income */}
+      <div className="rounded-3xl border border-border bg-card p-6 mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Wallet className="w-4 h-4 text-primary" />
+          <h2 className="text-sm font-semibold">Monthly Income</h2>
+        </div>
+        {editingIncome ? (
+          <div className="space-y-3">
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
+              <input
+                type="number"
+                value={incomeValue}
+                onChange={e => setIncomeValue(e.target.value)}
+                placeholder="5,000"
+                className="w-full bg-surface-1 border border-border rounded-xl pl-8 pr-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary text-sm"
+                autoFocus
+              />
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => { setEditingIncome(false); setIncomeValue(String(profile?.monthly_income || '')); }} className="flex-1 text-sm text-muted-foreground py-2.5 rounded-xl bg-surface-2 hover:bg-surface-3 transition-colors">Cancel</button>
+              <button onClick={saveIncome} disabled={!incomeValue} className="flex-1 text-sm font-medium text-primary-foreground bg-primary py-2.5 rounded-xl disabled:opacity-50 hover:bg-primary/90 transition-colors">Save</button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-2xl font-bold text-foreground">{profile?.monthly_income ? `$${profile.monthly_income.toLocaleString()}` : 'Not set'}</p>
+              <p className="text-xs text-muted-foreground mt-1">Your monthly take-home pay</p>
+            </div>
+            <button onClick={() => setEditingIncome(true)} className="text-sm font-medium text-primary px-4 py-2 rounded-xl bg-primary/10 hover:bg-primary/15 transition-colors">
+              Edit
+            </button>
+          </div>
+        )}
+        {incomeSaved && (
+          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-1.5 text-xs text-success mt-3">
+            <Check className="w-3.5 h-3.5" /> Saved — all your tools are updated.
+          </motion.div>
         )}
       </div>
 

@@ -162,36 +162,53 @@ Return just the observation text, nothing else. No quotes.`,
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="mb-6 mt-4 grid grid-cols-2 gap-3"
+        className="mb-6 mt-4 space-y-3"
       >
         <Link
-          to="/check"
-          className="block bg-card border border-border rounded-2xl p-4 hover:border-primary/30 transition-colors group"
-        >
-          <div className="flex flex-col items-start gap-2">
-            <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
-              <ScanSearch className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <p className="font-medium text-foreground text-sm">Check a purchase</p>
-              <p className="text-xs text-muted-foreground">Before you buy</p>
-            </div>
-          </div>
-        </Link>
-        <Link
           to="/shield"
-          className="block bg-card border border-border rounded-2xl p-4 hover:border-primary/30 transition-colors group"
+          className="block bg-primary/10 border-2 border-primary/30 rounded-2xl p-5 hover:border-primary/50 transition-colors group"
         >
-          <div className="flex flex-col items-start gap-2">
-            <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-primary" />
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <Shield className="w-7 h-7 text-primary" />
             </div>
-            <div>
-              <p className="font-medium text-foreground text-sm">Shopping Shield</p>
-              <p className="text-xs text-muted-foreground">Protect before you shop</p>
+            <div className="flex-1">
+              <p className="text-lg font-bold text-foreground">Shopping Shield</p>
+              <p className="text-sm text-muted-foreground">Block apps, check URLs, and intercept impulse buys</p>
             </div>
+            <ArrowRight className="w-5 h-5 text-primary flex-shrink-0" />
           </div>
         </Link>
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            to="/check"
+            className="block bg-card border border-border rounded-2xl p-4 hover:border-primary/30 transition-colors group"
+          >
+            <div className="flex flex-col items-start gap-2">
+              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
+                <ScanSearch className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">Check a purchase</p>
+                <p className="text-xs text-muted-foreground">Before you buy</p>
+              </div>
+            </div>
+          </Link>
+          <Link
+            to="/goals"
+            className="block bg-card border border-border rounded-2xl p-4 hover:border-primary/30 transition-colors group"
+          >
+            <div className="flex flex-col items-start gap-2">
+              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Target className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">My Goals</p>
+                <p className="text-xs text-muted-foreground">Track savings</p>
+              </div>
+            </div>
+          </Link>
+        </div>
       </motion.div>
 
       {/* Recent purchases */}
