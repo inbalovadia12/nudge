@@ -144,13 +144,18 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
 
       {/* Blocked apps count */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Lock className="w-5 h-5 text-primary" />
-          <p className="text-lg font-bold text-foreground">Block Apps & Sites</p>
+        <div className="flex items-center gap-2.5">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <Lock className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <p className="text-xl font-bold text-foreground">Block Apps & Sites</p>
+            <p className="text-xs text-muted-foreground">{blockedApps.length} {blockedApps.length === 1 ? 'item' : 'items'} on your blocklist</p>
+          </div>
         </div>
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="flex items-center gap-1.5 text-sm font-semibold text-primary bg-primary/10 px-3 py-2 rounded-xl hover:bg-primary/15 transition-colors"
+          className="flex items-center gap-1.5 text-sm font-semibold text-primary bg-primary/10 px-4 py-2.5 rounded-xl hover:bg-primary/15 transition-colors"
         >
           <Plus className="w-4 h-4" /> Add custom
         </button>
@@ -193,21 +198,21 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
       </AnimatePresence>
 
       {/* Popular sites grid */}
-      <p className="text-sm font-bold text-foreground mb-3">Quick Add</p>
-      <div className="grid grid-cols-2 gap-2.5 mb-5">
+      <p className="text-base font-bold text-foreground mb-3">Quick Add</p>
+      <div className="grid grid-cols-2 gap-3 mb-5">
         {popularSites.map(site => {
           const isBlocked = blockedApps.some(b => b.block_url === site.block_url);
           return (
             <button
               key={site.block_url}
               onClick={() => toggleBlock(site)}
-              className={`flex items-center gap-2 p-3 rounded-xl border text-left transition-all ${isBlocked ? 'border-primary/30 bg-primary/5' : 'border-border bg-card hover:border-primary/20'}`}
+              className={`flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${isBlocked ? 'border-primary/40 bg-primary/5' : 'border-border bg-card hover:border-primary/20'}`}
             >
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isBlocked ? 'bg-primary/15' : 'bg-surface-2'}`}>
-                {site.app_type === 'app' ? <Smartphone className={`w-4 h-4 ${isBlocked ? 'text-primary' : 'text-muted-foreground'}`} /> : <Globe className={`w-4 h-4 ${isBlocked ? 'text-primary' : 'text-muted-foreground'}`} />}
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isBlocked ? 'bg-primary/15' : 'bg-surface-2'}`}>
+                {site.app_type === 'app' ? <Smartphone className={`w-5 h-5 ${isBlocked ? 'text-primary' : 'text-muted-foreground'}`} /> : <Globe className={`w-5 h-5 ${isBlocked ? 'text-primary' : 'text-muted-foreground'}`} />}
               </div>
-              <span className={`text-xs font-medium truncate ${isBlocked ? 'text-primary' : 'text-foreground'}`}>{site.app_name}</span>
-              {isBlocked && <Check className="w-3.5 h-3.5 text-primary ml-auto flex-shrink-0" />}
+              <span className={`text-sm font-semibold truncate ${isBlocked ? 'text-primary' : 'text-foreground'}`}>{site.app_name}</span>
+              {isBlocked && <Check className="w-4 h-4 text-primary ml-auto flex-shrink-0" />}
             </button>
           );
         })}
@@ -216,37 +221,39 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
       {/* Currently blocked list with gate mode toggle */}
       {blockedApps.length > 0 && (
         <div>
-          <p className="text-sm font-bold text-foreground mb-3">🛡️ Your Blocklist ({blockedApps.length})</p>
+          <p className="text-base font-bold text-foreground mb-3">🛡️ Your Blocklist ({blockedApps.length})</p>
           <div className="space-y-3">
             {blockedApps.map(app => (
               <div key={app.id} className="rounded-2xl border-2 border-border bg-card p-4">
                 <div className="flex items-center gap-3">
-                  {app.app_type === 'app' ? <Smartphone className="w-4 h-4 text-muted-foreground flex-shrink-0" /> : <Globe className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
+                  <div className="w-10 h-10 rounded-xl bg-surface-2 flex items-center justify-center flex-shrink-0">
+                    {app.app_type === 'app' ? <Smartphone className="w-5 h-5 text-muted-foreground" /> : <Globe className="w-5 h-5 text-muted-foreground" />}
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">{app.app_name}</p>
-                    <p className="text-[10px] text-muted-foreground truncate">{app.block_url}</p>
+                    <p className="text-sm font-bold text-foreground truncate">{app.app_name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{app.block_url}</p>
                   </div>
                   {screenTimeConnected && app.screen_time_blocked && (
                     <span className="text-[10px] text-primary font-medium bg-primary/10 px-2 py-0.5 rounded-full flex-shrink-0">Blocked</span>
                   )}
-                  <button onClick={() => removeBlocked(app.id)} className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-danger hover:bg-danger/5 transition-colors flex-shrink-0">
-                    <Trash2 className="w-3.5 h-3.5" />
+                  <button onClick={() => removeBlocked(app.id)} className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-danger hover:bg-danger/5 transition-colors flex-shrink-0">
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
 
                 {/* Gate mode selector */}
-                <div className="flex gap-1.5 mt-2.5 bg-surface-2 rounded-lg p-1">
+                <div className="flex gap-1.5 mt-3 bg-surface-2 rounded-xl p-1">
                   <button
                     onClick={() => setGateMode(app.id, 'block')}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-[11px] font-medium transition-all ${(app.gate_mode || 'block') === 'block' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'}`}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold transition-all ${(app.gate_mode || 'block') === 'block' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'}`}
                   >
-                    <Lock className="w-3 h-3" /> Block
+                    <Lock className="w-3.5 h-3.5" /> Block
                   </button>
                   <button
                     onClick={() => setGateMode(app.id, 'intercept')}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-[11px] font-medium transition-all ${app.gate_mode === 'intercept' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'}`}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold transition-all ${app.gate_mode === 'intercept' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'}`}
                   >
-                    <MessageCircleQuestion className="w-3 h-3" /> Ask questions
+                    <MessageCircleQuestion className="w-3.5 h-3.5" /> Ask questions
                   </button>
                 </div>
 
@@ -254,7 +261,7 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
                 {app.gate_mode === 'intercept' && (
                   <button
                     onClick={() => handleAppClick(app)}
-                    className="w-full mt-2 text-xs text-primary font-medium py-1.5 rounded-lg bg-primary/10 hover:bg-primary/15 transition-colors"
+                    className="w-full mt-3 text-sm text-primary font-semibold py-2 rounded-xl bg-primary/10 hover:bg-primary/15 transition-colors"
                   >
                     Try opening {app.app_name} →
                   </button>

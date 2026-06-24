@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
@@ -7,12 +7,13 @@ import { useTheme } from 'next-themes';
 import { usePremiumStatus } from '@/lib/usePremium';
 import { clearUserDataCache } from '@/lib/nudgeUtils';
 import ConnectPlaid from '@/components/ConnectPlaid';
-import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark } from 'lucide-react';
+import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark, Bug } from 'lucide-react';
 
 export default function Profile() {
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const { isPremium, profile, loading } = usePremiumStatus();
+  const navigate = useNavigate();
   const [strictness, setStrictness] = useState('moderate');
   const [notifications, setNotifications] = useState({ daily: true, bills: true, deals: true, overspending: true });
   const [editingIncome, setEditingIncome] = useState(false);
@@ -225,6 +226,14 @@ export default function Profile() {
           onConnected={() => { setBankConnected(true); clearUserDataCache(); }}
           onDisconnect={handleDisconnectBank}
         />
+        {bankConnected && (
+          <button
+            onClick={() => navigate('/plaid-sandbox')}
+            className="w-full mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors py-1"
+          >
+            <Bug className="w-3.5 h-3.5" /> Plaid Sandbox (dev testing)
+          </button>
+        )}
       </div>
 
       {/* Settings list */}

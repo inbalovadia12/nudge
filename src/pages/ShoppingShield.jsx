@@ -128,6 +128,14 @@ export default function ShoppingShield() {
         </div>
       </div>
 
+      {/* App & Website Blocker — always visible, shown immediately on open */}
+      <div className="mb-6">
+        <BlockListManager
+          screenTimeConnected={screenTimeConnected}
+          onConnectScreenTime={handleConnectScreenTime}
+        />
+      </div>
+
       {shieldActive ? (
         <>
           {/* Context cards */}
@@ -258,14 +266,6 @@ export default function ShoppingShield() {
                 </div>
               </motion.div>
             )}
-          </div>
-
-          {/* App & Website Blocker */}
-          <div className="mt-8">
-            <BlockListManager
-              screenTimeConnected={screenTimeConnected}
-              onConnectScreenTime={handleConnectScreenTime}
-            />
           </div>
 
           {/* Recent impulse purchases */}
