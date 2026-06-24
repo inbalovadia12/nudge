@@ -12,6 +12,13 @@ import Home from '@/pages/Home';
 import Check from '@/pages/Check';
 import Goals from '@/pages/Goals';
 import Assistant from '@/pages/Assistant';
+import Insights from '@/pages/Insights';
+import Subscriptions from '@/pages/Subscriptions';
+import PaycheckFlow from '@/pages/PaycheckFlow';
+import Heatmap from '@/pages/Heatmap';
+import Simulator from '@/pages/Simulator';
+import Personality from '@/pages/Personality';
+import Deals from '@/pages/Deals';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -44,6 +51,13 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Home />} />
         <Route path="/check" element={<Check />} />
         <Route path="/goals" element={<Goals />} />
+        <Route path="/insights" element={<Insights />} />
+        <Route path="/insights/subscriptions" element={<Subscriptions />} />
+        <Route path="/insights/paycheck" element={<PaycheckFlow />} />
+        <Route path="/insights/heatmap" element={<Heatmap />} />
+        <Route path="/insights/simulator" element={<Simulator />} />
+        <Route path="/insights/personality" element={<Personality />} />
+        <Route path="/insights/deals" element={<Deals />} />
         <Route path="/assistant" element={<Assistant />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

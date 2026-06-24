@@ -20,6 +20,18 @@
     "onboarding_complete": {
       "type": "boolean",
       "default": false
+    },
+    "is_premium": {
+      "type": "boolean",
+      "default": false
+    },
+    "premium_trial_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "regret_threshold": {
+      "type": "number",
+      "default": 30
     }
   },
   "required": [

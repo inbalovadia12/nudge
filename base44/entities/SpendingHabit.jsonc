@@ -1,0 +1,47 @@
+{
+  "name": "SpendingHabit",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "pattern_type": {
+      "type": "string",
+      "enum": [
+        "weekend_spike",
+        "payday_clustering",
+        "late_night",
+        "category_dominance",
+        "frequency_pattern",
+        "emotional_spending"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "data_summary": {
+      "type": "string"
+    },
+    "is_premium_insight": {
+      "type": "boolean",
+      "default": false
+    },
+    "detected_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "title",
+    "description"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "RegretLog",
+  "type": "object",
+  "properties": {
+    "purchase_id": {
+      "type": "string"
+    },
+    "merchant": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "category": {
+      "type": "string"
+    },
+    "regret_level": {
+      "type": "string",
+      "enum": [
+        "worth_it",
+        "neutral",
+        "regret"
+      ]
+    },
+    "logged_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "purchase_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "regret_level"
+  ]
+}

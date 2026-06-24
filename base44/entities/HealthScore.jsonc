@@ -1,0 +1,56 @@
+{
+  "name": "HealthScore",
+  "type": "object",
+  "properties": {
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "previous_score": {
+      "type": "number"
+    },
+    "change": {
+      "type": "number"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date"
+    },
+    "primary_reason": {
+      "type": "string"
+    },
+    "components": {
+      "type": "object",
+      "properties": {
+        "savings_consistency": {
+          "type": "number"
+        },
+        "goal_progress": {
+          "type": "number"
+        },
+        "impulse_control": {
+          "type": "number"
+        },
+        "subscription_ratio": {
+          "type": "number"
+        },
+        "bill_timing": {
+          "type": "number"
+        },
+        "emergency_fund": {
+          "type": "number"
+        }
+      }
+    },
+    "trend": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    }
+  },
+  "required": [
+    "score"
+  ]
+}

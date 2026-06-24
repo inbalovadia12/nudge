@@ -1,0 +1,78 @@
+{
+  "name": "Subscription",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "monthly_cost": {
+      "type": "number"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "streaming",
+        "music",
+        "fitness",
+        "cloud",
+        "software",
+        "news",
+        "gaming",
+        "other"
+      ],
+      "default": "other"
+    },
+    "last_charge_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "next_renewal_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "yearly"
+      ],
+      "default": "monthly"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "cancelled",
+        "paused"
+      ],
+      "default": "active"
+    },
+    "is_duplicate": {
+      "type": "boolean",
+      "default": false
+    },
+    "price_at_signup": {
+      "type": "number"
+    },
+    "usage_signal": {
+      "type": "string",
+      "enum": [
+        "active",
+        "low",
+        "none"
+      ],
+      "default": "active"
+    },
+    "cheaper_tier_available": {
+      "type": "boolean",
+      "default": false
+    },
+    "cancellation_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "monthly_cost"
+  ]
+}

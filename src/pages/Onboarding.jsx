@@ -40,11 +40,15 @@ export default function Onboarding() {
     const completionDate = new Date();
     completionDate.setMonth(completionDate.getMonth() + monthsToTarget);
 
+    const trialEnd = new Date();
+    trialEnd.setDate(trialEnd.getDate() + 14);
     const profileData = {
       first_name: name.trim() || 'there',
       monthly_income: income,
       strictness,
-      onboarding_complete: true
+      onboarding_complete: true,
+      is_premium: false,
+      premium_trial_end_date: trialEnd.toISOString().split('T')[0]
     };
 
     const profiles = await base44.entities.UserProfile.list();

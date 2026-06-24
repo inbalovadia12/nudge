@@ -1,0 +1,71 @@
+{
+  "name": "TrackedProduct",
+  "type": "object",
+  "properties": {
+    "product_name": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "target_price": {
+      "type": "number"
+    },
+    "current_price": {
+      "type": "number"
+    },
+    "historical_low": {
+      "type": "number"
+    },
+    "price_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "deal_quality": {
+      "type": "string",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "default": "C"
+    },
+    "price_prediction": {
+      "type": "string"
+    },
+    "predicted_drop_percent": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "tracking",
+        "bought",
+        "dismissed",
+        "alert"
+      ],
+      "default": "tracking"
+    },
+    "linked_goal_id": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "product_name",
+    "current_price"
+  ]
+}

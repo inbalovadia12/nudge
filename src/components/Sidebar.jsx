@@ -1,12 +1,22 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Target, MessageCircle, ScanSearch } from 'lucide-react';
+import { Home, Target, MessageCircle, ScanSearch, BarChart3, Wallet, CalendarDays, TrendingUp, User, Tag, CreditCard } from 'lucide-react';
 import Logo from './Logo';
 import { useAuth } from '@/lib/AuthContext';
 
 const navItems = [
   { label: 'Home', path: '/', icon: Home },
+  { label: 'Insights', path: '/insights', icon: BarChart3 },
   { label: 'Goals', path: '/goals', icon: Target },
   { label: 'Assistant', path: '/assistant', icon: MessageCircle },
+];
+
+const premiumItems = [
+  { label: 'Paycheck Flow', path: '/insights/paycheck', icon: Wallet },
+  { label: 'Heatmap', path: '/insights/heatmap', icon: CalendarDays },
+  { label: 'Simulator', path: '/insights/simulator', icon: TrendingUp },
+  { label: 'Subscriptions', path: '/insights/subscriptions', icon: CreditCard },
+  { label: 'Personality', path: '/insights/personality', icon: User },
+  { label: 'Deals', path: '/insights/deals', icon: Tag },
 ];
 
 export default function Sidebar() {
@@ -52,6 +62,25 @@ export default function Sidebar() {
           );
         })}
       </nav>
+
+      <div className="px-4 pt-2 pb-4">
+        <p className="text-[10px] font-semibold text-muted-foreground/50 uppercase tracking-wider px-4 mb-2">Premium</p>
+        <div className="space-y-0.5">
+          {premiumItems.map((item) => {
+            const active = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-3 rounded-xl px-4 py-2 text-sm transition-colors ${active ? 'bg-sidebar-accent text-foreground' : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'}`}
+              >
+                <item.icon className="w-4 h-4" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
 
       <div className="p-4 border-t border-sidebar-border">
         <div className="flex items-center gap-3 px-2">

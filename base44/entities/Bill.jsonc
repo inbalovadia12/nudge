@@ -1,0 +1,60 @@
+{
+  "name": "Bill",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "rent",
+        "utilities",
+        "phone",
+        "insurance",
+        "internet",
+        "transport",
+        "other"
+      ],
+      "default": "other"
+    },
+    "is_recurring": {
+      "type": "boolean",
+      "default": true
+    },
+    "recurrence": {
+      "type": "string",
+      "enum": [
+        "weekly",
+        "monthly",
+        "quarterly",
+        "yearly"
+      ],
+      "default": "monthly"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "upcoming",
+        "paid",
+        "overdue"
+      ],
+      "default": "upcoming"
+    },
+    "predicted_balance_after": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "name",
+    "amount",
+    "due_date"
+  ]
+}
