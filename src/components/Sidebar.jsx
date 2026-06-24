@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Target, MessageCircle, ScanSearch, BarChart3, Wallet, CalendarDays, TrendingUp, User, Tag, CreditCard, Trophy, Clock, LogOut, Shield, Heart, Brain, Bell, Droplets, Calendar } from 'lucide-react';
 import Logo from './Logo';
+import ThemeToggle from './ThemeToggle';
 import { useAuth } from '@/lib/AuthContext';
 
 const navItems = [
@@ -104,6 +105,7 @@ export default function Sidebar() {
             </p>
             <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
+          <ThemeToggle />
           <button
             onClick={() => logout(false)}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-danger hover:bg-danger/5 transition-colors"

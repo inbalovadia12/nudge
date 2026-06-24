@@ -79,7 +79,6 @@ export default function ShoppingShield() {
 
   const progress = ctx?.primaryGoal ? Math.round((ctx.primaryGoal.current_amount / ctx.primaryGoal.target_amount) * 100) : 0;
   const spentPct = ctx?.profile?.monthly_income > 0 ? Math.round(((ctx?.totalSpent || 0) / ctx.profile.monthly_income) * 100) : 0;
-  const streak = 3; // simulated streak
 
   const handleDecision = (d) => {
     setDecision(d);
@@ -139,14 +138,14 @@ export default function ShoppingShield() {
       {shieldActive ? (
         <>
           {/* Context cards */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="grid grid-cols-3 gap-3 mb-6">
             <div className="rounded-2xl border border-border bg-card p-4">
               <div className="flex items-center gap-1.5 mb-2">
                 <Target className="w-3.5 h-3.5 text-primary" />
                 <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Goal</span>
               </div>
               <p className="text-lg font-bold text-foreground">{progress}%</p>
-              <p className="text-[10px] text-muted-foreground">{ctx?.primaryGoal?.name || 'No goal set'}</p>
+              <p className="text-[10px] text-muted-foreground truncate">{ctx?.primaryGoal?.name || 'No goal set'}</p>
             </div>
             <div className="rounded-2xl border border-border bg-card p-4">
               <div className="flex items-center gap-1.5 mb-2">
@@ -154,14 +153,7 @@ export default function ShoppingShield() {
                 <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Spent</span>
               </div>
               <p className="text-lg font-bold text-foreground">{spentPct}%</p>
-              <p className="text-[10px] text-muted-foreground">of monthly income</p>
-            </div>
-            <div className="rounded-2xl border border-border bg-card p-4">
-              <div className="flex items-center gap-1.5 mb-2">
-                <span className="text-[10px] uppercase tracking-wide text-muted-foreground">🔥 Streak</span>
-              </div>
-              <p className="text-lg font-bold text-foreground">{streak} days</p>
-              <p className="text-[10px] text-muted-foreground">no-spend streak</p>
+              <p className="text-[10px] text-muted-foreground">of income</p>
             </div>
             <div className="rounded-2xl border border-border bg-card p-4">
               <div className="flex items-center gap-1.5 mb-2">
@@ -169,7 +161,7 @@ export default function ShoppingShield() {
                 <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Impulse</span>
               </div>
               <p className="text-lg font-bold text-foreground">{recentImpulse.length}</p>
-              <p className="text-[10px] text-muted-foreground">recent purchases</p>
+              <p className="text-[10px] text-muted-foreground">recent</p>
             </div>
           </div>
 

@@ -6,6 +6,7 @@ import Sidebar from './Sidebar';
 import BottomNav from './BottomNav';
 import MobileNav from './MobileNav';
 import { Bell, Shield } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 export default function Layout() {
   const [checking, setChecking] = useState(true);
@@ -55,6 +56,7 @@ export default function Layout() {
               <span className="font-bold text-foreground">Nudge</span>
             </div>
             <div className="flex items-center gap-2">
+              <ThemeToggle className="w-9 h-9" />
               <Link to="/shield" className="w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors">
                 <Shield className="w-5 h-5" />
               </Link>
