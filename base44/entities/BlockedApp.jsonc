@@ -1,0 +1,47 @@
+{
+  "name": "BlockedApp",
+  "type": "object",
+  "properties": {
+    "app_name": {
+      "type": "string"
+    },
+    "app_type": {
+      "type": "string",
+      "enum": [
+        "app",
+        "website"
+      ],
+      "default": "website"
+    },
+    "icon_url": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "shopping",
+        "social",
+        "entertainment",
+        "food",
+        "other"
+      ],
+      "default": "shopping"
+    },
+    "block_url": {
+      "type": "string",
+      "description": "The URL or app bundle ID to block"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "screen_time_blocked": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "app_name",
+    "block_url"
+  ]
+}

@@ -34,11 +34,11 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r border-border bg-sidebar fixed h-screen z-30">
-      <div className="p-6">
+      <div className="p-6 flex-shrink-0">
         <Logo />
       </div>
 
-      <div className="px-4 pb-6">
+      <div className="px-4 pb-4 flex-shrink-0">
         <Link
           to="/check"
           className={`flex items-center justify-center gap-2.5 rounded-2xl px-4 py-3 font-semibold text-sm transition-all ${
@@ -52,46 +52,48 @@ export default function Sidebar() {
         </Link>
       </div>
 
-      <nav className="flex-1 px-4 space-y-1">
-        {navItems.map((item) => {
-          const active = location.pathname === item.path;
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
-                active
-                  ? 'bg-sidebar-accent text-foreground'
-                  : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'
-              }`}
-            >
-              <item.icon className="w-4 h-4" />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className="px-4 pt-2 pb-4">
-        <p className="text-[10px] font-semibold text-muted-foreground/50 uppercase tracking-wider px-4 mb-2">Premium</p>
-        <div className="space-y-0.5">
-          {premiumItems.map((item) => {
+      <div className="flex-1 overflow-y-auto scrollbar-thin px-4">
+        <nav className="space-y-1 pb-2">
+          {navItems.map((item) => {
             const active = location.pathname === item.path;
             return (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 rounded-xl px-4 py-2 text-sm transition-colors ${active ? 'bg-sidebar-accent text-foreground' : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'}`}
+                className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
+                  active
+                    ? 'bg-sidebar-accent text-foreground'
+                    : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'
+                }`}
               >
                 <item.icon className="w-4 h-4" />
                 {item.label}
               </Link>
             );
           })}
+        </nav>
+
+        <div className="pt-3 pb-4">
+          <p className="text-[10px] font-semibold text-muted-foreground/50 uppercase tracking-wider px-4 mb-2">Premium</p>
+          <div className="space-y-0.5">
+            {premiumItems.map((item) => {
+              const active = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`flex items-center gap-3 rounded-xl px-4 py-2 text-sm transition-colors ${active ? 'bg-sidebar-accent text-foreground' : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'}`}
+                >
+                  <item.icon className="w-4 h-4" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      <div className="p-4 border-t border-sidebar-border">
+      <div className="p-4 border-t border-sidebar-border flex-shrink-0">
         <div className="flex items-center gap-3 px-2">
           <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center text-primary font-semibold text-sm">
             {(user?.full_name || user?.email || 'U')[0].toUpperCase()}

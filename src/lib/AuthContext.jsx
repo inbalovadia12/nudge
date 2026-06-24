@@ -117,6 +117,8 @@ export const AuthProvider = ({ children }) => {
   const logout = (shouldRedirect = true) => {
     setUser(null);
     setIsAuthenticated(false);
+    // Clear cached user data so a new user doesn't see stale data
+    import('@/lib/nudgeUtils').then(({ clearUserDataCache }) => clearUserDataCache());
     
     if (shouldRedirect) {
       // Use the SDK's logout method which handles token cleanup and redirect

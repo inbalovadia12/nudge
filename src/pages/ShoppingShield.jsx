@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { formatCurrency } from '@/lib/nudgeUtils';
+import { formatCurrency, clearUserDataCache } from '@/lib/nudgeUtils';
 import { getFinancialContext } from '@/lib/nudgeUtils';
+import BlockListManager from '@/components/shield/BlockListManager';
 import { ArrowLeft, Shield, TrendingUp, Target, Clock, AlertTriangle, Check, Plus, Eye } from 'lucide-react';
 
 export default function ShoppingShield() {
@@ -12,12 +13,14 @@ export default function ShoppingShield() {
   const [recentImpulse, setRecentImpulse] = useState([]);
   const [shieldActive, setShieldActive] = useState(false);
   const [decision, setDecision] = useState(null);
+  const [screenTimeConnected, setScreenTimeConnected] = useState(false);
 
   useEffect(() => {
     async function load() {
       try {
         const finCtx = await getFinancialContext();
         setCtx(finCtx);
+        setScreenTimeConnected(finCtx.profile?.connected_apple_screen_time || false);
         const impulse = finCtx.purchases.filter(p => p.source === 'manual' || p.category === 'shopping').slice(0, 3);
         setRecentImpulse(impulse);
       } catch {}
@@ -25,6 +28,17 @@ export default function ShoppingShield() {
     }
     load();
   }, []);
+
+  async function handleConnectScreenTime() {
+    try {
+      const profiles = await base44.entities.UserProfile.list();
+      if (profiles.length > 0) {
+        await base44.entities.UserProfile.update(profiles[0].id, { connected_apple_screen_time: true });
+      }
+      setScreenTimeConnected(true);
+      clearUserDataCache();
+    } catch {}
+  }
 
   if (loading) {
     return <div className="p-6 flex items-center justify-center min-h-[60vh]"><div className="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" /></div>;
@@ -158,6 +172,19 @@ export default function ShoppingShield() {
               </div>
             </div>
           )}
+
+          {/* App & Website Blocker */}
+          <div className="mt-6">
+            <div className="flex items-center gap-2 mb-1">
+              <Shield className="w-4 h-4 text-primary" />
+              <h2 className="text-sm font-semibold text-foreground">Block apps & websites</h2>
+            </div>
+            <p className="text-xs text-muted-foreground mb-4">Choose which shopping apps and sites to block while the shield is active.</p>
+            <BlockListManager
+              screenTimeConnected={screenTimeConnected}
+              onConnectScreenTime={handleConnectScreenTime}
+            />
+          </div>
 
           {/* Recent impulse purchases */}
           {recentImpulse.length > 0 && (
