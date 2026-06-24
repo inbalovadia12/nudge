@@ -7,16 +7,34 @@ const PLANS = {
     subscriptionInfo: {
       subscriptionSettings: { frequency: 'MONTH' },
       title: 'Nudge Plus Monthly',
-      description: 'Unlock all premium insights and tools, billed monthly',
+      description: 'All premium insights and tools, billed monthly',
     },
   },
-  pro_annual: {
-    name: 'Nudge Pro - Annual',
+  plus_yearly: {
+    name: 'Nudge Plus - Annual',
     price: '39.99',
     subscriptionInfo: {
       subscriptionSettings: { frequency: 'YEAR' },
+      title: 'Nudge Plus Annual',
+      description: 'All premium insights and tools, billed yearly',
+    },
+  },
+  pro_monthly: {
+    name: 'Nudge Pro - Monthly',
+    price: '9.99',
+    subscriptionInfo: {
+      subscriptionSettings: { frequency: 'MONTH' },
+      title: 'Nudge Pro Monthly',
+      description: 'Advanced AI tools for deep financial transformation, billed monthly',
+    },
+  },
+  pro_yearly: {
+    name: 'Nudge Pro - Annual',
+    price: '79.99',
+    subscriptionInfo: {
+      subscriptionSettings: { frequency: 'YEAR' },
       title: 'Nudge Pro Annual',
-      description: 'Best value — all premium features, billed yearly',
+      description: 'Advanced AI tools for deep financial transformation, billed yearly',
     },
   },
 };
