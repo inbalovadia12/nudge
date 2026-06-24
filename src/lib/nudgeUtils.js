@@ -112,7 +112,22 @@ export const verdictConfig = {
   }
 };
 
+// --- In-memory cache for user financial data (avoids redundant API calls across pages) ---
+let _cachedContext = null;
+let _cacheTime = 0;
+const CACHE_TTL = 30000; // 30 seconds
+
+export function clearUserDataCache() {
+  _cachedContext = null;
+  _cacheTime = 0;
+}
+
 export async function getFinancialContext() {
+  const now = Date.now();
+  if (_cachedContext && now - _cacheTime < CACHE_TTL) {
+    return _cachedContext;
+  }
+
   const [profiles, goals, purchases, savedItems] = await Promise.all([
     base44.entities.UserProfile.list(),
     base44.entities.SavingsGoal.filter({ status: 'active' }),
@@ -131,7 +146,9 @@ export async function getFinancialContext() {
     categoryTotals[cat] = (categoryTotals[cat] || 0) + (p.amount || 0);
   });
 
-  return { profile, goals, primaryGoal, purchases, savedItems, totalSpent, balance, categoryTotals };
+  _cachedContext = { profile, goals, primaryGoal, purchases, savedItems, totalSpent, balance, categoryTotals };
+  _cacheTime = now;
+  return _cachedContext;
 }
 
 export function buildContextString(ctx) {

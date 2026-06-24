@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Navigate, Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import Sidebar from './Sidebar';
 import BottomNav from './BottomNav';
+import MobileNav from './MobileNav';
+import { getFinancialContext } from '@/lib/nudgeUtils';
 import { Bell, Shield } from 'lucide-react';
 
 export default function Layout() {
@@ -12,12 +13,12 @@ export default function Layout() {
   useEffect(() => {
     async function check() {
       try {
-        const profiles = await base44.entities.UserProfile.list();
-        if (profiles.length > 0 && profiles[0].onboarding_complete) {
+        const ctx = await getFinancialContext();
+        if (ctx.profile && ctx.profile.onboarding_complete) {
           setOnboarded(true);
         }
       } catch {
-        setOnboarded(true);
+        // On any error, keep onboarded=false so user is sent to onboarding
       }
       setChecking(false);
     }
@@ -43,7 +44,10 @@ export default function Layout() {
         {/* Mobile header */}
         <div className="lg:hidden sticky top-0 z-20 bg-card/80 backdrop-blur-lg border-b border-border">
           <div className="flex items-center justify-between px-4 h-14">
-            <span className="font-bold text-foreground">Nudge</span>
+            <div className="flex items-center gap-2">
+              <MobileNav />
+              <span className="font-bold text-foreground">Nudge</span>
+            </div>
             <div className="flex items-center gap-2">
               <Link to="/shield" className="w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors">
                 <Shield className="w-5 h-5" />

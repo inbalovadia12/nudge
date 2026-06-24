@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { getFinancialContext } from '@/lib/nudgeUtils';
 
 // Premium Beta: all features unlocked for all users
 const PREMIUM_BETA = true;
@@ -17,8 +17,8 @@ export function usePremiumStatus() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.entities.UserProfile.list()
-      .then(p => setProfile(p[0]))
+    getFinancialContext()
+      .then(ctx => setProfile(ctx.profile))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
