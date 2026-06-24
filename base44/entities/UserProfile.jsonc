@@ -32,6 +32,24 @@
     "regret_threshold": {
       "type": "number",
       "default": 30
+    },
+    "spending_categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "connected_apple_screen_time": {
+      "type": "boolean",
+      "default": false
+    },
+    "connected_credit_card": {
+      "type": "boolean",
+      "default": false
+    },
+    "connected_bank": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [
