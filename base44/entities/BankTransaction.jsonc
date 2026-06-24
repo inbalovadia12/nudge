@@ -1,0 +1,45 @@
+{
+  "name": "BankTransaction",
+  "type": "object",
+  "properties": {
+    "transaction_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "category": {
+      "type": "string"
+    },
+    "account_id": {
+      "type": "string"
+    },
+    "is_recurring": {
+      "type": "boolean",
+      "default": false
+    },
+    "recurring_type": {
+      "type": "string",
+      "enum": [
+        "subscription",
+        "income",
+        "bill"
+      ]
+    }
+  },
+  "required": [
+    "transaction_id",
+    "amount",
+    "date"
+  ]
+}

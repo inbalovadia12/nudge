@@ -1,0 +1,50 @@
+{
+  "name": "BankAccount",
+  "type": "object",
+  "properties": {
+    "account_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "official_name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "depository",
+        "credit",
+        "loan",
+        "investment",
+        "other"
+      ]
+    },
+    "subtype": {
+      "type": "string"
+    },
+    "mask": {
+      "type": "string"
+    },
+    "current_balance": {
+      "type": "number"
+    },
+    "available_balance": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "institution_name": {
+      "type": "string"
+    },
+    "last_synced": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "account_id",
+    "name"
+  ]
+}

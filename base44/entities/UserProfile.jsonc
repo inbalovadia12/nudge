@@ -56,6 +56,12 @@
     },
     "plaid_item_id": {
       "type": "string"
+    },
+    "plaid_institution_name": {
+      "type": "string"
+    },
+    "plaid_last_sync_date": {
+      "type": "string"
     }
   },
   "required": [
