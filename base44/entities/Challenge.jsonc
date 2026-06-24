@@ -1,0 +1,60 @@
+{
+  "name": "Challenge",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "challenge_type": {
+      "type": "string",
+      "enum": [
+        "no_spend_weekend",
+        "coffee_free_week",
+        "subscription_cleanup",
+        "save_100",
+        "no_amazon_month",
+        "no_spend_day"
+      ]
+    },
+    "duration_days": {
+      "type": "number",
+      "default": 7
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed",
+        "failed",
+        "available"
+      ],
+      "default": "available"
+    },
+    "progress": {
+      "type": "number",
+      "default": 0
+    },
+    "streak": {
+      "type": "number",
+      "default": 0
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "reward_xp": {
+      "type": "number",
+      "default": 100
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

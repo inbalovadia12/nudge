@@ -19,6 +19,11 @@ import Heatmap from '@/pages/Heatmap';
 import Simulator from '@/pages/Simulator';
 import Personality from '@/pages/Personality';
 import Deals from '@/pages/Deals';
+import Profile from '@/pages/Profile';
+import Challenges from '@/pages/Challenges';
+import RegretTracker from '@/pages/RegretTracker';
+import Splash from '@/components/Splash';
+import { ThemeProvider } from 'next-themes';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -59,6 +64,9 @@ const AuthenticatedApp = () => {
         <Route path="/insights/personality" element={<Personality />} />
         <Route path="/insights/deals" element={<Deals />} />
         <Route path="/assistant" element={<Assistant />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/challenges" element={<Challenges />} />
+        <Route path="/insights/regret" element={<RegretTracker />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
@@ -69,15 +77,18 @@ const AuthenticatedApp = () => {
 function App() {
 
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <ScrollToTop />
-          <AuthenticatedApp />
-        </Router>
-        <Toaster />
-      </QueryClientProvider>
-    </AuthProvider>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <AuthProvider>
+        <QueryClientProvider client={queryClientInstance}>
+          <Router>
+            <ScrollToTop />
+            <Splash />
+            <AuthenticatedApp />
+          </Router>
+          <Toaster />
+        </QueryClientProvider>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 

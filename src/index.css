@@ -6,25 +6,24 @@
 
 @layer base {
   :root {
-    /* Dark Canvas Default */
-    --background: 240 5% 4%;
-    --foreground: 0 0% 100%;
-    --card: 240 4% 9%;
-    --card-foreground: 0 0% 100%;
-    --popover: 240 4% 9%;
-    --popover-foreground: 0 0% 100%;
+    --background: 0 0% 98%;
+    --foreground: 240 10% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 4%;
     --primary: 186 100% 43%;
-    --primary-foreground: 240 5% 4%;
-    --secondary: 240 4% 14%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 240 4% 14%;
-    --muted-foreground: 217 11% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 10% 4%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
     --accent: 186 100% 43%;
-    --accent-foreground: 240 5% 4%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 4% 18%;
-    --input: 240 4% 14%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
     --ring: 186 100% 43%;
 
     --success: 142 76% 36%;
@@ -40,13 +39,13 @@
     --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-    --sidebar-background: 240 5% 4%;
-    --sidebar-foreground: 217 11% 65%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 4% 46%;
     --sidebar-primary: 186 100% 43%;
-    --sidebar-primary-foreground: 240 5% 4%;
-    --sidebar-accent: 240 4% 9%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 240 4% 14%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 5% 96%;
+    --sidebar-accent-foreground: 240 10% 4%;
+    --sidebar-border: 240 6% 90%;
     --sidebar-ring: 186 100% 43%;
 
     --chart-1: 186 100% 43%;

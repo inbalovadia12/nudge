@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Target, MessageCircle, ScanSearch, BarChart3, Wallet, CalendarDays, TrendingUp, User, Tag, CreditCard } from 'lucide-react';
+import { Home, Target, MessageCircle, ScanSearch, BarChart3, Wallet, CalendarDays, TrendingUp, User, Tag, CreditCard, Trophy, Clock } from 'lucide-react';
 import Logo from './Logo';
 import { useAuth } from '@/lib/AuthContext';
 
@@ -7,12 +7,15 @@ const navItems = [
   { label: 'Home', path: '/', icon: Home },
   { label: 'Insights', path: '/insights', icon: BarChart3 },
   { label: 'Goals', path: '/goals', icon: Target },
+  { label: 'Challenges', path: '/challenges', icon: Trophy },
   { label: 'Assistant', path: '/assistant', icon: MessageCircle },
+  { label: 'Profile', path: '/profile', icon: User },
 ];
 
 const premiumItems = [
   { label: 'Paycheck Flow', path: '/insights/paycheck', icon: Wallet },
   { label: 'Heatmap', path: '/insights/heatmap', icon: CalendarDays },
+  { label: 'Regret Tracker', path: '/insights/regret', icon: Clock },
   { label: 'Simulator', path: '/insights/simulator', icon: TrendingUp },
   { label: 'Subscriptions', path: '/insights/subscriptions', icon: CreditCard },
   { label: 'Personality', path: '/insights/personality', icon: User },

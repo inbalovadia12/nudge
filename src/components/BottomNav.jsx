@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Target, MessageCircle, ScanSearch, BarChart3 } from 'lucide-react';
+import { Home, Target, ScanSearch, BarChart3, User } from 'lucide-react';
 
 function NavItem({ item, active }) {
   return (
@@ -21,7 +21,7 @@ export default function BottomNav() {
     { label: 'Home', path: '/', icon: Home },
     { label: 'Goals', path: '/goals', icon: Target },
     { label: 'Insights', path: '/insights', icon: BarChart3 },
-    { label: 'Assistant', path: '/assistant', icon: MessageCircle },
+    { label: 'Profile', path: '/profile', icon: User },
   ];
 
   return (
@@ -44,7 +44,7 @@ export default function BottomNav() {
         </Link>
 
         <NavItem item={items[2]} active={location.pathname.startsWith('/insights')} />
-        <NavItem item={items[3]} active={location.pathname === '/assistant'} />
+        <NavItem item={items[3]} active={location.pathname === '/profile'} />
       </div>
     </nav>
   );
