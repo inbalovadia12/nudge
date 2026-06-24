@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { X, Plus, Trash2, Globe, Smartphone, Shield, Check, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Globe, Smartphone, Shield, Check, Loader2, Lock, MessageCircleQuestion } from 'lucide-react';
+import InterceptionQuestions from './InterceptionQuestions';
 
 const popularSites = [
   { app_name: 'Amazon', block_url: 'amazon.com', category: 'shopping', app_type: 'website' },
@@ -23,6 +24,7 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
   const [customName, setCustomName] = useState('');
   const [customUrl, setCustomUrl] = useState('');
   const [saving, setSaving] = useState(false);
+  const [interceptApp, setInterceptApp] = useState(null);
 
   useEffect(() => {
     loadBlocked();
@@ -47,11 +49,17 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
         block_url: site.block_url,
         category: site.category,
         app_type: site.app_type,
+        gate_mode: 'block',
         is_active: true,
-        screen_time_blocked: screenTimeConnected
+        screen_time_blocked: false
       });
       setBlockedApps(prev => [...prev, created]);
     }
+  }
+
+  async function setGateMode(appId, mode) {
+    const updated = await base44.entities.BlockedApp.update(appId, { gate_mode: mode });
+    setBlockedApps(prev => prev.map(b => b.id === appId ? updated : b));
   }
 
   async function addCustom() {
@@ -63,8 +71,9 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
       block_url: url,
       category: 'shopping',
       app_type: 'website',
+      gate_mode: 'block',
       is_active: true,
-      screen_time_blocked: screenTimeConnected
+      screen_time_blocked: false
     });
     setBlockedApps(prev => [...prev, created]);
     setCustomName('');
@@ -76,6 +85,22 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
   async function removeBlocked(id) {
     await base44.entities.BlockedApp.delete(id);
     setBlockedApps(prev => prev.filter(b => b.id !== id));
+  }
+
+  function handleAppClick(app) {
+    if (app.gate_mode === 'intercept') {
+      setInterceptApp(app);
+    } else {
+      // Block mode — just show it's blocked
+      window.open(`https://${app.block_url}`, '_blank');
+    }
+  }
+
+  function handleInterceptProceed() {
+    if (interceptApp) {
+      window.open(`https://${interceptApp.block_url}`, '_blank');
+    }
+    setInterceptApp(null);
   }
 
   if (loading) {
@@ -97,12 +122,14 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
           <div className="flex-1">
             <p className="text-sm font-medium text-foreground">Apple Screen Time</p>
             <p className="text-xs text-muted-foreground">
-              {screenTimeConnected ? 'Connected — blocked apps will be restricted on your device' : 'Connect to block apps & websites at the device level'}
+              {screenTimeConnected
+                ? 'Connected — block list syncs to your device via the Nudge iOS companion app'
+                : 'Connect to sync your block list with Screen Time (requires iOS companion app)'}
             </p>
           </div>
           {screenTimeConnected ? (
             <span className="flex items-center gap-1 text-xs text-primary font-medium">
-              <Check className="w-3.5 h-3.5" /> Active
+              <Check className="w-3.5 h-3.5" /> Synced
             </span>
           ) : (
             <button
@@ -181,28 +208,66 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
         })}
       </div>
 
-      {/* Currently blocked list */}
+      {/* Currently blocked list with gate mode toggle */}
       {blockedApps.length > 0 && (
         <div>
           <p className="text-xs font-semibold text-muted-foreground mb-2">YOUR BLOCKLIST ({blockedApps.length})</p>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {blockedApps.map(app => (
-              <div key={app.id} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
-                {app.app_type === 'app' ? <Smartphone className="w-4 h-4 text-muted-foreground" /> : <Globe className="w-4 h-4 text-muted-foreground" />}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{app.app_name}</p>
-                  <p className="text-[10px] text-muted-foreground truncate">{app.block_url}</p>
+              <div key={app.id} className="rounded-xl border border-border bg-card p-3">
+                <div className="flex items-center gap-3">
+                  {app.app_type === 'app' ? <Smartphone className="w-4 h-4 text-muted-foreground flex-shrink-0" /> : <Globe className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{app.app_name}</p>
+                    <p className="text-[10px] text-muted-foreground truncate">{app.block_url}</p>
+                  </div>
+                  {screenTimeConnected && app.screen_time_blocked && (
+                    <span className="text-[10px] text-primary font-medium bg-primary/10 px-2 py-0.5 rounded-full flex-shrink-0">Blocked</span>
+                  )}
+                  <button onClick={() => removeBlocked(app.id)} className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-danger hover:bg-danger/5 transition-colors flex-shrink-0">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-                {screenTimeConnected && app.screen_time_blocked && (
-                  <span className="text-[10px] text-primary font-medium bg-primary/10 px-2 py-0.5 rounded-full">Blocked</span>
+
+                {/* Gate mode selector */}
+                <div className="flex gap-1.5 mt-2.5 bg-surface-2 rounded-lg p-1">
+                  <button
+                    onClick={() => setGateMode(app.id, 'block')}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-[11px] font-medium transition-all ${(app.gate_mode || 'block') === 'block' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'}`}
+                  >
+                    <Lock className="w-3 h-3" /> Block
+                  </button>
+                  <button
+                    onClick={() => setGateMode(app.id, 'intercept')}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-[11px] font-medium transition-all ${app.gate_mode === 'intercept' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'}`}
+                  >
+                    <MessageCircleQuestion className="w-3 h-3" /> Ask questions
+                  </button>
+                </div>
+
+                {/* Try opening button (for intercept mode) */}
+                {app.gate_mode === 'intercept' && (
+                  <button
+                    onClick={() => handleAppClick(app)}
+                    className="w-full mt-2 text-xs text-primary font-medium py-1.5 rounded-lg bg-primary/10 hover:bg-primary/15 transition-colors"
+                  >
+                    Try opening {app.app_name} →
+                  </button>
                 )}
-                <button onClick={() => removeBlocked(app.id)} className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-danger hover:bg-danger/5 transition-colors flex-shrink-0">
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
               </div>
             ))}
           </div>
         </div>
+      )}
+
+      {/* Interception Questions Modal */}
+      {interceptApp && (
+        <InterceptionQuestions
+          appName={interceptApp.app_name}
+          appUrl={interceptApp.block_url}
+          onProceed={handleInterceptProceed}
+          onBack={() => setInterceptApp(null)}
+        />
       )}
     </div>
   );

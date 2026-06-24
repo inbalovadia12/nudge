@@ -135,7 +135,7 @@ export async function getFinancialContext() {
     base44.entities.SavedItem.filter({ status: 'tracking' })
   ]);
 
-  const profile = profiles[0] || { first_name: 'there', monthly_income: 0, strictness: 'moderate' };
+  const profile = profiles[0] || { first_name: 'there', monthly_income: 0, strictness: 'moderate', onboarding_complete: false };
   const primaryGoal = goals.find(g => g.is_primary) || goals[0] || null;
   const totalSpent = purchases.reduce((sum, p) => sum + (p.amount || 0), 0);
   const balance = (profile.monthly_income || 0) - totalSpent;

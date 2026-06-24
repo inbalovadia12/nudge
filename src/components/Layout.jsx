@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Navigate, Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
+import { clearUserDataCache } from '@/lib/nudgeUtils';
 import Sidebar from './Sidebar';
 import BottomNav from './BottomNav';
 import MobileNav from './MobileNav';
-import { getFinancialContext } from '@/lib/nudgeUtils';
 import { Bell, Shield } from 'lucide-react';
 
 export default function Layout() {
@@ -13,12 +14,17 @@ export default function Layout() {
   useEffect(() => {
     async function check() {
       try {
-        const ctx = await getFinancialContext();
-        if (ctx.profile && ctx.profile.onboarding_complete) {
+        // Directly query UserProfile — do NOT use cached getFinancialContext
+        // because it returns a synthetic profile when empty, which could
+        // mask the real onboarding status.
+        const profiles = await base44.entities.UserProfile.list();
+        if (profiles.length > 0 && profiles[0].onboarding_complete === true) {
           setOnboarded(true);
         }
+        // If profiles is empty or onboarding_complete is not true,
+        // onboarded stays false → redirect to /onboarding
       } catch {
-        // On any error, keep onboarded=false so user is sent to onboarding
+        // On any API error, keep onboarded=false so user is sent to onboarding
       }
       setChecking(false);
     }

@@ -31,6 +31,15 @@
       "type": "string",
       "description": "The URL or app bundle ID to block"
     },
+    "gate_mode": {
+      "type": "string",
+      "enum": [
+        "block",
+        "intercept"
+      ],
+      "default": "block",
+      "description": "block = fully blocked, intercept = ask questions before allowing"
+    },
     "is_active": {
       "type": "boolean",
       "default": true
