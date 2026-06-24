@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { goalOptions, getGoalIcon } from '@/lib/nudgeUtils';
-import { ChevronRight, ChevronLeft, Check, Sparkles, Zap, Shield, ArrowRight } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Check, Sparkles, Zap, Shield, ArrowRight, TrendingUp, CalendarDays, Crown } from 'lucide-react';
 
 const strictnessLevels = [
   { value: 'gentle', label: 'Gentle', desc: 'I\'ll only speak up for big stuff.', preview: 'This looks fine — no concerns from me. Up to you.' },
@@ -15,6 +15,9 @@ const proFeatures = [
   { icon: Zap, title: 'Unlimited purchase checks', desc: 'Free gives you 10 per month. Pro is unlimited.' },
   { icon: Sparkles, title: 'Advanced AI insights', desc: 'Deeper spending patterns and weekly summaries.' },
   { icon: Shield, title: 'Bank-level security', desc: 'Plaid integration for real-time balance tracking.' },
+  { icon: TrendingUp, title: 'Financial simulator', desc: 'Model "what if" scenarios before you spend.' },
+  { icon: CalendarDays, title: 'Spending heatmap', desc: 'See your patterns spatially, day by day.' },
+  { icon: Crown, title: 'Smart deal alerts', desc: 'Price tracking that only alerts when it matters.' },
 ];
 
 export default function Onboarding() {
@@ -47,8 +50,8 @@ export default function Onboarding() {
       monthly_income: income,
       strictness,
       onboarding_complete: true,
-      is_premium: false,
-      premium_trial_end_date: trialEnd.toISOString().split('T')[0]
+      is_premium: goPro ? true : false,
+      premium_trial_end_date: goPro ? trialEnd.toISOString().split('T')[0] : undefined
     };
 
     const profiles = await base44.entities.UserProfile.list();
@@ -106,12 +109,13 @@ export default function Onboarding() {
                 <Sparkles className="w-10 h-10 text-primary" />
               </motion.div>
               <h1 className="text-4xl font-bold text-foreground mb-3">Meet Nudge</h1>
-              <p className="text-muted-foreground text-lg mb-2 leading-relaxed">
-                Your AI purchase coach.
+              <p className="text-foreground text-lg mb-2 leading-relaxed">
+                Let's build better money habits.
               </p>
               <p className="text-muted-foreground/70 mb-10 leading-relaxed max-w-sm mx-auto">
-                Before you buy something, Nudge gives you a quick, honest read —
-                no spreadsheets, no guilt, just clarity.
+                I'm your AI financial decision coach. Before you buy something,
+                I'll give you a quick, honest read — no spreadsheets, no guilt,
+                just clarity.
               </p>
 
               <div className="space-y-3 mb-10 text-left max-w-sm mx-auto">
@@ -142,7 +146,7 @@ export default function Onboarding() {
                 Get started <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
               <p className="text-xs text-muted-foreground/60 mt-4">
-                Takes less than 90 seconds. No email required.
+                Takes less than 90 seconds. No credit card required.
               </p>
             </motion.div>
           )}
@@ -305,18 +309,26 @@ export default function Onboarding() {
                 ))}
               </div>
 
-              <div className={`rounded-2xl border-2 p-5 mb-6 cursor-pointer transition-all ${goPro ? 'border-primary bg-primary/5' : 'border-border bg-surface-1'}`} onClick={() => setGoPro(!goPro)}>
+              <div className={`rounded-2xl border-2 p-5 mb-4 cursor-pointer transition-all ${goPro ? 'border-primary bg-primary/5' : 'border-border bg-surface-1'}`} onClick={() => setGoPro(!goPro)}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-foreground">Nudge Pro</p>
+                    <p className="font-semibold text-foreground">Nudge Premium</p>
                     <p className="text-xs text-muted-foreground">Monthly subscription</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-primary">$4.99</p>
+                    <p className="text-2xl font-bold text-primary">$6.99</p>
                     <p className="text-xs text-muted-foreground">/month</p>
                   </div>
                 </div>
               </div>
+
+              {goPro && (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                  className="rounded-2xl bg-primary/10 border border-primary/20 p-4 mb-6">
+                  <p className="text-sm text-primary font-semibold text-center">🎉 14-day free trial included</p>
+                  <p className="text-xs text-muted-foreground text-center mt-1">No charge until your trial ends. Cancel anytime.</p>
+                </motion.div>
+              )}
 
               <div className="flex gap-3">
                 <Button onClick={() => setStep(3)} variant="ghost" className="rounded-xl h-12 px-6 text-muted-foreground hover:text-foreground">
@@ -327,12 +339,12 @@ export default function Onboarding() {
                   disabled={saving}
                   className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12"
                 >
-                  {saving ? 'Setting up...' : goPro ? 'Start Pro trial' : 'Start free'}
+                  {saving ? 'Setting up...' : goPro ? 'Start 14-day trial' : 'Start with Free'}
                   {!saving && <Check className="w-4 h-4 ml-1" />}
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground/60 text-center mt-4">
-                You can upgrade to Pro anytime from settings.
+                You can upgrade anytime from settings.
               </p>
             </motion.div>
           )}
