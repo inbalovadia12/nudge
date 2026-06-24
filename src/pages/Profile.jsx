@@ -7,7 +7,7 @@ import { useTheme } from 'next-themes';
 import { usePremiumStatus } from '@/lib/usePremium';
 import { clearUserDataCache } from '@/lib/nudgeUtils';
 import ConnectPlaid from '@/components/ConnectPlaid';
-import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark, Bug } from 'lucide-react';
+import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark, Bug, FileText } from 'lucide-react';
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -242,19 +242,23 @@ export default function Profile() {
       </div>
 
       {/* Settings list */}
-      <div className="rounded-3xl border border-border bg-card p-2 mb-6">
-        {[
-          { icon: Shield, label: 'Privacy & Security', desc: 'Data and security settings' },
-        ].map((item, i) => (
-          <button key={i} className="w-full flex items-center gap-3 p-4 hover:bg-secondary/50 rounded-2xl transition-colors">
-            <item.icon className="w-4 h-4 text-muted-foreground" />
-            <div className="flex-1 text-left">
-              <p className="text-sm font-medium">{item.label}</p>
-              <p className="text-xs text-muted-foreground">{item.desc}</p>
-            </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground" />
-          </button>
-        ))}
+      <div className="rounded-3xl border border-border bg-card p-2 mb-6 space-y-1">
+        <button className="w-full flex items-center gap-3 p-4 hover:bg-secondary/50 rounded-2xl transition-colors">
+          <Shield className="w-4 h-4 text-muted-foreground" />
+          <div className="flex-1 text-left">
+            <p className="text-sm font-medium">Privacy & Security</p>
+            <p className="text-xs text-muted-foreground">Data and security settings</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+        </button>
+        <Link to="/privacy-policy" className="w-full flex items-center gap-3 p-4 hover:bg-secondary/50 rounded-2xl transition-colors">
+          <FileText className="w-4 h-4 text-muted-foreground" />
+          <div className="flex-1 text-left">
+            <p className="text-sm font-medium">Privacy Policy</p>
+            <p className="text-xs text-muted-foreground">How we handle your data</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+        </Link>
       </div>
 
       {/* Sign out */}

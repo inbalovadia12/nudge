@@ -8,6 +8,7 @@ import { UserPlus, Mail, Lock, Loader2 } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
+import PrivacyPolicyLink from "@/components/PrivacyPolicyLink";
 import { toast } from "@/components/ui/use-toast";
 
 export default function Register() {
@@ -223,6 +224,10 @@ export default function Register() {
           )}
         </Button>
       </form>
+
+      <div className="flex justify-center mt-6">
+        <PrivacyPolicyLink />
+      </div>
     </AuthLayout>
   );
 }

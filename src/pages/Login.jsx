@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
+import PrivacyPolicyLink from "@/components/PrivacyPolicyLink";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -120,6 +121,10 @@ export default function Login() {
           )}
         </Button>
       </form>
+
+      <div className="flex justify-center mt-6">
+        <PrivacyPolicyLink />
+      </div>
     </AuthLayout>
   );
 }

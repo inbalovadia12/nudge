@@ -35,6 +35,7 @@ import FinancialTwin from '@/pages/FinancialTwin';
 import ConnectedAccounts from '@/pages/ConnectedAccounts';
 import Pricing from '@/pages/Pricing';
 import PlaidSandbox from '@/pages/PlaidSandbox';
+import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import Splash from '@/components/Splash';
 import { ThemeProvider } from 'next-themes';
 
@@ -51,6 +52,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route element={<Layout />}>
