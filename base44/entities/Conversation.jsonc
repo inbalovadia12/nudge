@@ -1,0 +1,19 @@
+{
+  "name": "Conversation",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "last_message_preview": {
+      "type": "string"
+    },
+    "last_activity_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

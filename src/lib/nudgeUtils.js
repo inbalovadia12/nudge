@@ -128,11 +128,15 @@ export async function getFinancialContext() {
     return _cachedContext;
   }
 
-  const [profiles, goals, purchases, savedItems] = await Promise.all([
+  const [profiles, goals, purchases, savedItems, bills, subscriptions, bankAccounts, bankTransactions] = await Promise.all([
     base44.entities.UserProfile.list(),
     base44.entities.SavingsGoal.filter({ status: 'active' }),
     base44.entities.Purchase.list('-date', 50),
-    base44.entities.SavedItem.filter({ status: 'tracking' })
+    base44.entities.SavedItem.filter({ status: 'tracking' }),
+    base44.entities.Bill.filter({ status: 'upcoming' }).catch(() => []),
+    base44.entities.Subscription.filter({ status: 'active' }).catch(() => []),
+    base44.entities.BankAccount.list().catch(() => []),
+    base44.entities.BankTransaction.list('-date', 30).catch(() => []),
   ]);
 
   const profile = profiles[0] || { first_name: 'there', monthly_income: 0, strictness: 'moderate', onboarding_complete: false };
@@ -146,24 +150,84 @@ export async function getFinancialContext() {
     categoryTotals[cat] = (categoryTotals[cat] || 0) + (p.amount || 0);
   });
 
-  _cachedContext = { profile, goals, primaryGoal, purchases, savedItems, totalSpent, balance, categoryTotals };
+  const totalBills = bills.reduce((sum, b) => sum + (b.amount || 0), 0);
+  const totalSubscriptions = subscriptions.reduce((sum, s) => sum + (s.monthly_cost || 0), 0);
+  const totalBankBalance = bankAccounts.reduce((sum, a) => sum + (a.current_balance || 0), 0);
+
+  _cachedContext = { profile, goals, primaryGoal, purchases, savedItems, totalSpent, balance, categoryTotals, bills, subscriptions, bankAccounts, bankTransactions, totalBills, totalSubscriptions, totalBankBalance };
   _cacheTime = now;
   return _cachedContext;
 }
 
 export function buildContextString(ctx) {
-  const { profile, primaryGoal, purchases, totalSpent, balance, categoryTotals } = ctx;
-  let str = `User name: ${profile.first_name}. Monthly take-home income: $${profile.monthly_income || 0}. `;
+  const { profile, primaryGoal, purchases, totalSpent, balance, categoryTotals, bills, subscriptions, bankAccounts, bankTransactions, totalBills, totalSubscriptions, totalBankBalance } = ctx;
+  let str = `User's first name: ${profile.first_name}. Monthly take-home income: $${profile.monthly_income || 0}. `;
   str += `Estimated current balance: $${Math.round(balance)}. Total spent (recent): $${Math.round(totalSpent)}. `;
-  str += `Strictness setting: ${profile.strictness}. `;
+  str += `Coaching strictness: ${profile.strictness || 'moderate'}. `;
+
   if (primaryGoal) {
     const pct = Math.round((primaryGoal.current_amount / primaryGoal.target_amount) * 100);
     str += `Primary savings goal: "${primaryGoal.name}", target $${primaryGoal.target_amount}, saved $${primaryGoal.current_amount} (${pct}% complete). `;
   }
+
   if (purchases.length > 0) {
     const recentCats = Object.entries(categoryTotals).map(([cat, amt]) => `${cat}: $${Math.round(amt)}`).join(', ');
     str += `Recent spending by category: ${recentCats}. `;
     str += `Last 5 purchases: ${purchases.slice(0, 5).map(p => `${p.merchant} $${p.amount}`).join(', ')}.`;
   }
+
+  if (bills && bills.length > 0) {
+    str += ` Upcoming bills: ${bills.map(b => `${b.name} $${b.amount} (due ${b.due_date}, ${b.category})`).join(', ')}. Total upcoming bills: $${Math.round(totalBills)}.`;
+  }
+
+  if (subscriptions && subscriptions.length > 0) {
+    str += ` Active subscriptions: ${subscriptions.map(s => `${s.name} $${s.monthly_cost}/mo (${s.billing_cycle})`).join(', ')}. Total monthly subscriptions: $${Math.round(totalSubscriptions)}.`;
+  }
+
+  if (bankAccounts && bankAccounts.length > 0) {
+    str += ` Linked bank accounts: ${bankAccounts.map(a => `${a.name} ${a.mask || ''} balance $${a.current_balance}`).join(', ')}. Total bank balance: $${Math.round(totalBankBalance)}.`;
+  }
+
+  if (bankTransactions && bankTransactions.length > 0) {
+    str += ` Recent bank transactions: ${bankTransactions.slice(0, 10).map(t => `${t.name} $${t.amount} on ${t.date}`).join(', ')}.`;
+  }
+
   return str;
+}
+
+export function buildNudgeSystemPrompt(contextString, options = {}) {
+  const { extraRules = '' } = options;
+
+  let prompt = `You are Nudge, a warm, sharp financial coach and friend. You're having a real conversation, not giving a lecture.
+
+PERSONALITY:
+- Speak naturally, like a smart friend who happens to know their finances — not a financial advisor, not a robot
+- Use their first name occasionally (not every sentence), the way a friend would
+- Be direct and honest — if something is a bad idea, say so, but never with judgment or shame
+- Use contractions ("you're", "that's", "here's") — talk like a person, not a textbook
+- Keep it conversational — short paragraphs, natural flow
+- Ask follow-up questions when it moves the conversation forward
+- Light humor when it fits naturally
+
+ACCURACY (CRITICAL):
+- ONLY use the financial data provided in the context below — never invent numbers, balances, or transactions
+- If the user asks about something you don't have data for (like utility bills they haven't logged), say "I don't have that logged yet" and suggest they add it — do NOT make up estimates
+- When you give a number, show the math briefly so they can follow (e.g., "$6,000 in purchases leaves you with $4,000 from your $10,000 balance")
+- If you are estimating or projecting, clearly say "roughly" or "about"
+- Reference their actual savings goals, bills, and subscriptions by name when relevant
+
+RESPONSE GUIDELINES:
+- Keep responses concise — 2-4 short paragraphs max unless they ask for detail
+- Lead with the direct answer, then add context
+- End with a natural follow-up question or offer to dig deeper
+- Never use the word "budget" — say "spending" or "money flow" instead
+- Never say "you should" — offer observations and options instead
+
+FINANCIAL CONTEXT:
+${contextString}`;
+
+  if (extraRules) {
+    prompt += '\n\n' + extraRules;
+  }
+  return prompt;
 }

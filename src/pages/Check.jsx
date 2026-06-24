@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import VerdictCard from '@/components/VerdictCard';
-import { getFinancialContext, buildContextString } from '@/lib/nudgeUtils';
+import { getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
 import { Search, Loader2, Mic } from 'lucide-react';
 
 export default function Check() {
@@ -38,15 +38,12 @@ export default function Check() {
       const parsedPrice = parseFloat(price) || 0;
       const productName = input.trim();
 
-      const prompt = `You are Nudge, a calm AI purchase coach. Your job is to help the user decide if they should buy something. You care about their goals but never judge them.
-
-Financial context: ${contextString}
-
-The user is considering: "${productName}" for $${parsedPrice}.
+      const prompt = buildNudgeSystemPrompt(contextString, {
+        extraRules: `The user is considering: "${productName}" for $${parsedPrice}.
 
 Strictness setting: ${ctx.profile.strictness || 'moderate'}
 
-Generate a verdict considering:
+Your job: help them decide if this purchase makes sense. Consider:
 - How does this price compare to their remaining balance and monthly income?
 - Does this purchase delay their savings goal? By how much?
 - Have they spent on similar items recently? Is there a pattern?
@@ -57,18 +54,8 @@ Choose a verdict tier:
 - "amber": Worth pausing — something to notice.
 - "red": This would genuinely set them back.
 
-Provide exactly 3 supporting detail sentences. Be specific with numbers. Each sentence should be short and clear.
-
-Tone rules (STRICTLY ENFORCED):
-- NEVER use the word "budget"
-- NEVER say "you should" — offer observations, not commands
-- Use "here's what I noticed" or "just wanted you to know"
-- Explain every number
-- If you don't know something, say so
-- Speak like a calm, knowledgeable friend
-- Use "you" not "the user"
-
-${isUrl ? `The user pasted a URL: ${input}. Use web search to identify the product and its typical price.` : ''}`;
+Provide exactly 3 supporting detail sentences. Be specific with numbers. Each sentence should be short and clear.${isUrl ? `\n\nThe user pasted a URL: ${input}. Use web search to identify the product and its typical price.` : ''}`
+      });
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,

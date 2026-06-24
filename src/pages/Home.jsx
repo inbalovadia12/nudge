@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import SavingsRing from '@/components/SavingsRing';
 import PurchaseItem from '@/components/PurchaseItem';
 import NudgeCard from '@/components/NudgeCard';
-import { getGreeting, formatCurrency, formatDateLong, getFinancialContext, buildContextString } from '@/lib/nudgeUtils';
+import { getGreeting, formatCurrency, formatDateLong, getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
 import { ScanSearch, ArrowRight, Target, TrendingDown, Wallet, CalendarClock, Shield } from 'lucide-react';
 
 export default function Home() {
@@ -34,11 +34,9 @@ export default function Home() {
 
         try {
           const response = await base44.integrations.Core.InvokeLLM({
-            prompt: `You are Nudge, a calm AI purchase coach. Based on the user's financial data, give ONE short, encouraging observation (max 2 sentences). Never negative or guilt-inducing. Never use the word "budget". Be specific with numbers.
-
-Financial context: ${buildContextString(finCtx)}
-
-Return just the observation text, nothing else. No quotes.`,
+            prompt: buildNudgeSystemPrompt(buildContextString(finCtx), {
+              extraRules: `Based on the user's financial data, give ONE short, encouraging observation (max 2 sentences). Never negative or guilt-inducing. Be specific with numbers from their actual data. Return just the observation text, nothing else. No quotes.`
+            }),
           });
           setNudge(response);
         } catch {

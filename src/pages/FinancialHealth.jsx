@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency } from '@/lib/nudgeUtils';
-import { getFinancialContext, buildContextString } from '@/lib/nudgeUtils';
+import { getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
 import { ArrowLeft, Heart, Loader2, Activity, TrendingUp, TrendingDown } from 'lucide-react';
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from 'recharts';
 
@@ -59,13 +59,13 @@ export default function FinancialHealth() {
       let aiSummary = '';
       try {
         const response = await base44.integrations.Core.InvokeLLM({
-          prompt: `You are Nudge, a calm financial coach. Based on this health score breakdown, give ONE encouraging observation (2 sentences max). Never shame. Focus on what's going well and one area to watch.
+          prompt: buildNudgeSystemPrompt(buildContextString(ctx), {
+            extraRules: `Based on this health score breakdown, give ONE encouraging observation (2 sentences max). Never shame. Focus on what's going well and one area to watch.
 
 Scores (0-100): Savings consistency: ${savingsConsistency}, Goal progress: ${goalProgress}, Impulse control: ${impulseControl}, Subscription ratio: ${subscriptionRatio}, Bill timing: ${billTiming}, Emergency fund: ${emergencyFund}. Overall: ${overall}.
 
-Financial context: ${buildContextString(ctx)}
-
-Return just the observation text.`,
+Return just the observation text.`
+          }),
         });
         aiSummary = response;
       } catch {}

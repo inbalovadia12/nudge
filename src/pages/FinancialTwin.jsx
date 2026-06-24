@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency } from '@/lib/nudgeUtils';
-import { getFinancialContext, buildContextString } from '@/lib/nudgeUtils';
+import { getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
 import { ArrowLeft, Brain, Send, Loader2, TrendingUp, Sparkles, RotateCcw } from 'lucide-react';
 
 const scenarios = [
@@ -24,9 +24,8 @@ export default function FinancialTwin() {
     try {
       const ctx = await getFinancialContext();
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are Nudge's Financial Twin — an AI model of the user's financial behavior. The user asks "what if" questions, and you project the financial impact.
-
-Financial context: ${buildContextString(ctx)}
+        prompt: buildNudgeSystemPrompt(buildContextString(ctx), {
+          extraRules: `You're acting as the user's Financial Twin — an AI model of their financial behavior. The user asks "what if" questions, and you project the financial impact.
 
 User's question: ${query}
 
@@ -37,9 +36,8 @@ Provide a projection with:
 4. Impact on their savings goal timeline (e.g., "delays goal by 2 months" or "accelerates by 1 month")
 5. One encouraging note or suggestion
 
-Never shame. Be honest but warm. Explain your numbers.
-
-Return as JSON.`,
+Be honest but warm. Explain your numbers. Return as JSON.`
+        }),
         response_json_schema: {
           type: 'object',
           properties: {
