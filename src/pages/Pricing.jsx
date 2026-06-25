@@ -71,18 +71,15 @@ export default function Pricing() {
     setRedeemLoading(true);
     setRedeemError('');
     try {
-      const res = await base44.functions.invoke('redeem-code', { code: redeemCode });
-      if (res.data?.success) {
-        clearUserDataCache();
-        setRedeemSuccess(true);
-        setTimeout(() => window.location.href = '/', 1500);
-      } else {
-        setRedeemError(res.data?.error || 'Invalid code');
-      }
+      await base44.functions.invoke('redeem-code', { code: redeemCode });
+      clearUserDataCache();
+      setRedeemSuccess(true);
+      setRedeemLoading(false);
+      setTimeout(() => window.location.href = '/', 1500);
     } catch (err) {
-      setRedeemError(err.response?.data?.error || 'Invalid code');
+      setRedeemLoading(false);
+      setRedeemError(err?.response?.data?.error || err?.data?.error || 'Invalid code');
     }
-    setRedeemLoading(false);
   }
 
   async function handleCancel() {
@@ -240,8 +237,7 @@ export default function Pricing() {
       </div>
 
       {/* Redeem code */}
-      {!isPremium && (
-        <div className="mt-6 rounded-2xl border border-border bg-card p-5">
+      <div className="mt-6 rounded-2xl border border-border bg-card p-5">
           <div className="flex items-center gap-2 mb-3">
             <Ticket className="w-4 h-4 text-primary" />
             <h3 className="text-sm font-bold text-foreground">Have a code?</h3>
@@ -274,7 +270,6 @@ export default function Pricing() {
           )}
           {redeemError && <p className="text-xs text-danger mt-2">{redeemError}</p>}
         </div>
-      )}
 
       <div className="flex items-center justify-center gap-6 mt-6">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
