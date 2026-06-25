@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { usePremiumStatus } from '@/lib/usePremium';
+import { clearUserDataCache } from '@/lib/nudgeUtils';
 import { ArrowLeft, Check, Crown, Loader2, Zap, Shield, TrendingUp, Brain, Target, Clock, Ticket } from 'lucide-react';
 
 const PLANS = {
@@ -72,8 +73,9 @@ export default function Pricing() {
     try {
       const res = await base44.functions.invoke('redeem-code', { code: redeemCode });
       if (res.data?.success) {
+        clearUserDataCache();
         setRedeemSuccess(true);
-        setTimeout(() => window.location.href = '/', 2000);
+        setTimeout(() => window.location.href = '/', 1500);
       } else {
         setRedeemError(res.data?.error || 'Invalid code');
       }
