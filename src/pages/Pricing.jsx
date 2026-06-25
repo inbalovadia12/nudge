@@ -71,11 +71,11 @@ export default function Pricing() {
     setRedeemLoading(true);
     setRedeemError('');
     try {
-      await base44.functions.invoke('redeem-code', { code: redeemCode });
+      const res = await base44.functions.invoke('redeem-code', { code: redeemCode });
       clearUserDataCache();
       setRedeemSuccess(true);
       setRedeemLoading(false);
-      setTimeout(() => window.location.href = '/', 1500);
+      setTimeout(() => window.location.replace('/'), 1200);
     } catch (err) {
       setRedeemLoading(false);
       setRedeemError(err?.response?.data?.error || err?.data?.error || 'Invalid code');

@@ -21,12 +21,12 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Use service role to reliably find the user's profile regardless of RLS
-    const profiles = await base44.asServiceRole.entities.UserProfile.list();
+    // Use user-scoped calls so the profile is owned by the user and visible to their frontend queries
+    const profiles = await base44.entities.UserProfile.list();
     const profile = profiles.find(p => p.created_by_id === user.id);
 
     if (profile) {
-      const updated = await base44.asServiceRole.entities.UserProfile.update(profile.id, {
+      const updated = await base44.entities.UserProfile.update(profile.id, {
         plan_type: 'pro',
         is_premium: true,
         subscription_status: 'active',
@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
       });
       return Response.json({ success: true, profile: updated });
     } else {
-      const created = await base44.asServiceRole.entities.UserProfile.create({
+      const created = await base44.entities.UserProfile.create({
         first_name: user.full_name || user.email.split('@')[0],
         plan_type: 'pro',
         is_premium: true,

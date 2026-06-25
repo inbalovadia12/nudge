@@ -8,6 +8,8 @@ export function isPremiumUser(profile) {
   if (PREMIUM_BETA) return true;
   if (!profile) return false;
   if (profile.is_premium) return true;
+  if (profile.plan_type === 'pro' || profile.plan_type === 'plus') return true;
+  if (profile.subscription_status === 'active' && (profile.subscription_plan === 'pro' || profile.subscription_plan === 'plus')) return true;
   if (profile.premium_trial_end_date && new Date(profile.premium_trial_end_date) > new Date()) return true;
   return false;
 }
