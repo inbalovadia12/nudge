@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getFinancialContext } from '@/lib/nudgeUtils';
+import { base44 } from '@/api/base44Client';
 
 // Premium Beta: disabled — real paywalls active
 const PREMIUM_BETA = false;
@@ -19,8 +19,10 @@ export function usePremiumStatus() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getFinancialContext()
-      .then(ctx => setProfile(ctx.profile))
+    // Fetch the user's own profile directly — never use the shared cache,
+    // which can carry a previous user's premium status across sessions.
+    base44.entities.UserProfile.list()
+      .then(profiles => setProfile(profiles[0] || null))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);

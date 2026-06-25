@@ -139,7 +139,7 @@ export async function getFinancialContext() {
     base44.entities.BankTransaction.list('-date', 30).catch(() => []),
   ]);
 
-  const profile = profiles.find(p => p.is_premium || p.plan_type === 'pro' || p.plan_type === 'plus') || profiles[0] || { first_name: 'there', monthly_income: 0, strictness: 'moderate', onboarding_complete: false, is_premium: false, plan_type: 'free' };
+  const profile = profiles[0] || { first_name: 'there', monthly_income: 0, strictness: 'moderate', onboarding_complete: false, is_premium: false, plan_type: 'free' };
   const primaryGoal = goals.find(g => g.is_primary) || goals[0] || null;
   const totalSpent = purchases.reduce((sum, p) => sum + (p.amount || 0), 0);
   const balance = (profile.monthly_income || 0) - totalSpent;

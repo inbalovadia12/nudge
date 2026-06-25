@@ -9,7 +9,7 @@ import {
 
 const TOTAL_STEPS = 6;
 const STORAGE_KEY = 'nudge_chrome_ext_guide_step';
-const DOWNLOAD_URL = 'https://www.mediafire.com/file/o3cqyjxql2rnola/nudge-extension-v1.3.zip/file';
+const DOWNLOAD_URL = 'https://drive.google.com/file/d/1DpOnP-iYEqeYkOSnS-b3-ehVhnW88ZII/view?usp=sharing';
 const APP_URL = 'https://nudgefinance.base44.app';
 
 const stepIcons = [Download, FileArchive, Chrome, ToggleRight, FolderOpen, Pin];
@@ -204,7 +204,7 @@ function Step1Download({ downloaded, onDownload }) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground leading-relaxed">
-        Download the Nudge Chrome Extension package. You'll get a ZIP file containing everything needed.
+        Download the Nudge Chrome Extension package from Google Drive. You'll get a ZIP file containing everything needed.
       </p>
 
       {/* Download button */}
@@ -222,11 +222,27 @@ function Step1Download({ downloaded, onDownload }) {
         <div className="text-left flex-1">
           <p className="text-base font-bold text-foreground">Download Nudge Extension v1.3</p>
           <p className="text-xs text-muted-foreground">
-            {downloaded ? 'Downloaded — continue to step 2' : 'Click to download from MediaFire'}
+            {downloaded ? 'Downloaded — continue to step 2' : 'Click to open in Google Drive'}
           </p>
         </div>
         {!downloaded && <ChevronRight className="w-5 h-5 text-primary flex-shrink-0" />}
       </button>
+
+      {/* Google Drive download instructions */}
+      <div className="rounded-2xl border border-border bg-surface-2/50 p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-6 h-6 rounded-md bg-primary/15 flex items-center justify-center">
+            <Download className="w-3.5 h-3.5 text-primary" />
+          </div>
+          <span className="text-sm font-semibold text-foreground">Google Drive download steps</span>
+        </div>
+        <ol className="space-y-2 text-sm text-muted-foreground">
+          <li className="flex gap-2"><span className="text-primary font-bold flex-shrink-0">1.</span> Click the download button above to open the Google Drive file page.</li>
+          <li className="flex gap-2"><span className="text-primary font-bold flex-shrink-0">2.</span> Click the download icon (↓) in the top-right corner of the Drive preview.</li>
+          <li className="flex gap-2"><span className="text-primary font-bold flex-shrink-0">3.</span> If prompted, click "Download anyway" to confirm.</li>
+          <li className="flex gap-2"><span className="text-primary font-bold flex-shrink-0">4.</span> Wait for the ZIP file to save to your Downloads folder.</li>
+        </ol>
+      </div>
 
       {downloaded && (
         <motion.div
