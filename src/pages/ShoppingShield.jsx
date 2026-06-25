@@ -6,6 +6,7 @@ import { formatCurrency, clearUserDataCache } from '@/lib/nudgeUtils';
 import { getFinancialContext } from '@/lib/nudgeUtils';
 import { usePremiumStatus } from '@/lib/usePremium';
 import BlockListManager from '@/components/shield/BlockListManager';
+import ChromeExtensionGuide from '@/components/shield/ChromeExtensionGuide';
 import InterceptionQuestions from '@/components/shield/InterceptionQuestions';
 import PaywallScreen from '@/components/PaywallScreen';
 import { ArrowLeft, Shield, TrendingUp, Target, Clock, AlertTriangle, Check, Plus, Eye, Globe, ArrowRight } from 'lucide-react';
@@ -138,6 +139,14 @@ export default function ShoppingShield() {
           onConnectScreenTime={handleConnectScreenTime}
           isPremium={isPremium}
           onHitLimit={() => setShowPaywall(true)}
+        />
+      </div>
+
+      {/* Chrome Extension Installation Guide — Premium only */}
+      <div className="mb-6">
+        <ChromeExtensionGuide
+          isPremium={isPremium}
+          onUpgrade={() => setShowPaywall(true)}
         />
       </div>
 
