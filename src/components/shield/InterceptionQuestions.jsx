@@ -1,39 +1,162 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Shield, AlertTriangle, Check, ArrowRight, Lock } from 'lucide-react';
+import { X, Shield, AlertTriangle, Check, ArrowRight, Lock, Clock, Brain, Heart, TrendingDown } from 'lucide-react';
 
+// Each answer has a "friction score" from 0 (green light) to 3 (strong red flag)
 const questions = [
   {
     id: 'need',
-    text: 'Do you really need this right now?',
-    yesLabel: 'Yes, I need it',
-    noLabel: 'Not really',
+    text: 'What\'s driving you to open this right now?',
+    answers: [
+      { label: 'I genuinely need to buy something specific', value: 0, icon: 'check' },
+      { label: 'I\'m browsing to kill time', value: 3, icon: 'clock' },
+      { label: 'I\'m stressed, bored, or emotional', value: 3, icon: 'heart' },
+      { label: 'I saw an ad or got a notification', value: 2, icon: 'alert' },
+    ],
+  },
+  {
+    id: 'timing',
+    text: 'Have you thought about this purchase for more than 10 minutes today?',
+    answers: [
+      { label: 'Yes, I\'ve been planning this for a while', value: 0, icon: 'check' },
+      { label: 'I thought about it earlier today', value: 1, icon: 'check' },
+      { label: 'It just popped into my head', value: 3, icon: 'alert' },
+      { label: 'I\'m not even sure what I want to buy', value: 3, icon: 'heart' },
+    ],
   },
   {
     id: 'goal',
-    text: 'Does this align with your savings goal?',
-    yesLabel: 'Yes, it fits',
-    noLabel: 'Not really',
+    text: 'How does this fit with what you\'re saving for?',
+    answers: [
+      { label: 'It doesn\'t affect my savings goal', value: 0, icon: 'check' },
+      { label: 'It\'s a small dent, I can recover', value: 1, icon: 'check' },
+      { label: 'It pushes my goal back a bit', value: 2, icon: 'alert' },
+      { label: 'I don\'t have a savings goal', value: 2, icon: 'trending' },
+    ],
   },
   {
-    id: 'wait',
-    text: 'Could this wait until tomorrow?',
-    yesLabel: 'It can wait',
-    noLabel: 'It\'s urgent',
+    id: 'alternatives',
+    text: 'Have you checked if you already own something that does the job?',
+    answers: [
+      { label: 'Yes, and I don\'t have anything like this', value: 0, icon: 'check' },
+      { label: 'I think I might, but haven\'t looked', value: 2, icon: 'alert' },
+      { label: 'Probably, but I want the new one', value: 3, icon: 'heart' },
+      { label: 'No, and I don\'t care to check', value: 3, icon: 'alert' },
+    ],
   },
   {
-    id: 'similar',
-    text: 'Have you checked if you already own something similar?',
-    yesLabel: 'I checked',
-    noLabel: 'Not yet',
+    id: 'trigger',
+    text: 'Be honest — is something else going on right now?',
+    answers: [
+      { label: 'Nothing, just a normal day', value: 0, icon: 'check' },
+      { label: 'I\'m a little restless', value: 1, icon: 'check' },
+      { label: 'I\'m stressed or anxious', value: 3, icon: 'heart' },
+      { label: 'I\'m rewarding myself for a bad day', value: 3, icon: 'heart' },
+    ],
   },
   {
     id: 'regret',
-    text: 'How will you feel about this purchase tomorrow?',
-    yesLabel: 'Good about it',
-    noLabel: 'Might regret it',
+    text: 'Think about a purchase you regretted recently. How is this different?',
+    answers: [
+      { label: 'This is different — I\'ve done my homework', value: 0, icon: 'check' },
+      { label: 'It\'s similar, but I think this one\'s worth it', value: 1, icon: 'check' },
+      { label: 'Honestly, it feels the same', value: 3, icon: 'alert' },
+      { label: 'I don\'t have any recent regrets', value: 1, icon: 'check' },
+    ],
+  },
+  {
+    id: 'future',
+    text: 'Fast forward 30 days. How will you feel about opening this today?',
+    answers: [
+      { label: 'Glad I did it — it was worth it', value: 0, icon: 'check' },
+      { label: 'Neutral, it was just a normal purchase', value: 1, icon: 'check' },
+      { label: 'I\'ll probably have forgotten about it', value: 2, icon: 'alert' },
+      { label: 'I can already feel the regret coming', value: 3, icon: 'heart' },
+    ],
   },
 ];
+
+const iconMap = {
+  check: { Icon: Check, bg: 'bg-success/10', color: 'text-success' },
+  alert: { Icon: AlertTriangle, bg: 'bg-warning/10', color: 'text-warning' },
+  heart: { Icon: Heart, bg: 'bg-danger/10', color: 'text-danger' },
+  clock: { Icon: Clock, bg: 'bg-warning/10', color: 'text-warning' },
+  trending: { Icon: TrendingDown, bg: 'bg-warning/10', color: 'text-warning' },
+};
+
+// Results based on total friction score
+function getResult(totalScore, maxScore) {
+  const pct = totalScore / maxScore;
+
+  if (pct <= 0.15) {
+    return {
+      tier: 'green',
+      icon: Check,
+      iconBg: 'bg-success/15',
+      iconColor: 'text-success',
+      title: 'You\'ve thought this through',
+      message: 'Your answers show intention and awareness. This looks like a mindful choice — go ahead if it feels right.',
+      primaryAction: 'proceed',
+      primaryLabel: `Proceed to app`,
+    };
+  }
+
+  if (pct <= 0.35) {
+    return {
+      tier: 'lime',
+      icon: Check,
+      iconBg: 'bg-primary/15',
+      iconColor: 'text-primary',
+      title: 'Looks reasonable — just stay aware',
+      message: 'Nothing alarming, but a couple of your answers suggest you\'re not fully certain. If you proceed, set a spending limit before you start browsing.',
+      primaryAction: 'proceed',
+      primaryLabel: `Proceed with a spending limit`,
+    };
+  }
+
+  if (pct <= 0.55) {
+    return {
+      tier: 'amber',
+      icon: Clock,
+      iconBg: 'bg-warning/15',
+      iconColor: 'text-warning',
+      title: 'Sleep on it',
+      message: 'A few of your answers hint that this might be impulse-driven. Give it 24 hours — if you still want it tomorrow, it\'s probably a real need, not a moment.',
+      primaryAction: 'back',
+      primaryLabel: 'Set a 24-hour reminder',
+      secondaryAction: 'proceed',
+      secondaryLabel: 'I\'ll proceed anyway',
+    };
+  }
+
+  if (pct <= 0.75) {
+    return {
+      tier: 'orange',
+      icon: Brain,
+      iconBg: 'bg-warning/15',
+      iconColor: 'text-warning',
+      title: 'This feels emotional',
+      message: 'Your answers suggest something deeper is driving this — stress, boredom, or a need for a reward. Those are the moments spending tends to sting later. Take a walk, text a friend, then revisit.',
+      primaryAction: 'back',
+      primaryLabel: 'Not right now',
+      secondaryAction: 'proceed',
+      secondaryLabel: 'I understand, let me through',
+    };
+  }
+
+  return {
+    tier: 'red',
+    icon: Shield,
+    iconBg: 'bg-danger/15',
+    iconColor: 'text-danger',
+    title: 'Your future self is asking you to stop',
+    message: 'Almost every answer points to this being an impulse purchase you\'re likely to regret. The strongest move you can make right now is closing this and doing something else. Seriously.',
+    primaryAction: 'back',
+    primaryLabel: 'Close and walk away',
+    secondaryAction: 'proceed',
+    secondaryLabel: 'I insist on proceeding',
+  };
+}
 
 export default function InterceptionQuestions({ appName, appUrl, onProceed, onBack }) {
   const [currentQ, setCurrentQ] = useState(0);
@@ -51,10 +174,9 @@ export default function InterceptionQuestions({ appName, appUrl, onProceed, onBa
     }
   }
 
-  // Count "negative" answers (ones that suggest not proceeding)
-  const negativeCount = answers.filter(a => a === 'no').length;
-  const shouldProceed = negativeCount <= 2;
-
+  const totalScore = answers.reduce((sum, a) => sum + a, 0);
+  const maxScore = questions.length * 3;
+  const result = getResult(totalScore, maxScore);
   const q = questions[currentQ];
 
   return (
@@ -67,7 +189,7 @@ export default function InterceptionQuestions({ appName, appUrl, onProceed, onBa
       <motion.div
         initial={{ scale: 0.95, y: 20 }}
         animate={{ scale: 1, y: 0 }}
-        className="w-full max-w-md bg-card border border-border rounded-3xl p-6 shadow-2xl"
+        className="w-full max-w-md bg-card border border-border rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-thin"
       >
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
@@ -106,25 +228,22 @@ export default function InterceptionQuestions({ appName, appUrl, onProceed, onBa
               </p>
               <h3 className="text-lg font-semibold text-foreground mb-6">{q.text}</h3>
 
-              <div className="space-y-3">
-                <button
-                  onClick={() => answer('yes')}
-                  className="w-full flex items-center gap-3 p-4 rounded-2xl border border-border bg-card hover:border-primary/30 hover:bg-primary/5 transition-all text-left"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center flex-shrink-0">
-                    <Check className="w-4 h-4 text-success" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">{q.yesLabel}</span>
-                </button>
-                <button
-                  onClick={() => answer('no')}
-                  className="w-full flex items-center gap-3 p-4 rounded-2xl border border-border bg-card hover:border-warning/30 hover:bg-warning/5 transition-all text-left"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center flex-shrink-0">
-                    <AlertTriangle className="w-4 h-4 text-warning" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">{q.noLabel}</span>
-                </button>
+              <div className="space-y-2.5">
+                {q.answers.map((a, i) => {
+                  const { Icon, bg, color } = iconMap[a.icon];
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => answer(a.value)}
+                      className="w-full flex items-center gap-3 p-4 rounded-2xl border border-border bg-card hover:border-primary/30 hover:bg-primary/5 transition-all text-left"
+                    >
+                      <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className={`w-4 h-4 ${color}`} />
+                      </div>
+                      <span className="text-sm font-medium text-foreground">{a.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </motion.div>
           ) : (
@@ -134,21 +253,20 @@ export default function InterceptionQuestions({ appName, appUrl, onProceed, onBa
               animate={{ opacity: 1, scale: 1 }}
               className="text-center"
             >
-              {shouldProceed ? (
-                <>
-                  <div className="w-16 h-16 rounded-3xl bg-success/15 flex items-center justify-center mx-auto mb-4">
-                    <Check className="w-8 h-8 text-success" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Looks reasonable</h3>
-                  <p className="text-sm text-muted-foreground mb-6">
-                    Your answers suggest this is a thoughtful purchase. Go ahead if it feels right.
-                  </p>
-                  <div className="space-y-2">
+              <div className={`w-16 h-16 rounded-3xl ${result.iconBg} flex items-center justify-center mx-auto mb-4`}>
+                <result.icon className={`w-8 h-8 ${result.iconColor}`} />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">{result.title}</h3>
+              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">{result.message}</p>
+
+              <div className="space-y-2">
+                {result.primaryAction === 'proceed' ? (
+                  <>
                     <button
                       onClick={onProceed}
                       className="w-full flex items-center justify-center gap-2 p-4 rounded-2xl bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors"
                     >
-                      Proceed to {appName} <ArrowRight className="w-4 h-4" />
+                      {result.primaryLabel} <ArrowRight className="w-4 h-4" />
                     </button>
                     <button
                       onClick={onBack}
@@ -156,33 +274,26 @@ export default function InterceptionQuestions({ appName, appUrl, onProceed, onBa
                     >
                       Maybe not
                     </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="w-16 h-16 rounded-3xl bg-warning/15 flex items-center justify-center mx-auto mb-4">
-                    <Shield className="w-8 h-8 text-warning" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Maybe pause on this one</h3>
-                  <p className="text-sm text-muted-foreground mb-6">
-                    {negativeCount} of {questions.length} answers suggest this might not be the best move right now. Your future self might thank you for waiting.
-                  </p>
-                  <div className="space-y-2">
+                  </>
+                ) : (
+                  <>
                     <button
                       onClick={onBack}
                       className="w-full flex items-center justify-center gap-2 p-4 rounded-2xl bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors"
                     >
-                      Back away <ArrowRight className="w-4 h-4" />
+                      {result.primaryLabel} <ArrowRight className="w-4 h-4" />
                     </button>
-                    <button
-                      onClick={onProceed}
-                      className="w-full p-3 rounded-2xl text-sm text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
-                    >
-                      I understand, proceed anyway
-                    </button>
-                  </div>
-                </>
-              )}
+                    {result.secondaryAction === 'proceed' && (
+                      <button
+                        onClick={onProceed}
+                        className="w-full p-3 rounded-2xl text-sm text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+                      >
+                        {result.secondaryLabel}
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
