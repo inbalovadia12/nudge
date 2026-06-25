@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
-const PLAID_ENV = Deno.env.get("PLAID_ENV") || "sandbox";
+const PLAID_ENV = Deno.env.get("PLAID_ENV") || "production";
 const PLAID_URL = `https://${PLAID_ENV}.plaid.com`;
 const CLIENT_ID = Deno.env.get("PLAID_CLIENT_ID");
 const SECRET = Deno.env.get("PLAID_SECRET");

@@ -4,10 +4,9 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
+import { Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
-import PrivacyPolicyLink from "@/components/PrivacyPolicyLink";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -35,7 +34,6 @@ export default function Login() {
 
   return (
     <AuthLayout
-      icon={LogIn}
       title="Welcome back"
       subtitle="Log in to your account"
       footer={
@@ -122,8 +120,17 @@ export default function Login() {
         </Button>
       </form>
 
-      <div className="flex justify-center mt-6">
-        <PrivacyPolicyLink />
+      <div className="mt-8 pt-6 border-t border-border">
+        <p className="text-center text-xs text-muted-foreground leading-relaxed">
+          By continuing, you agree to Nudge's{" "}
+          <Link to="/privacy-policy" className="text-primary font-medium hover:underline">
+            Privacy Policy
+          </Link>
+          .
+        </p>
+        <p className="text-center text-[11px] text-muted-foreground/50 mt-3">
+          © {new Date().getFullYear()} Nudge. All rights reserved.
+        </p>
       </div>
     </AuthLayout>
   );
