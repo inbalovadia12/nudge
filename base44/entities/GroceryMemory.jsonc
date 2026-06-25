@@ -1,0 +1,31 @@
+{
+  "name": "GroceryMemory",
+  "type": "object",
+  "properties": {
+    "store_name": {
+      "type": "string"
+    },
+    "product_name": {
+      "type": "string"
+    },
+    "historical_price": {
+      "type": "number"
+    },
+    "last_purchased_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "purchase_count": {
+      "type": "number",
+      "default": 1
+    },
+    "typical_quantity": {
+      "type": "number",
+      "default": 1
+    }
+  },
+  "required": [
+    "store_name",
+    "product_name"
+  ]
+}

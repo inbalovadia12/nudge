@@ -1,0 +1,32 @@
+{
+  "name": "FeatureUsage",
+  "type": "object",
+  "properties": {
+    "feature_name": {
+      "type": "string"
+    },
+    "last_generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "linked_income_cycle_id": {
+      "type": "string"
+    },
+    "cooldown_period": {
+      "type": "string",
+      "enum": [
+        "cycle",
+        "24h",
+        "7d",
+        "none"
+      ],
+      "default": "none"
+    },
+    "generated_data_hash": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "feature_name"
+  ]
+}

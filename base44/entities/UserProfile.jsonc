@@ -80,6 +80,19 @@
     },
     "subscription_plan": {
       "type": "string"
+    },
+    "plan_type": {
+      "type": "string",
+      "enum": [
+        "free",
+        "plus",
+        "pro"
+      ],
+      "default": "free"
+    },
+    "credits_balance": {
+      "type": "number",
+      "default": 10
     }
   },
   "required": [

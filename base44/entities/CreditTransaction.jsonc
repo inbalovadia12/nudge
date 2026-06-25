@@ -1,0 +1,19 @@
+{
+  "name": "CreditTransaction",
+  "type": "object",
+  "properties": {
+    "feature_name": {
+      "type": "string"
+    },
+    "credits_spent": {
+      "type": "number"
+    },
+    "balance_after": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "feature_name",
+    "credits_spent"
+  ]
+}
