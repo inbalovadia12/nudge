@@ -11,16 +11,26 @@
       "enum": [
         "user",
         "assistant"
-      ],
-      "required": true
+      ]
     },
     "content": {
-      "type": "string",
-      "required": true
+      "type": "string"
     }
   },
   "required": [
     "role",
     "content"
-  ]
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
 }
