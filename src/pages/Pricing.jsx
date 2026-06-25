@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { usePremiumStatus } from '@/lib/usePremium';
-import { ArrowLeft, Check, Crown, Loader2, Zap, Shield, TrendingUp, Brain, Target, Clock } from 'lucide-react';
+import { ArrowLeft, Check, Crown, Loader2, Zap, Shield, TrendingUp, Brain, Target, Clock, Ticket } from 'lucide-react';
 
 const PLANS = {
   plus: {
@@ -47,6 +47,10 @@ export default function Pricing() {
   const { isPremium, profile, loading } = usePremiumStatus();
   const [billing, setBilling] = useState('yearly');
   const [checkoutLoading, setCheckoutLoading] = useState(null);
+  const [redeemCode, setRedeemCode] = useState('');
+  const [redeemLoading, setRedeemLoading] = useState(false);
+  const [redeemError, setRedeemError] = useState('');
+  const [redeemSuccess, setRedeemSuccess] = useState(false);
 
   async function handleUpgrade(planName) {
     const planId = `${planName}_${billing}`;
@@ -60,6 +64,23 @@ export default function Pricing() {
       console.error('Checkout error:', err);
     }
     setCheckoutLoading(null);
+  }
+
+  async function handleRedeem() {
+    setRedeemLoading(true);
+    setRedeemError('');
+    try {
+      const res = await base44.functions.invoke('redeem-code', { code: redeemCode });
+      if (res.data?.success) {
+        setRedeemSuccess(true);
+        setTimeout(() => window.location.href = '/', 2000);
+      } else {
+        setRedeemError(res.data?.error || 'Invalid code');
+      }
+    } catch (err) {
+      setRedeemError(err.response?.data?.error || 'Invalid code');
+    }
+    setRedeemLoading(false);
   }
 
   async function handleCancel() {
@@ -215,6 +236,43 @@ export default function Pricing() {
           );
         })}
       </div>
+
+      {/* Redeem code */}
+      {!isPremium && (
+        <div className="mt-6 rounded-2xl border border-border bg-card p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <Ticket className="w-4 h-4 text-primary" />
+            <h3 className="text-sm font-bold text-foreground">Have a code?</h3>
+          </div>
+          {redeemSuccess ? (
+            <div className="text-center py-3">
+              <div className="w-10 h-10 rounded-full bg-success/15 flex items-center justify-center mx-auto mb-2">
+                <Check className="w-5 h-5 text-success" />
+              </div>
+              <p className="text-sm font-medium text-foreground">Premium unlocked! Redirecting...</p>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={redeemCode}
+                onChange={e => setRedeemCode(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && redeemCode) handleRedeem(); }}
+                placeholder="Enter your code"
+                className="flex-1 bg-surface-1 border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
+              />
+              <button
+                onClick={handleRedeem}
+                disabled={!redeemCode || redeemLoading}
+                className="bg-primary text-primary-foreground px-5 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50 hover:bg-primary/90 transition-colors"
+              >
+                {redeemLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Redeem'}
+              </button>
+            </div>
+          )}
+          {redeemError && <p className="text-xs text-danger mt-2">{redeemError}</p>}
+        </div>
+      )}
 
       <div className="flex items-center justify-center gap-6 mt-6">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
