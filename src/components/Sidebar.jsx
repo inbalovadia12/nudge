@@ -6,18 +6,18 @@ import { useAuth } from '@/lib/AuthContext';
 
 const navItems = [
   { label: 'Home', path: '/', icon: Home },
-  { label: 'Insights', path: '/insights', icon: BarChart3 },
-  { label: 'Goals', path: '/goals', icon: Target },
+  { label: 'My Finances', path: '/insights', icon: BarChart3 },
+  { label: 'Goals & Planning', path: '/goals', icon: Target },
   { label: 'Challenges', path: '/challenges', icon: Trophy },
-  { label: 'Assistant', path: '/assistant', icon: MessageCircle },
-  { label: 'Future Feed', path: '/insights/future-feed', icon: Calendar },
+  { label: 'AI Advisor', path: '/assistant', icon: MessageCircle },
+  { label: 'Forecast', path: '/insights/future-feed', icon: Calendar },
   { label: 'Notifications', path: '/notifications', icon: Bell },
   { label: 'Profile', path: '/profile', icon: User },
 ];
 
 const premiumItems = [
-  { label: 'Shopping Shield', path: '/shield', icon: Shield },
-  { label: 'Financial Health', path: '/insights/health', icon: Heart },
+  { label: 'Spending Guard', path: '/shield', icon: Shield },
+  { label: 'Health Score', path: '/insights/health', icon: Heart },
   { label: 'Smart Calculators', path: '/insights/calculators', icon: Calculator },
   { label: 'AI Deal Finder', path: '/insights/deal-finder', icon: Search },
 ];
@@ -42,7 +42,7 @@ export default function Sidebar() {
           }`}
         >
           <ScanSearch className="w-4 h-4" />
-          Check a purchase
+          Ask Before You Buy
         </Link>
       </div>
 

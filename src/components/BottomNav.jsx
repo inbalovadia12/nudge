@@ -19,8 +19,8 @@ export default function BottomNav() {
   const location = useLocation();
   const items = [
     { label: 'Home', path: '/', icon: Home },
-    { label: 'Insights', path: '/insights', icon: BarChart3 },
-    { label: 'Assistant', path: '/assistant', icon: MessageCircle },
+    { label: 'Finances', path: '/insights', icon: BarChart3 },
+    { label: 'Advisor', path: '/assistant', icon: MessageCircle },
     { label: 'Profile', path: '/profile', icon: User },
   ];
 
@@ -40,7 +40,7 @@ export default function BottomNav() {
           >
             <ScanSearch className="w-6 h-6" />
           </div>
-          <span className="text-[10px] font-medium mt-0.5 text-primary">Check</span>
+          <span className="text-[10px] font-medium mt-0.5 text-primary">Ask</span>
         </Link>
 
         <NavItem item={items[2]} active={location.pathname === '/assistant'} />

@@ -14,7 +14,10 @@ export default function Logo({ size = 'md' }) {
           <circle cx="15" cy="12" r="6.5" stroke="currentColor" className="text-primary" strokeWidth="2.5" />
         </svg>
       </div>
-      <span className={`${s.text} font-bold font-heading tracking-tight text-foreground`}>NUDGE</span>
+      <div className="flex flex-col leading-none">
+        <span className={`${s.text} font-bold font-heading tracking-tight text-foreground`}>NUDGE</span>
+        <span className="text-[8px] sm:text-[9px] font-medium text-muted-foreground tracking-wider uppercase mt-0.5">AI Financial Advisor</span>
+      </div>
     </div>
   );
 }

@@ -11,7 +11,7 @@ export default function NudgeCard({ message }) {
         </div>
         <div>
           <p className="text-xs font-semibold text-primary mb-1">
-            Today's nudge
+            Advisor's Note
           </p>
           <p className="text-sm text-foreground/90 leading-relaxed">
             {message}

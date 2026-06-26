@@ -6,7 +6,7 @@ import SavingsRing from '@/components/SavingsRing';
 import PurchaseItem from '@/components/PurchaseItem';
 import NudgeCard from '@/components/NudgeCard';
 import { getGreeting, formatCurrency, formatDateLong, getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
-import { ScanSearch, ArrowRight, Target, TrendingDown, Wallet, CalendarClock, Shield } from 'lucide-react';
+import { ScanSearch, ArrowRight, Target, TrendingDown, Wallet, CalendarClock, Shield, Sparkles } from 'lucide-react';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -74,6 +74,20 @@ export default function Home() {
     <div className="p-4 sm:p-6 lg:p-10 max-w-2xl mx-auto pb-24 lg:pb-10">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-xl sm:text-2xl font-bold text-foreground">{greeting}.</h1>
+      </motion.div>
+
+      {/* Advisor positioning banner */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.02 }}
+        className="mt-3 mb-4 rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent border border-primary/20 p-4"
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <Sparkles className="w-3.5 h-3.5 text-primary" />
+          <span className="text-[10px] font-bold text-primary uppercase tracking-wide">Your AI Financial Advisor</span>
+        </div>
+        <p className="text-sm text-foreground/80 leading-relaxed">Personal financial guidance that used to cost $200/hr — now in your pocket.</p>
       </motion.div>
 
       {/* Spending summary */}
@@ -171,7 +185,7 @@ export default function Home() {
               <Shield className="w-7 h-7 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="text-lg font-bold text-foreground">Shopping Shield</p>
+              <p className="text-lg font-bold text-foreground">Spending Guard</p>
               <p className="text-sm text-muted-foreground">Block apps, check URLs, and intercept impulse buys</p>
             </div>
             <ArrowRight className="w-5 h-5 text-primary flex-shrink-0" />
@@ -187,8 +201,8 @@ export default function Home() {
                 <ScanSearch className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="font-medium text-foreground text-sm">Check a purchase</p>
-                <p className="text-xs text-muted-foreground">Before you buy</p>
+                <p className="font-medium text-foreground text-sm">Ask Before You Buy</p>
+                <p className="text-xs text-muted-foreground">Get a verdict first</p>
               </div>
             </div>
           </Link>
