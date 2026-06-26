@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import ConversationList from '@/components/assistant/ConversationList';
+import CreditBadge from '@/components/CreditBadge';
 import { Send, Mic, Sparkles, Menu } from 'lucide-react';
 
 const NUDGE_GREETING = "Hey — I'm Nudge. Ask me anything about your spending, your goals, or whether something's worth buying. No judgment, just an honest read.";
@@ -237,6 +238,9 @@ export default function Assistant() {
             <div className="min-w-0">
               <h1 className="text-xl font-bold text-foreground">Nudge</h1>
               <p className="text-xs text-muted-foreground">Ask me anything — no judgment.</p>
+            </div>
+            <div className="ml-auto">
+              <CreditBadge />
             </div>
           </div>
         </div>

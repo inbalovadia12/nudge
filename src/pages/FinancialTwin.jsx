@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency } from '@/lib/nudgeUtils';
 import { getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
+import CreditBadge from '@/components/CreditBadge';
 import { ArrowLeft, Brain, Send, Loader2, TrendingUp, Sparkles, RotateCcw } from 'lucide-react';
 
 const scenarios = [
@@ -70,6 +71,9 @@ Be honest but warm. Explain your numbers. Return as JSON.`
       <div className="flex items-center gap-2 mb-1">
         <Brain className="w-6 h-6 text-primary" />
         <h1 className="text-2xl font-bold font-heading">Financial Twin</h1>
+      </div>
+      <div className="mb-4">
+        <CreditBadge />
       </div>
       <p className="text-sm text-muted-foreground mb-6">Ask "what if" and I'll project the financial impact.</p>
 
