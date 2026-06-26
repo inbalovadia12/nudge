@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import GoalCard from '@/components/GoalCard';
 import { goalOptions, getGoalIcon } from '@/lib/nudgeUtils';
 import { Plus, X } from 'lucide-react';
+import ChildHeader from '@/components/ChildHeader';
 
 export default function Goals() {
   const [goals, setGoals] = useState([]);
@@ -49,18 +50,14 @@ export default function Goals() {
 
   return (
     <div className="p-6 lg:p-10 max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Your goals</h1>
-          <p className="text-muted-foreground mt-1 text-sm">What you're working toward.</p>
-        </div>
+      <ChildHeader title="Your Goals">
         <Button
           onClick={() => setShowAdd(true)}
           className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-10 px-4"
         >
-          <Plus className="w-4 h-4 mr-1" /> New goal
+          <Plus className="w-4 h-4 mr-1" /> New
         </Button>
-      </div>
+      </ChildHeader>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {goals.map((goal, i) => (

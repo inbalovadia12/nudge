@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
@@ -10,6 +10,8 @@ import HabitCard from '@/components/HabitCard';
 import BillItem from '@/components/BillItem';
 import DataMaturityBar from '@/components/DataMaturityBar';
 import PaywallScreen from '@/components/PaywallScreen';
+import ChildHeader from '@/components/ChildHeader';
+import PullToRefresh from '@/components/PullToRefresh';
 import { Wallet, CalendarDays, TrendingUp, User, Tag, ChevronRight, AlertTriangle, Heart, Brain, Calendar, Droplets, Crown, Calculator, Search } from 'lucide-react';
 
 export default function Insights() {
@@ -21,21 +23,24 @@ export default function Insights() {
   const [subTotal, setSubTotal] = useState(0);
   const [subCount, setSubCount] = useState(0);
 
-  useEffect(() => {
-    Promise.all([
-      base44.entities.HealthScore.list('-last_updated', 1),
-      base44.entities.SpendingHabit.list('-detected_date', 10),
-      base44.entities.Bill.filter({ status: 'upcoming' }),
-      base44.entities.Subscription.filter({ status: 'active' }),
-    ]).then(([scores, h, b, subs]) => {
+  const loadData = useCallback(async () => {
+    try {
+      const [scores, h, b, subs] = await Promise.all([
+        base44.entities.HealthScore.list('-last_updated', 1),
+        base44.entities.SpendingHabit.list('-detected_date', 10),
+        base44.entities.Bill.filter({ status: 'upcoming' }),
+        base44.entities.Subscription.filter({ status: 'active' }),
+      ]);
       setHealthScore(scores[0]);
       setHabits(h);
       setBills(b.sort((a, c) => new Date(a.due_date) - new Date(c.due_date)));
       const total = subs.reduce((s, sub) => s + (sub.monthly_cost || 0), 0);
       setSubTotal(total);
       setSubCount(subs.length);
-    }).catch(() => {});
+    } catch {}
   }, []);
+
+  useEffect(() => { loadData(); }, [loadData]);
 
   if (loading) {
     return <div className="p-6 flex items-center justify-center min-h-[60vh]"><div className="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" /></div>;
@@ -65,13 +70,13 @@ export default function Insights() {
   ];
 
   return (
+    <PullToRefresh onRefresh={loadData}>
     <div className="p-4 sm:p-6 max-w-4xl mx-auto pb-24 lg:pb-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold font-heading">Insights</h1>
+      <ChildHeader title="Insights">
         <div className="inline-flex items-center gap-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
           <Sparkles className="w-3 h-3" /> Beta
         </div>
-      </div>
+      </ChildHeader>
 
       {/* Data maturity */}
       <div className="mb-6">
@@ -186,5 +191,6 @@ export default function Insights() {
         <PaywallScreen onClose={() => setShowPaywall(false)} />
       )}
     </div>
+    </PullToRefresh>
   );
 }

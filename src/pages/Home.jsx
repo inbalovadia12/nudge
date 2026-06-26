@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
@@ -7,6 +7,7 @@ import PurchaseItem from '@/components/PurchaseItem';
 import NudgeCard from '@/components/NudgeCard';
 import { getGreeting, formatCurrency, formatDateLong, getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
 import { ScanSearch, ArrowRight, Target, TrendingDown, Wallet, CalendarClock, Shield, Sparkles } from 'lucide-react';
+import PullToRefresh from '@/components/PullToRefresh';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -51,6 +52,18 @@ export default function Home() {
     load();
   }, []);
 
+  const handleRefresh = useCallback(async () => {
+    try {
+      const finCtx = await getFinancialContext();
+      if (finCtx.profile) {
+        setProfile(finCtx.profile);
+        setPrimaryGoal(finCtx.primaryGoal);
+        setPurchases(finCtx.purchases.slice(0, 5));
+        setCtx(finCtx);
+      }
+    } catch {}
+  }, []);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -71,6 +84,7 @@ export default function Home() {
   const daysUntilPayday = daysInMonth - now.getDate();
 
   return (
+    <PullToRefresh onRefresh={handleRefresh}>
     <div className="p-4 sm:p-6 lg:p-10 max-w-2xl mx-auto pb-24 lg:pb-10">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-xl sm:text-2xl font-bold text-foreground">{greeting}.</h1>
@@ -260,5 +274,6 @@ export default function Home() {
         <NudgeCard nudge={nudge} loading={nudgeLoading} />
       </motion.div>
     </div>
+    </PullToRefresh>
   );
 }

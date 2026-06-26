@@ -49,18 +49,18 @@ export default function Layout() {
       <Sidebar />
       <main className="lg:pl-64">
         {/* Mobile header */}
-        <div className="lg:hidden sticky top-0 z-20 bg-card/80 backdrop-blur-lg border-b border-border">
+        <div className="lg:hidden sticky top-0 z-20 bg-card/80 backdrop-blur-lg border-b border-border" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
           <div className="flex items-center justify-between px-4 h-14">
             <div className="flex items-center gap-2">
               <MobileNav />
               <span className="font-bold text-foreground">Thryve</span>
             </div>
             <div className="flex items-center gap-2">
-              <ThemeToggle className="w-9 h-9" />
-              <Link to="/shield" className="w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors">
+              <ThemeToggle className="w-11 h-11" />
+              <Link to="/shield" className="w-11 h-11 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors">
                 <Shield className="w-5 h-5" />
               </Link>
-              <Link to="/notifications" className="w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors">
+              <Link to="/notifications" className="w-11 h-11 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors">
                 <Bell className="w-5 h-5" />
               </Link>
             </div>

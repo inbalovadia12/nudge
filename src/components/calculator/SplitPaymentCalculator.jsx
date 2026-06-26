@@ -2,7 +2,8 @@ import { useState, useMemo, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency, formatCurrencyDetailed } from '@/lib/nudgeUtils';
-import { Loader2, Sparkles, AlertTriangle, CheckCircle2, Calendar, TrendingDown } from 'lucide-react';
+import { Loader2, Sparkles, AlertTriangle, CheckCircle2, Calendar, TrendingDown, ChevronDown } from 'lucide-react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 const SCHEDULES = [
   { label: 'Monthly', periods: 12 },
@@ -17,6 +18,7 @@ export default function SplitPaymentCalculator({ onCalculate, lastCalc }) {
   const [schedule, setSchedule] = useState(12);
   const [calculating, setCalculating] = useState(false);
   const [goalDelay, setGoalDelay] = useState(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   // Fetch user's primary goal to calculate delay
   useEffect(() => {
@@ -98,10 +100,29 @@ ${goalDelay ? `User's primary goal: "${goalDelay.goalName}", $${goalDelay.remain
           </div>
           <div>
             <label className="text-xs font-medium text-muted-foreground">Payment schedule</label>
-            <select value={schedule} onChange={e => setSchedule(Number(e.target.value))}
-              className="w-full bg-surface-2 border border-border rounded-xl px-3 py-2.5 text-sm mt-1 focus:outline-none focus:border-primary">
-              {SCHEDULES.map(s => <option key={s.periods} value={s.periods}>{s.label}</option>)}
-            </select>
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+              <SheetTrigger asChild>
+                <button type="button"
+                  className="w-full bg-surface-2 border border-border rounded-xl px-3 py-2.5 text-sm mt-1 focus:outline-none focus:border-primary text-left flex items-center justify-between">
+                  {SCHEDULES.find(s => s.periods === schedule)?.label}
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="rounded-t-3xl">
+                <SheetHeader>
+                  <SheetTitle>Payment schedule</SheetTitle>
+                </SheetHeader>
+                <div className="space-y-1 pb-6 pt-2">
+                  {SCHEDULES.map(s => (
+                    <button key={s.periods} type="button"
+                      onClick={() => { setSchedule(s.periods); setSheetOpen(false); }}
+                      className={`w-full text-left rounded-xl p-3 text-sm transition-colors ${schedule === s.periods ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-surface-2 text-foreground'}`}>
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
 

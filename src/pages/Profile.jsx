@@ -7,7 +7,8 @@ import { useTheme } from 'next-themes';
 import { usePremiumStatus } from '@/lib/usePremium';
 import { clearUserDataCache } from '@/lib/nudgeUtils';
 import ConnectPlaid from '@/components/ConnectPlaid';
-import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark, Bug, FileText } from 'lucide-react';
+import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark, Bug, FileText, Trash2 } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -20,6 +21,8 @@ export default function Profile() {
   const [incomeValue, setIncomeValue] = useState('');
   const [incomeSaved, setIncomeSaved] = useState(false);
   const [bankConnected, setBankConnected] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (profile) setBankConnected(!!profile.connected_bank || !!profile.plaid_access_token);
@@ -30,6 +33,19 @@ export default function Profile() {
     await base44.functions.invoke('plaid', { action: 'disconnect' });
     clearUserDataCache();
     setBankConnected(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      await base44.functions.invoke('delete-account', {});
+      clearUserDataCache();
+    } catch {
+      setDeleting(false);
+      return;
+    }
+    logout(false);
+    window.location.href = '/';
   };
 
   useEffect(() => {
@@ -261,6 +277,18 @@ export default function Profile() {
         </Link>
       </div>
 
+      {/* Delete Account */}
+      <div className="rounded-3xl border border-danger/20 bg-danger/5 p-6 mb-6">
+        <div className="flex items-center gap-2 mb-2">
+          <Trash2 className="w-4 h-4 text-danger" />
+          <h2 className="text-sm font-semibold">Delete Account</h2>
+        </div>
+        <p className="text-xs text-muted-foreground mb-4">Permanently delete your account and all associated data. This action cannot be undone.</p>
+        <button onClick={() => setShowDeleteDialog(true)} className="w-full flex items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-card py-3 text-sm font-medium text-danger hover:bg-danger/10 transition-colors">
+          <Trash2 className="w-4 h-4" /> Delete my account
+        </button>
+      </div>
+
       {/* Sign out */}
       <button onClick={() => logout(false)}
         className="w-full flex items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3 text-sm font-medium text-danger hover:bg-danger/5 transition-colors">
@@ -269,6 +297,23 @@ export default function Profile() {
       </button>
 
       <p className="text-center text-xs text-muted-foreground/50 mt-6">Thryve v2.0 · Your data is private</p>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete your account?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete all your data — goals, purchases, subscriptions, insights, and chat history. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteAccount} disabled={deleting} className="bg-danger text-danger-foreground hover:bg-danger/90">
+              {deleting ? 'Deleting...' : 'Delete everything'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

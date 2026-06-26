@@ -8,6 +8,7 @@ import ConversationList from '@/components/assistant/ConversationList';
 import CreditBadge from '@/components/CreditBadge';
 import { spendCredits } from '@/lib/useCredits';
 import { Send, Mic, Sparkles, Menu } from 'lucide-react';
+import ChildHeader from '@/components/ChildHeader';
 
 const NUDGE_GREETING = "Hey — I'm Thryve. Ask me anything about your spending, your goals, or whether something's worth buying. No judgment, just an honest read.";
 
@@ -224,40 +225,32 @@ export default function Assistant() {
       <div className="flex flex-col flex-1 min-w-0">
         {/* Header */}
         <div className="p-4 lg:p-6 pb-2">
-          <div className="flex items-center gap-3">
-            <Sheet open={showConversations} onOpenChange={setShowConversations}>
-              <SheetTrigger asChild>
-                <button className="lg:hidden w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors flex-shrink-0">
-                  <Menu className="w-5 h-5" />
-                </button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-80 p-4">
-                <SheetHeader>
-                  <SheetTitle>Conversations</SheetTitle>
-                </SheetHeader>
-                <div className="mt-4 h-[calc(100%-3rem)]">
-                  <ConversationList
-                    conversations={conversations}
-                    activeId={activeConvId}
-                    onSelect={selectConversation}
-                    onNew={createNewConversation}
-                    onDelete={deleteConversation}
-                  />
-                </div>
-              </SheetContent>
-            </Sheet>
-
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-primary" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-xl font-bold text-foreground">Thryve</h1>
-              <p className="text-xs text-muted-foreground">Ask me anything — no judgment.</p>
-            </div>
-            <div className="ml-auto">
+          <ChildHeader title="Advisor">
+            <div className="flex items-center gap-2">
+              <Sheet open={showConversations} onOpenChange={setShowConversations}>
+                <SheetTrigger asChild>
+                  <button className="lg:hidden w-11 h-11 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors flex-shrink-0">
+                    <Menu className="w-5 h-5" />
+                  </button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-80 p-4">
+                  <SheetHeader>
+                    <SheetTitle>Conversations</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-4 h-[calc(100%-3rem)]">
+                    <ConversationList
+                      conversations={conversations}
+                      activeId={activeConvId}
+                      onSelect={selectConversation}
+                      onNew={createNewConversation}
+                      onDelete={deleteConversation}
+                    />
+                  </div>
+                </SheetContent>
+              </Sheet>
               <CreditBadge refreshKey={creditRefreshKey} />
             </div>
-          </div>
+          </ChildHeader>
         </div>
 
         {/* Messages */}
