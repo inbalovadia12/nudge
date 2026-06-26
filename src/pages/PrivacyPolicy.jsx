@@ -8,15 +8,15 @@ const SECTIONS = [
     body: [
       'Account information: your name and email address when you create an account.',
       'Financial data: income, savings goals, spending categories, and transaction data you enter or connect via Plaid (if you choose to link your bank).',
-      'Usage data: how you interact with Nudge, including features used, preferences, and coaching settings.',
+      'Usage data: how you interact with Thryve, including features used, preferences, and coaching settings.',
     ],
   },
   {
     title: '2. How We Use Your Information',
     body: [
-      'To provide personalized financial coaching, nudges, and insights based on your spending patterns and goals.',
+      'To provide personalized financial coaching, guidance, and insights based on your spending patterns and goals.',
       'To detect and alert you about spending habits, subscriptions, and bills.',
-      'To improve our AI-driven recommendations and the overall Nudge experience.',
+      'To improve our AI-driven recommendations and the overall Thryve experience.',
       'To send you notifications and reminders you have opted into.',
     ],
   },
@@ -58,7 +58,7 @@ const SECTIONS = [
   {
     title: '8. Changes to This Policy',
     body: [
-      'We may update this privacy policy from time to time. We will notify you of significant changes within the app. Continued use of Nudge after changes constitutes acceptance of the updated policy.',
+      'We may update this privacy policy from time to time. We will notify you of significant changes within the app. Continued use of Thryve after changes constitutes acceptance of the updated policy.',
     ],
   },
 ];
@@ -83,7 +83,7 @@ export default function PrivacyPolicy() {
 
         <div className="rounded-2xl border border-border bg-card p-5 mb-6">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            At Nudge, your privacy is fundamental. This policy explains what data we collect, how we use it, and the controls you have over it. Your financial data is never sold or shared with advertisers.
+            At Thryve, your privacy is fundamental. This policy explains what data we collect, how we use it, and the controls you have over it. Your financial data is never sold or shared with advertisers.
           </p>
         </div>
 
@@ -106,7 +106,7 @@ export default function PrivacyPolicy() {
         <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-5 text-center">
           <p className="text-sm text-muted-foreground">
             Questions about your privacy?{' '}
-            <a href="mailto:support@nudge.app" className="text-primary font-medium hover:underline">Contact us</a>
+            <a href="mailto:support@thryve.app" className="text-primary font-medium hover:underline">Contact us</a>
           </p>
         </div>
       </div>

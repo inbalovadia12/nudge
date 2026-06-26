@@ -61,7 +61,7 @@ export default function Profile() {
     : 0;
 
   const strictnessOptions = [
-    { value: 'gentle', label: 'Gentle', desc: 'Encouraging nudges' },
+    { value: 'gentle', label: 'Gentle', desc: 'Encouraging guidance' },
     { value: 'moderate', label: 'Balanced', desc: 'Balanced guidance' },
     { value: 'strict', label: 'Strict', desc: 'Direct feedback' },
   ];
@@ -94,7 +94,7 @@ export default function Profile() {
         <div className="flex items-center gap-3 mb-3">
           {isPremium ? <Crown className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-muted-foreground" />}
           <div>
-            <p className="font-semibold">{isPremium ? 'Nudge Premium' : 'Free Plan'}</p>
+            <p className="font-semibold">{isPremium ? 'Thryve Premium' : 'Free Plan'}</p>
             <p className="text-xs text-muted-foreground">
               {isPremium ? 'All features unlocked' : trialDays > 0 ? `${trialDays} days left in your trial` : 'Upgrade for full access'}
             </p>
@@ -201,7 +201,7 @@ export default function Profile() {
         </div>
         <div className="space-y-3">
           {Object.entries({
-            daily: { label: 'Daily nudge', desc: 'A friendly morning message' },
+            daily: { label: 'Daily guidance', desc: 'A friendly morning message' },
             bills: { label: 'Bill reminders', desc: 'Before large expenses' },
             deals: { label: 'Deal alerts', desc: 'When tracked items drop' },
             overspending: { label: 'Overspending warnings', desc: 'When spending spikes' },
@@ -268,7 +268,7 @@ export default function Profile() {
         Sign out
       </button>
 
-      <p className="text-center text-xs text-muted-foreground/50 mt-6">Nudge v2.0 · Your data is private</p>
+      <p className="text-center text-xs text-muted-foreground/50 mt-6">Thryve v2.0 · Your data is private</p>
     </div>
   );
 }

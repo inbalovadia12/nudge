@@ -112,7 +112,7 @@ export default function Onboarding() {
               <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.1, type: 'spring', stiffness: 200 }} className="w-20 h-20 rounded-3xl bg-primary/15 flex items-center justify-center mx-auto mb-6">
                 <Sparkles className="w-10 h-10 text-primary" />
               </motion.div>
-              <h1 className="text-4xl font-bold text-foreground mb-3">Meet Nudge</h1>
+              <h1 className="text-4xl font-bold text-foreground mb-3">Meet Thryve</h1>
               <p className="text-foreground text-lg mb-2 leading-relaxed">Let's build better money habits.</p>
               <p className="text-muted-foreground/70 mb-10 leading-relaxed max-w-sm mx-auto">
                 I'm your AI financial decision coach. Before you buy something, I'll give you a quick, honest read — no spreadsheets, no guilt, just clarity.
@@ -166,7 +166,7 @@ export default function Onboarding() {
           {step === 3 && (
             <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h1 className="text-3xl font-bold text-foreground mb-2">How cautious should I be?</h1>
-              <p className="text-muted-foreground mb-6">I'll adjust my nudges based on this.</p>
+              <p className="text-muted-foreground mb-6">I'll adjust my guidance based on this.</p>
               <div className="flex gap-2 mb-8">
                 {strictnessLevels.map(level => (
                   <button key={level.value} onClick={() => setStrictness(level.value)} className={`flex-1 p-4 rounded-2xl border text-left transition-all ${strictness === level.value ? 'border-primary bg-primary/5' : 'border-border bg-surface-1 hover:border-primary/30'}`}>
@@ -176,7 +176,7 @@ export default function Onboarding() {
                 ))}
               </div>
               <div className="bg-surface-2 border border-border rounded-2xl p-4 mb-8">
-                <p className="text-xs text-muted-foreground mb-2">Preview — here's what a nudge looks like:</p>
+                <p className="text-xs text-muted-foreground mb-2">Preview — here's what guidance looks like:</p>
                 <p className="text-sm text-foreground/90 italic">"{strictnessLevels.find(l => l.value === strictness).preview}"</p>
               </div>
               <div className="flex gap-3">
@@ -233,7 +233,7 @@ export default function Onboarding() {
               <div className="text-center mb-6">
                 <div className="w-14 h-14 rounded-2xl bg-primary/15 flex items-center justify-center mx-auto mb-4"><Zap className="w-7 h-7 text-primary" /></div>
                 <h1 className="text-3xl font-bold text-foreground mb-2">Go Premium?</h1>
-                <p className="text-muted-foreground">Unlock the full Nudge experience.</p>
+                <p className="text-muted-foreground">Unlock the full Thryve experience.</p>
               </div>
               <div className="space-y-3 mb-8">
                 {proFeatures.map((feature, i) => (
@@ -245,7 +245,7 @@ export default function Onboarding() {
               </div>
               <div className={`rounded-2xl border-2 p-5 mb-4 cursor-pointer transition-all ${goPro ? 'border-primary bg-primary/5' : 'border-border bg-surface-1'}`} onClick={() => setGoPro(!goPro)}>
                 <div className="flex items-center justify-between">
-                  <div><p className="font-semibold text-foreground">Nudge Premium</p><p className="text-xs text-muted-foreground">Monthly subscription</p></div>
+                  <div><p className="font-semibold text-foreground">Thryve Premium</p><p className="text-xs text-muted-foreground">Monthly subscription</p></div>
                   <div className="text-right"><p className="text-2xl font-bold text-primary">$6.99</p><p className="text-xs text-muted-foreground">/month</p></div>
                 </div>
               </div>

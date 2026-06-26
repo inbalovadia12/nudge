@@ -53,7 +53,7 @@ export default function Layout() {
           <div className="flex items-center justify-between px-4 h-14">
             <div className="flex items-center gap-2">
               <MobileNav />
-              <span className="font-bold text-foreground">Nudge</span>
+              <span className="font-bold text-foreground">Thryve</span>
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle className="w-9 h-9" />

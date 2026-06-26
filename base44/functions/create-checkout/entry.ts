@@ -2,38 +2,38 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 const PLANS = {
   plus_monthly: {
-    name: 'Nudge Plus - Monthly',
+    name: 'Thryve Plus - Monthly',
     price: '4.99',
     subscriptionInfo: {
       subscriptionSettings: { frequency: 'MONTH' },
-      title: 'Nudge Plus Monthly',
+      title: 'Thryve Plus Monthly',
       description: 'All premium insights and tools, billed monthly',
     },
   },
   plus_yearly: {
-    name: 'Nudge Plus - Annual',
+    name: 'Thryve Plus - Annual',
     price: '39.99',
     subscriptionInfo: {
       subscriptionSettings: { frequency: 'YEAR' },
-      title: 'Nudge Plus Annual',
+      title: 'Thryve Plus Annual',
       description: 'All premium insights and tools, billed yearly',
     },
   },
   pro_monthly: {
-    name: 'Nudge Pro - Monthly',
+    name: 'Thryve Pro - Monthly',
     price: '9.99',
     subscriptionInfo: {
       subscriptionSettings: { frequency: 'MONTH' },
-      title: 'Nudge Pro Monthly',
+      title: 'Thryve Pro Monthly',
       description: 'Advanced AI tools for deep financial transformation, billed monthly',
     },
   },
   pro_yearly: {
-    name: 'Nudge Pro - Annual',
+    name: 'Thryve Pro - Annual',
     price: '79.99',
     subscriptionInfo: {
       subscriptionSettings: { frequency: 'YEAR' },
-      title: 'Nudge Pro Annual',
+      title: 'Thryve Pro Annual',
       description: 'Advanced AI tools for deep financial transformation, billed yearly',
     },
   },

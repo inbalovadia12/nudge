@@ -75,7 +75,7 @@ export default function Insights() {
 
       {/* Data maturity */}
       <div className="mb-6">
-        <DataMaturityBar weeksIn={3} label="Nudge is learning your patterns. Habits and heatmap will fill in over the coming weeks." />
+        <DataMaturityBar weeksIn={3} label="Thryve is learning your patterns. Habits and heatmap will fill in over the coming weeks." />
       </div>
 
       {/* Health score */}

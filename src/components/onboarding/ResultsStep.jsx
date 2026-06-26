@@ -10,7 +10,7 @@ export default function ResultsStep({ name, monthlyIncome, goalLabel, targetAmou
   const results = [
     { icon: TrendingDown, label: 'potential savings', value: `$${potentialSavings}/mo`, color: 'text-success' },
     { icon: Target, label: `${goalLabel} timeline`, value: `${monthsToGoal} months`, color: 'text-primary' },
-    { icon: Sparkles, label: 'days saved with Nudge', value: `${daysSaved} days`, color: 'text-warning' },
+    { icon: Sparkles, label: 'days saved with Thryve', value: `${daysSaved} days`, color: 'text-warning' },
   ];
 
   return (

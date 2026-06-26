@@ -131,7 +131,7 @@ export default function Subscriptions() {
       ) : (
         <PaywallCard
           title="Smart cancellation suggestions"
-          description="Nudge can detect duplicate subscriptions, unused services, and price increases — and help you cancel in one tap."
+          description="Thryve can detect duplicate subscriptions, unused services, and price increases — and help you cancel in one tap."
           onUpgrade={() => {}}
         />
       )}

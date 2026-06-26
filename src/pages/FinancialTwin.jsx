@@ -75,7 +75,7 @@ Be honest but warm. Explain your numbers. Return as JSON.`
         monthly_impact: 0,
         annual_impact: 0,
         goal_impact: 'Not enough data',
-        note: 'The more you use Nudge, the smarter my projections become.',
+        note: 'The more you use Thryve, the smarter my projections become.',
       });
     }
     setLoading(false);

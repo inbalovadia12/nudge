@@ -24,7 +24,7 @@ export default function DataMaturityBar({ weeksIn = 2, label }) {
         />
       </div>
       <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-        {label || 'Nudge is learning your patterns. More insights unlock as your history grows.'}
+        {label || 'Thryve is learning your patterns. More insights unlock as your history grows.'}
       </p>
     </motion.div>
   );

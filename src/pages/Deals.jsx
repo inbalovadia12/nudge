@@ -55,7 +55,7 @@ export default function Deals() {
           <ArrowLeft className="w-4 h-4" /> Insights
         </Link>
         <h1 className="text-2xl font-bold font-heading mb-2">Deal Center</h1>
-        <p className="text-sm text-muted-foreground mb-6">Track any product. Nudge alerts you only when it's genuinely worth buying.</p>
+        <p className="text-sm text-muted-foreground mb-6">Track any product. Thryve alerts you only when it's genuinely worth buying.</p>
 
         <div className="space-y-3 mb-6 blur-sm pointer-events-none select-none">
           {products.slice(0, 2).map((p, i) => (

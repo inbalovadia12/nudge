@@ -50,7 +50,7 @@ export default function ChromeExtensionGuide({ isPremium, onUpgrade }) {
         </div>
         <h3 className="text-xl font-bold text-foreground mb-2">Chrome Extension Setup</h3>
         <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6">
-          The Nudge Chrome Extension unlocks Shopping Shield, website blocking, price tracking, and intelligent spending interventions — directly in your browser. Upgrade to Plus or Pro to access the guided setup.
+          The Thryve Chrome Extension unlocks Spending Guard, website blocking, price tracking, and intelligent spending interventions — directly in your browser. Upgrade to Plus or Pro to access the guided setup.
         </p>
         <button
           onClick={onUpgrade}
@@ -76,7 +76,7 @@ export default function ChromeExtensionGuide({ isPremium, onUpgrade }) {
           <span className="text-xs font-semibold uppercase tracking-wide text-primary">Chrome Extension</span>
         </div>
         <h2 className="text-xl sm:text-2xl font-bold font-heading text-foreground mb-2">
-          Install the Nudge Chrome Extension
+          Install the Thryve Chrome Extension
         </h2>
         <p className="text-sm text-muted-foreground max-w-md">
           Unlock Shopping Shield, website blocking, price tracking, purchase reminders, and intelligent spending interventions directly in Chrome.
@@ -146,7 +146,7 @@ export default function ChromeExtensionGuide({ isPremium, onUpgrade }) {
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-sm font-bold text-primary-foreground bg-primary px-5 py-2 rounded-xl hover:bg-primary/90 transition-colors"
           >
-            Open Nudge <ExternalLink className="w-3.5 h-3.5" />
+            Open Thryve <ExternalLink className="w-3.5 h-3.5" />
           </a>
         ) : (
           <button
@@ -204,7 +204,7 @@ function Step1Download({ downloaded, onDownload }) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground leading-relaxed">
-        Download the Nudge Chrome Extension package from Google Drive. You'll get a ZIP file containing everything needed.
+        Download the Thryve Chrome Extension package from Google Drive. You'll get a ZIP file containing everything needed.
       </p>
 
       {/* Download button */}
@@ -220,7 +220,7 @@ function Step1Download({ downloaded, onDownload }) {
           {downloaded ? <Check className="w-7 h-7 text-success" /> : <Download className="w-7 h-7 text-primary" />}
         </div>
         <div className="text-left flex-1">
-          <p className="text-base font-bold text-foreground">Download Nudge Extension v1.3</p>
+          <p className="text-base font-bold text-foreground">Download Thryve Extension v1.3</p>
           <p className="text-xs text-muted-foreground">
             {downloaded ? 'Downloaded — continue to step 2' : 'Click to open in Google Drive'}
           </p>
@@ -506,7 +506,7 @@ function Step6Pin() {
         </li>
         <li className="flex gap-3">
           <span className="w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
-          Find <span className="font-semibold text-foreground">Nudge v1.3</span>.
+          Find <span className="font-semibold text-foreground">Thryve v1.3</span>.
         </li>
         <li className="flex gap-3">
           <span className="w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
@@ -524,7 +524,7 @@ function Step6Pin() {
             <Pin className="w-3.5 h-3.5 text-primary" />
             <span className="text-[8px] text-primary font-bold">PIN</span>
           </div>
-          <span className="text-[10px] text-muted-foreground">Nudge v1.3</span>
+          <span className="text-[10px] text-muted-foreground">Thryve v1.3</span>
         </div>
       </div>
 
@@ -550,14 +550,14 @@ function Step6Pin() {
         ))}
       </div>
 
-      {/* Open Nudge button */}
+      {/* Open Thryve button */}
       <a
         href={APP_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-4 rounded-2xl text-base font-bold hover:bg-primary/90 transition-colors"
       >
-        Open Nudge <ExternalLink className="w-4 h-4" />
+        Open Thryve <ExternalLink className="w-4 h-4" />
       </a>
     </div>
   );
@@ -584,7 +584,7 @@ function HelpModal({ onClose }) {
     },
     {
       title: 'Can\'t find the pin icon',
-      steps: 'Click the puzzle piece icon in the Chrome toolbar. If Nudge isn\'t listed, the extension may be disabled — enable it from chrome://extensions/.',
+      steps: 'Click the puzzle piece icon in the Chrome toolbar. If Thryve isn\'t listed, the extension may be disabled — enable it from chrome://extensions/.',
     },
   ];
 
