@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Coins } from 'lucide-react';
 
-export default function CreditBadge() {
+export default function CreditBadge({ refreshKey = 0 }) {
   const [left, setLeft] = useState(null);
   const [used, setUsed] = useState(null);
 
@@ -16,7 +16,7 @@ export default function CreditBadge() {
       setUsed(txns.reduce((sum, t) => sum + (t.credits_spent || 0), 0));
     }
     load();
-  }, []);
+  }, [refreshKey]);
 
   if (left === null || used === null) return null;
 

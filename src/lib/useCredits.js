@@ -3,15 +3,16 @@ import { base44 } from '@/api/base44Client';
 export const CREDIT_COSTS = {
   transaction_analysis: 1,
   deep_insight: 2,
+  assistant_message: 1,
   paycheck_wrapped: 2,
   grocery_optimization: 3,
   financial_simulation: 4,
 };
 
 export const PLAN_FEATURES = {
-  free: ['transaction_analysis', 'deep_insight'],
-  plus: ['transaction_analysis', 'deep_insight', 'paycheck_wrapped', 'grocery_optimization'],
-  pro: ['transaction_analysis', 'deep_insight', 'paycheck_wrapped', 'grocery_optimization', 'financial_simulation'],
+  free: ['transaction_analysis', 'deep_insight', 'assistant_message'],
+  plus: ['transaction_analysis', 'deep_insight', 'assistant_message', 'paycheck_wrapped', 'grocery_optimization'],
+  pro: ['transaction_analysis', 'deep_insight', 'assistant_message', 'paycheck_wrapped', 'grocery_optimization', 'financial_simulation'],
 };
 
 export async function getCreditStatus() {

@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { formatCurrency } from '@/lib/nudgeUtils';
 import { getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
 import CreditBadge from '@/components/CreditBadge';
+import { spendCredits } from '@/lib/useCredits';
 import { ArrowLeft, Brain, Send, Loader2, TrendingUp, Sparkles, RotateCcw } from 'lucide-react';
 
 const scenarios = [
@@ -18,10 +19,27 @@ export default function FinancialTwin() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [customQuery, setCustomQuery] = useState('');
+  const [creditRefreshKey, setCreditRefreshKey] = useState(0);
 
   const analyze = async (query) => {
     setLoading(true);
     setResult(null);
+
+    const spend = await spendCredits('financial_simulation');
+    if (!spend.success) {
+      setResult({
+        summary: "You're out of AI credits or your plan doesn't include Financial Twin. Upgrade to Pro to access this feature.",
+        monthly_impact: 0,
+        annual_impact: 0,
+        goal_impact: 'Upgrade required',
+        note: 'Upgrade to Pro for full Financial Twin access.',
+      });
+      setLoading(false);
+      setCreditRefreshKey(k => k + 1);
+      return;
+    }
+    setCreditRefreshKey(k => k + 1);
+
     try {
       const ctx = await getFinancialContext();
       const response = await base44.integrations.Core.InvokeLLM({
@@ -73,7 +91,7 @@ Be honest but warm. Explain your numbers. Return as JSON.`
         <h1 className="text-2xl font-bold font-heading">Financial Twin</h1>
       </div>
       <div className="mb-4">
-        <CreditBadge />
+        <CreditBadge refreshKey={creditRefreshKey} />
       </div>
       <p className="text-sm text-muted-foreground mb-6">Ask "what if" and I'll project the financial impact.</p>
 

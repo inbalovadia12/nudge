@@ -6,6 +6,7 @@ import { getFinancialContext, buildContextString, buildNudgeSystemPrompt } from 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import ConversationList from '@/components/assistant/ConversationList';
 import CreditBadge from '@/components/CreditBadge';
+import { spendCredits } from '@/lib/useCredits';
 import { Send, Mic, Sparkles, Menu } from 'lucide-react';
 
 const NUDGE_GREETING = "Hey — I'm Nudge. Ask me anything about your spending, your goals, or whether something's worth buying. No judgment, just an honest read.";
@@ -18,6 +19,7 @@ export default function Assistant() {
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
   const [showConversations, setShowConversations] = useState(false);
+  const [creditRefreshKey, setCreditRefreshKey] = useState(0);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -153,6 +155,20 @@ export default function Assistant() {
     }
     updateConversationMeta(activeConvId, message);
 
+    const spend = await spendCredits('assistant_message');
+    if (!spend.success) {
+      const errMsg = await base44.entities.ChatMessage.create({
+        conversation_id: activeConvId,
+        role: 'assistant',
+        content: "You're out of AI credits! Upgrade your plan to keep chatting with me.",
+      });
+      setMessages(prev => [...prev, errMsg]);
+      setLoading(false);
+      setCreditRefreshKey(k => k + 1);
+      return;
+    }
+    setCreditRefreshKey(k => k + 1);
+
     try {
       const ctx = await getFinancialContext();
       const contextString = buildContextString(ctx);
@@ -240,7 +256,7 @@ export default function Assistant() {
               <p className="text-xs text-muted-foreground">Ask me anything — no judgment.</p>
             </div>
             <div className="ml-auto">
-              <CreditBadge />
+              <CreditBadge refreshKey={creditRefreshKey} />
             </div>
           </div>
         </div>

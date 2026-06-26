@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { usePremiumStatus } from '@/lib/usePremium';
 import { clearUserDataCache } from '@/lib/nudgeUtils';
-import { ArrowLeft, Check, Crown, Loader2, Zap, Shield, TrendingUp, Brain, Target, Clock, Ticket } from 'lucide-react';
+import { ArrowLeft, Check, Crown, Loader2, Zap, Shield, TrendingUp, Brain, Target, Clock, Ticket, Coins } from 'lucide-react';
 
 const PLANS = {
   plus: {
@@ -13,6 +13,7 @@ const PLANS = {
     monthly: 4.99,
     yearly: 39.99,
     description: 'Everything you need to build better spending habits',
+    credits: 100,
     features: [
       { icon: Shield, label: 'Shopping Shield with app & site blocker' },
       { icon: TrendingUp, label: 'Spending heatmap & paycheck flow' },
@@ -30,6 +31,7 @@ const PLANS = {
     monthly: 9.99,
     yearly: 79.99,
     description: 'Advanced AI tools for deep financial transformation',
+    credits: 500,
     features: [
       { icon: Shield, label: 'Everything in Plus' },
       { icon: Brain, label: 'Financial Twin — AI simulation of your finances' },
@@ -188,6 +190,11 @@ export default function Pricing() {
               </div>
 
               <p className="text-xs text-muted-foreground mb-4 min-h-[32px]">{plan.description}</p>
+
+              <div className="flex items-center gap-1.5 mb-4">
+                <Coins className="w-4 h-4 text-primary" />
+                <span className="text-sm font-bold text-primary">{plan.credits} AI credits/month</span>
+              </div>
 
               <div className="flex items-baseline gap-1 mb-1">
                 <span className="text-4xl font-bold">${price}</span>
