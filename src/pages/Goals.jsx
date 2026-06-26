@@ -1,31 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import GoalCard from '@/components/GoalCard';
 import { goalOptions, getGoalIcon } from '@/lib/nudgeUtils';
+import { useGoalsQuery, useCreateGoal } from '@/lib/useEntityMutations';
 import { Plus, X } from 'lucide-react';
 import ChildHeader from '@/components/ChildHeader';
 
 export default function Goals() {
-  const [goals, setGoals] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: goals = [], isLoading: loading } = useGoalsQuery();
+  const createGoal = useCreateGoal();
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState('');
   const [newIcon, setNewIcon] = useState('plane');
   const [newTarget, setNewTarget] = useState(2000);
 
-  const loadGoals = async () => {
-    const data = await base44.entities.SavingsGoal.filter({ status: 'active' });
-    setGoals(data);
-    setLoading(false);
-  };
-
-  useEffect(() => { loadGoals(); }, []);
-
-  const handleAddGoal = async () => {
+  const handleAddGoal = () => {
     if (!newName.trim()) return;
-    await base44.entities.SavingsGoal.create({
+    createGoal.mutate({
       name: newName.trim(),
       target_amount: newTarget,
       current_amount: 0,
@@ -37,7 +29,6 @@ export default function Goals() {
     setNewName('');
     setNewTarget(2000);
     setNewIcon('plane');
-    loadGoals();
   };
 
   if (loading) {
@@ -139,10 +130,10 @@ export default function Goals() {
 
               <Button
                 onClick={handleAddGoal}
-                disabled={!newName.trim()}
+                disabled={!newName.trim() || createGoal.isPending}
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12"
               >
-                Add goal
+                {createGoal.isPending ? 'Adding...' : 'Add goal'}
               </Button>
             </div>
           </motion.div>

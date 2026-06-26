@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import VerdictCard from '@/components/VerdictCard';
 import { getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
+import { useLogPurchase } from '@/lib/useEntityMutations';
 import { Search, Loader2, Mic } from 'lucide-react';
 
 export default function Check() {
@@ -13,6 +14,8 @@ export default function Check() {
   const [verdict, setVerdict] = useState(null);
   const [error, setError] = useState('');
   const [listening, setListening] = useState(false);
+  const logPurchase = useLogPurchase();
+  const lastVerdictRef = useRef(null);
 
   const isUrl = input.match(/^https?:\/\//i);
 
@@ -92,17 +95,27 @@ Provide exactly 3 supporting detail sentences. Be specific with numbers. Each se
     setLoading(false);
   };
 
-  const handleBuyAnyway = async () => {
+  const handleBuyAnyway = () => {
     if (!verdict) return;
-    await base44.entities.Purchase.create({
-      amount: verdict.price,
-      merchant: verdict.product_name,
-      category: 'shopping',
-      date: new Date().toISOString().split('T')[0],
-      source: 'manual',
-      verdict_id: verdict.id
-    });
-    await base44.entities.PurchaseVerdict.update(verdict.id, { action_taken: 'bought' });
+    lastVerdictRef.current = verdict;
+    logPurchase.mutate(
+      {
+        purchase: {
+          amount: verdict.price,
+          merchant: verdict.product_name,
+          category: 'shopping',
+          purchase_date: new Date().toISOString().split('T')[0],
+          source: 'manual',
+          verdict_id: verdict.id,
+        },
+        verdictId: verdict.id,
+      },
+      {
+        onError: () => {
+          setVerdict(lastVerdictRef.current);
+        },
+      }
+    );
     setVerdict(null);
     setInput('');
     setPrice('');

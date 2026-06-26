@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Outlet, Navigate, Link } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
+import AnimatedOutlet from './AnimatedOutlet';
 import { base44 } from '@/api/base44Client';
 import { clearUserDataCache } from '@/lib/nudgeUtils';
 import Sidebar from './Sidebar';
@@ -66,7 +67,7 @@ export default function Layout() {
             </div>
           </div>
         </div>
-        <Outlet />
+        <AnimatedOutlet />
       </main>
       <BottomNav />
     </div>

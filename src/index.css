@@ -116,9 +116,10 @@
     -webkit-font-smoothing: antialiased;
     overscroll-behavior: none;
   }
-  button, nav, a {
+  button, nav, a, [role="button"], input, select, textarea {
     user-select: none;
     -webkit-user-select: none;
+    touch-action: manipulation;
   }
 }
 
