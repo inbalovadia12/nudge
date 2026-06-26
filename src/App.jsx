@@ -38,6 +38,13 @@ import PlaidSandbox from '@/pages/PlaidSandbox';
 import Calculators from '@/pages/Calculators';
 import DealFinder from '@/pages/DealFinder';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
+import Landing from '@/pages/Landing';
+import About from '@/pages/About';
+import Contact from '@/pages/Contact';
+import Terms from '@/pages/Terms';
+import ManageMoneyBeginners from '@/pages/blog/ManageMoneyBeginners';
+import WhyBudgetingAppsFail from '@/pages/blog/WhyBudgetingAppsFail';
+import SimpleMoneyHabits from '@/pages/blog/SimpleMoneyHabits';
 import Splash from '@/components/Splash';
 import { ThemeProvider } from 'next-themes';
 
@@ -55,7 +62,13 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/blog/manage-money-beginners" element={<ManageMoneyBeginners />} />
+              <Route path="/blog/why-budgeting-apps-fail" element={<WhyBudgetingAppsFail />} />
+              <Route path="/blog/simple-money-habits" element={<SimpleMoneyHabits />} />
+              <Route element={<ProtectedRoute unauthenticatedElement={<Landing />} />}>
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route element={<Layout />}>
                   <Route path="/" element={<Home />} />
