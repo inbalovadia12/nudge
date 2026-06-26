@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
         is_premium: true,
         subscription_status: 'active',
         subscription_plan: 'pro',
-        credits_balance: 999
+        credits_balance: 500
       });
       return Response.json({ success: true, profile: updated });
     } else {
@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
         is_premium: true,
         subscription_status: 'active',
         subscription_plan: 'pro',
-        credits_balance: 999,
+        credits_balance: 500,
         onboarding_complete: false
       });
       return Response.json({ success: true, profile: created });
