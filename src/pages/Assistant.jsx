@@ -9,7 +9,7 @@ import CreditBadge from '@/components/CreditBadge';
 import { spendCredits } from '@/lib/useCredits';
 import { Send, Mic, Sparkles, Menu } from 'lucide-react';
 
-const NUDGE_GREETING = "Hey — I'm Nudge. Ask me anything about your spending, your goals, or whether something's worth buying. No judgment, just an honest read.";
+const NUDGE_GREETING = "Hey — I'm Thryve. Ask me anything about your spending, your goals, or whether something's worth buying. No judgment, just an honest read.";
 
 export default function Assistant() {
   const [conversations, setConversations] = useState([]);
@@ -175,7 +175,7 @@ export default function Assistant() {
       const recentHistory = messages.slice(-10).map(m => `${m.role}: ${m.content}`).join('\n');
 
       const systemPrompt = buildNudgeSystemPrompt(contextString, {
-        extraRules: `Recent conversation:\n${recentHistory}\n\nThe user's latest message: ${message}\n\nRespond as Nudge:`,
+        extraRules: `Recent conversation:\n${recentHistory}\n\nThe user's latest message: ${message}\n\nRespond as Thryve:`,
       });
 
       const response = await base44.integrations.Core.InvokeLLM({
@@ -252,7 +252,7 @@ export default function Assistant() {
               <Sparkles className="w-5 h-5 text-primary" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-xl font-bold text-foreground">Nudge</h1>
+              <h1 className="text-xl font-bold text-foreground">Thryve</h1>
               <p className="text-xs text-muted-foreground">Ask me anything — no judgment.</p>
             </div>
             <div className="ml-auto">

@@ -23,7 +23,7 @@ export default function PaywallCard({ title = 'Premium feature', description = '
         <Crown className="w-7 h-7 text-primary" />
       </motion.div>
       <div className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-3">
-        <Sparkles className="w-3 h-3" /> Nudge Premium
+        <Sparkles className="w-3 h-3" /> Thryve Premium
       </div>
       <h3 className="text-lg font-bold text-foreground mb-1">{title}</h3>
       <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{description}</p>
