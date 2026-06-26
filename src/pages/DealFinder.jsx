@@ -6,7 +6,7 @@ import { spendCredits } from '@/lib/useCredits';
 import { base44 } from '@/api/base44Client';
 import CreditBadge from '@/components/CreditBadge';
 import PaywallCard from '@/components/PaywallCard';
-import { ArrowLeft, Search, Loader2, Sparkles, TrendingDown, Store, Tag, AlertTriangle, ExternalLink, RotateCcw, ShoppingCart, MapPin, Check } from 'lucide-react';
+import { ArrowLeft, Search, Loader2, Sparkles, TrendingDown, Store, Tag, AlertTriangle, ExternalLink, RotateCcw, ShoppingCart, MapPin, Check, Crosshair } from 'lucide-react';
 
 const SUGGESTIONS = [
   '27 inch OLED TV',
@@ -37,6 +37,8 @@ export default function DealFinder() {
   const [profile, setProfile] = useState(null);
   const [country, setCountry] = useState('');
   const [editingLocation, setEditingLocation] = useState(false);
+  const [detecting, setDetecting] = useState(false);
+  const [locationError, setLocationError] = useState('');
 
   useEffect(() => {
     base44.entities.UserProfile.list().then(profiles => {
@@ -53,6 +55,39 @@ export default function DealFinder() {
       setProfile({ ...profile, country: country.trim() });
       setEditingLocation(false);
     } catch {}
+  };
+
+  const detectLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError('Geolocation is not supported by your browser');
+      return;
+    }
+    setDetecting(true);
+    setLocationError('');
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+          const data = await res.json();
+          const parts = [data.city || data.locality, data.countryName].filter(Boolean);
+          const locationStr = parts.join(', ') || `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
+          setCountry(locationStr);
+          if (profile) {
+            await base44.entities.UserProfile.update(profile.id, { country: locationStr });
+            setProfile({ ...profile, country: locationStr });
+          }
+        } catch {
+          setCountry(`${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
+        }
+        setDetecting(false);
+      },
+      (err) => {
+        setLocationError(err.message || 'Unable to detect location. Please enter it manually.');
+        setDetecting(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   };
 
   const search = async (searchQuery) => {
@@ -78,8 +113,8 @@ export default function DealFinder() {
 
     try {
       const locationContext = userCountry
-        ? `The user is located in ${userCountry}. Only find deals from retailers that ship to or operate in ${userCountry}. Use local retailers and Amazon ${userCountry} where available. All prices must be in the local currency of ${userCountry} (or USD if that's standard there).`
-        : 'The user has not specified their location. Find deals from major US retailers like Amazon, Walmart, Best Buy, and Target. Prices in USD.';
+        ? `The user is located in ${userCountry}. Only find ONLINE deals from retailers that SHIP to this location. Prioritize local online retailers based in the user's country and the local Amazon site (e.g. amazon.co.uk for UK, amazon.de for Germany, amazon.co.il for Israel, amazon.com for US). All prices must be in the local currency of the user's country.`
+        : 'The user has not specified their location. Find online deals from major US retailers like Amazon, Walmart, Best Buy, and Target. Prices in USD.';
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: `You are Nudge's AI Deal Finder. The user wants to buy: "${q}"
@@ -240,16 +275,22 @@ Return JSON with this exact structure:
           </>
         ) : (
           <>
-            <span className="text-sm text-foreground flex-1">
-              {country || profile?.country || 'Set your location for local deals'}
+            <span className="text-sm text-foreground flex-1 truncate">
+              {detecting ? 'Detecting your location...' : (country || profile?.country || 'Set your location for local deals')}
             </span>
+            <button onClick={detectLocation} disabled={detecting}
+              className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors flex-shrink-0 disabled:opacity-50"
+              title="Use my location">
+              {detecting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Crosshair className="w-3.5 h-3.5" />}
+            </button>
             <button onClick={() => { setCountry(country || profile?.country || ''); setEditingLocation(true); }}
               className="text-xs text-primary hover:underline flex-shrink-0">
-              {country || profile?.country ? 'Change' : 'Set location'}
+              {country || profile?.country ? 'Change' : 'Set'}
             </button>
           </>
         )}
       </div>
+      {locationError && <p className="text-xs text-danger mb-2 -mt-2">{locationError}</p>}
 
       {/* Search bar */}
       <div className="flex gap-2 mb-4">
