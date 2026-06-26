@@ -27,6 +27,89 @@ function safeNum(v) {
   return 0;
 }
 
+const TIMEZONE_TO_COUNTRY = {
+  'Asia/Jerusalem': 'Israel',
+  'America/New_York': 'United States', 'America/Los_Angeles': 'United States',
+  'America/Chicago': 'United States', 'America/Denver': 'United States',
+  'America/Phoenix': 'United States', 'America/Anchorage': 'United States',
+  'Europe/London': 'United Kingdom', 'Europe/Dublin': 'Ireland',
+  'Europe/Paris': 'France', 'Europe/Berlin': 'Germany', 'Europe/Madrid': 'Spain',
+  'Europe/Rome': 'Italy', 'Europe/Amsterdam': 'Netherlands', 'Europe/Brussels': 'Belgium',
+  'Europe/Vienna': 'Austria', 'Europe/Stockholm': 'Sweden', 'Europe/Oslo': 'Norway',
+  'Europe/Copenhagen': 'Denmark', 'Europe/Helsinki': 'Finland', 'Europe/Warsand': 'Poland',
+  'Europe/Athens': 'Greece', 'Europe/Lisbon': 'Portugal', 'Europe/Zurich': 'Switzerland',
+  'Europe/Prague': 'Czech Republic', 'Europe/Istanbul': 'Turkey',
+  'America/Toronto': 'Canada', 'America/Vancouver': 'Canada', 'America/Montreal': 'Canada',
+  'Australia/Sydney': 'Australia', 'Australia/Melbourne': 'Australia', 'Australia/Brisbane': 'Australia',
+  'Asia/Tokyo': 'Japan', 'Asia/Singapore': 'Singapore', 'Asia/Seoul': 'South Korea',
+  'Asia/Kolkata': 'India', 'Asia/Dubai': 'United Arab Emirates', 'Asia/Riyadh': 'Saudi Arabia',
+  'Asia/Bangkok': 'Thailand', 'Asia/Hong_Kong': 'Hong Kong', 'Asia/Shanghai': 'China',
+  'America/Sao_Paulo': 'Brazil', 'America/Mexico_City': 'Mexico',
+  'America/Buenos_Aires': 'Argentina', 'America/Bogota': 'Colombia', 'America/Lima': 'Peru',
+  'Pacific/Auckland': 'New Zealand',
+};
+
+function detectCountryFromTimezone() {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    return TIMEZONE_TO_COUNTRY[tz] || null;
+  } catch { return null; }
+}
+
+function getAmazonDomain(country) {
+  if (!country) return 'amazon.com';
+  const c = country.toLowerCase();
+  if (c.includes('israel')) return 'amazon.co.il';
+  if (c.includes('united kingdom') || c.includes('uk') || c.includes('britain')) return 'amazon.co.uk';
+  if (c.includes('germany') || c.includes('deutschland')) return 'amazon.de';
+  if (c.includes('france')) return 'amazon.fr';
+  if (c.includes('canada')) return 'amazon.ca';
+  if (c.includes('australia')) return 'amazon.com.au';
+  if (c.includes('spain') || c.includes('españa')) return 'amazon.es';
+  if (c.includes('italy') || c.includes('italia')) return 'amazon.it';
+  if (c.includes('japan')) return 'amazon.co.jp';
+  if (c.includes('india')) return 'amazon.in';
+  if (c.includes('mexico')) return 'amazon.com.mx';
+  if (c.includes('brazil') || c.includes('brasil')) return 'amazon.com.br';
+  if (c.includes('netherlands') || c.includes('nederland')) return 'amazon.nl';
+  if (c.includes('saudi')) return 'amazon.sa';
+  if (c.includes('emirates') || c.includes('uae')) return 'amazon.ae';
+  if (c.includes('turkey') || c.includes('türkiye')) return 'amazon.com.tr';
+  if (c.includes('singapore')) return 'amazon.sg';
+  return 'amazon.com';
+}
+
+function getStoreSearchUrl(store, productName, country) {
+  const s = (store || '').toLowerCase();
+  const q = encodeURIComponent(productName || '');
+  const amz = getAmazonDomain(country);
+
+  if (s.includes('amazon')) return `https://www.${amz}/s?k=${q}`;
+  if (s.includes('walmart')) return `https://www.walmart.com/search?q=${q}`;
+  if (s.includes('best buy') || s.includes('bestbuy')) return `https://www.bestbuy.com/site/searchpage.jsp?st=${q}`;
+  if (s.includes('target')) return `https://www.target.com/s?searchTerm=${q}`;
+  if (s.includes('ebay')) return `https://www.ebay.com/sch/i.html?_nkw=${q}`;
+  if (s.includes('newegg')) return `https://www.newegg.com/p/pl?d=${q}`;
+  if (s.includes('costco')) return `https://www.costco.com/CatalogSearch?dept=All&keyword=${q}`;
+  if (s.includes('argos')) return `https://www.argos.co.uk/search/${q}/`;
+  if (s.includes('currys')) return `https://www.currys.co.uk/search?q=${q}`;
+  if (s.includes('john lewis')) return `https://www.johnlewis.com/search?search-term=${q}`;
+  if (s.includes('kaufland')) return `https://www.kaufland.de/search?search_input=${q}`;
+  if (s.includes('otto') && !s.includes('ottolenghi')) return `https://www.otto.de/suche/${q}/`;
+  if (s.includes('media markt')) return `https://www.mediamarkt.de/de/search.html?query=${q}`;
+  if (s.includes('cdiscount')) return `https://www.cdiscount.com/s/0/${q}.html`;
+  if (s.includes('fnac')) return `https://www.fnac.com/SearchResult/ResultList.aspx?Search=${q}`;
+  if (s.includes('alza')) return `https://www.alza.co.uk/search.htm?exps=${q}`;
+  if (s.includes('aliexpress')) return `https://www.aliexpress.com/wholesale?SearchText=${q}`;
+  if (s.includes('etsy')) return `https://www.etsy.com/search?q=${q}`;
+  if (s.includes('ikea')) return `https://www.ikea.com/search/?q=${q}`;
+  if (s.includes('b&h') || s.includes('bh photo')) return `https://www.bhphotovideo.com/c/search?Ntt=${q}`;
+  if (s.includes('adorama')) return `https://www.adorama.com/searchsite?searchterm=${q}`;
+
+  // Unknown store — Google Shopping search for that store + product
+  return `https://www.google.com/search?q=${encodeURIComponent(store + ' ' + (productName || ''))}&tbm=shop`;
+}
+
 export default function DealFinder() {
   const { isPremium, loading } = usePremiumStatus();
   const [query, setQuery] = useState('');
@@ -39,6 +122,7 @@ export default function DealFinder() {
   const [editingLocation, setEditingLocation] = useState(false);
   const [detecting, setDetecting] = useState(false);
   const [locationError, setLocationError] = useState('');
+  const userCountry = (country.trim() || profile?.country || '').trim();
 
   useEffect(() => {
     base44.entities.UserProfile.list().then(profiles => {
@@ -108,27 +192,39 @@ export default function DealFinder() {
   const detectLocationIP = async () => {
     setDetecting(true);
     setLocationError('');
+
+    // Try IP geolocation first
     try {
       const res = await fetch('https://ipwho.is/');
       const data = await res.json();
-      if (!data.success && data.success !== undefined) throw new Error(data.message || 'IP lookup failed');
-      const parts = [data.city, data.country].filter(Boolean);
-      const locationStr = parts.join(', ') || data.country_code || 'Unknown';
-      await saveLocation(locationStr);
-    } catch {
-      try {
-        const res2 = await fetch('https://freeipapi.com/api/json');
-        const data2 = await res2.json();
-        const parts = [data2.cityName, data2.countryName].filter(Boolean);
-        if (parts.length) {
-          await saveLocation(parts.join(', '));
-        } else {
-          setLocationError('Could not auto-detect location. Please enter it manually.');
-        }
-      } catch {
-        setLocationError('Could not auto-detect location. Please enter it manually.');
+      if (data.success !== false) {
+        const parts = [data.city, data.country].filter(Boolean);
+        const locationStr = parts.join(', ') || data.country_code;
+        if (locationStr) { await saveLocation(locationStr); setDetecting(false); return; }
       }
+    } catch {}
+
+    // Fallback: use browser timezone to determine country (very reliable)
+    const tzCountry = detectCountryFromTimezone();
+    if (tzCountry) {
+      await saveLocation(tzCountry);
+      setDetecting(false);
+      return;
     }
+
+    // Last resort: second IP service
+    try {
+      const res2 = await fetch('https://freeipapi.com/api/json');
+      const data2 = await res2.json();
+      const parts = [data2.cityName, data2.countryName].filter(Boolean);
+      if (parts.length) {
+        await saveLocation(parts.join(', '));
+        setDetecting(false);
+        return;
+      }
+    } catch {}
+
+    setLocationError('Could not auto-detect location. Please enter it manually.');
     setDetecting(false);
   };
 
@@ -137,7 +233,7 @@ export default function DealFinder() {
     if (!q || searching) return;
     if (!isPremium) return;
 
-    const userCountry = country.trim() || profile?.country || '';
+    const loc = userCountry;
 
     setSearching(true);
     setError('');
@@ -154,38 +250,37 @@ export default function DealFinder() {
     setCreditRefreshKey(k => k + 1);
 
     try {
-      const locationContext = userCountry
-        ? `The user is located in ${userCountry}. ABSOLUTE REQUIREMENT: Every single retailer and deal you return MUST ship to ${userCountry}. Do NOT include any retailer that does not deliver to this location. Use the local Amazon domain (amazon.co.uk for UK, amazon.de for Germany, amazon.co.il for Israel, amazon.com for US, amazon.ca for Canada, amazon.com.au for Australia, etc.) and local online stores based in or shipping to ${userCountry}. All prices in the local currency.`
-        : 'The user has not specified their location. Find online deals from major US retailers like Amazon, Walmart, Best Buy, and Target. Prices in USD.';
+      const locationContext = loc
+        ? `The user is located in ${loc}. Only return deals from retailers that SHIP to ${loc}. Prioritize local stores based in ${loc} and the local Amazon site. All prices in the local currency of ${loc}.`
+        : 'The user has not specified their location. Find online deals from major US retailers. Prices in USD.';
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: `You are Nudge's AI Deal Finder. The user wants to buy: "${q}"
 
 ${locationContext}
 
-Search the web RIGHT NOW for this exact product (or the closest match). Find at least 3-4 real retailers selling it with current prices. Look at Amazon, major local retailers, and specialist stores.
+Search the web for this exact product (or the closest match). Find at least 3-4 real retailers selling it with current prices.
 
 CRITICAL RULES:
 1. Only return REAL products from REAL stores with REAL prices you found in your web search.
-2. Every store name must be an actual retailer (Amazon, Walmart, Best Buy, Target, etc.) — never invent store names.
-3. Every URL must be a real link to the product page on that retailer's website. Do NOT make up URLs — if you found the product on the store's site, use that URL.
+2. Every store name must be an actual retailer (e.g. "Amazon", "Walmart", "Best Buy", "Target", "Argos", "MediaMarkt") — never invent store names.
+3. DO NOT include any URL field. We will generate search links from the store name automatically. Just return the store name.
 4. If you cannot find the exact product, return the closest matching product you actually found.
 5. If you genuinely cannot find any results, set best_option to null and explain in the summary.
 6. Prices must reflect what you actually found — do not estimate or guess.
 7. All prices must be numbers (no currency symbols in the price field).
 
 Return JSON with this exact structure:
-- best_option: { product_name (string), price (number), store (string), url (string), in_stock (boolean) } — the cheapest real deal you found, or null
+- best_option: { product_name (string), price (number), store (string), in_stock (boolean) } — the cheapest real deal you found, or null
 - market_average_price (number): average price across the retailers you found
 - estimated_savings (number): market_average_price minus best_option price (0 if no best_option)
 - is_overpriced (boolean): true if the best price is above market average
-- alternatives (array): 2-3 other real deals you found, each { product_name, price, store, url }
+- alternatives (array): 2-3 other real deals you found, each { product_name, price, store }
 - price_prediction: { trend: "rising"|"falling"|"stable", recommendation (string) } — based on seasonality, sales events, or price history
 - price_confidence_score (number 0-100): how confident you are these are current, accurate prices
 - is_grocery (boolean): true if this is a grocery/produce item
-- currency (string): the currency code (e.g. "USD", "GBP", "EUR")
-- ships_to_location (boolean): MUST be true for every result — only include retailers that ship to ${userCountry || 'the user location'}
-- summary (string): 2-3 sentence summary of what you found and your recommendation. Mention if any stores do NOT ship to the user's location.`,
+- currency (string): the currency code (e.g. "USD", "GBP", "EUR", "ILS")
+- summary (string): 2-3 sentence summary of what you found and your recommendation.`,
         add_context_from_internet: true,
         model: 'gemini_3_1_pro',
         response_json_schema: {
@@ -197,7 +292,6 @@ Return JSON with this exact structure:
                 product_name: { type: 'string' },
                 price: { type: 'number' },
                 store: { type: 'string' },
-                url: { type: 'string' },
                 in_stock: { type: 'boolean' },
               },
             },
@@ -212,7 +306,6 @@ Return JSON with this exact structure:
                   product_name: { type: 'string' },
                   price: { type: 'number' },
                   store: { type: 'string' },
-                  url: { type: 'string' },
                 },
               },
             },
@@ -428,10 +521,10 @@ Return JSON with this exact structure:
                     <span className="text-[10px] font-bold bg-danger/10 text-danger px-2 py-1 rounded-full">OUT OF STOCK</span>
                   )}
                 </div>
-                {results.best_option.url && results.best_option.url.startsWith('http') && (
-                  <a href={results.best_option.url} target="_blank" rel="noopener noreferrer"
+                {results.best_option.store && (
+                  <a href={getStoreSearchUrl(results.best_option.store, results.best_option.product_name, userCountry)} target="_blank" rel="noopener noreferrer"
                     className="mt-3 inline-flex items-center gap-1 text-xs text-primary hover:underline">
-                    View deal <ExternalLink className="w-3 h-3" />
+                    View on {results.best_option.store} <ExternalLink className="w-3 h-3" />
                   </a>
                 )}
               </div>
@@ -499,8 +592,8 @@ Return JSON with this exact structure:
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <span className="text-sm font-bold text-success">{fmtPrice(alt.price)}</span>
-                        {alt.url && alt.url.startsWith('http') && (
-                          <a href={alt.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                        {alt.store && (
+                          <a href={getStoreSearchUrl(alt.store, alt.product_name, userCountry)} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                             <ExternalLink className="w-3.5 h-3.5" />
                           </a>
                         )}
