@@ -34,6 +34,18 @@ Deno.serve(async (req) => {
           subscription_status: 'active',
         };
 
+        // Set AI credits based on plan: Plus = 100, Pro = 500
+        const plan = profile.subscription_plan || '';
+        if (plan.startsWith('plus')) {
+          updates.credits_balance = 100;
+          updates.plan_type = 'plus';
+          updates.subscription_plan = 'plus';
+        } else if (plan.startsWith('pro')) {
+          updates.credits_balance = 500;
+          updates.plan_type = 'pro';
+          updates.subscription_plan = 'pro';
+        }
+
         // Store subscription IDs for matching future canceled/expired webhooks
         for (const lineItem of order.lineItems) {
           if (lineItem.subscriptionInfo) {
