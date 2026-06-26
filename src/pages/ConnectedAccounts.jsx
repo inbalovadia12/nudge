@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency, clearUserDataCache } from '@/lib/nudgeUtils';
 import { ArrowLeft, Landmark, RefreshCw, Trash2, Loader2, AlertCircle, Wallet, Building2, TrendingUp, TrendingDown, Check, Link2, PiggyBank } from 'lucide-react';
+import GoogleCalendarSync from '@/components/GoogleCalendarSync';
 
 export default function ConnectedAccounts() {
   const navigate = useNavigate();
@@ -122,6 +123,9 @@ export default function ConnectedAccounts() {
           <p className="text-sm text-foreground">{error}</p>
         </div>
       )}
+
+      {/* Google Calendar sync */}
+      <GoogleCalendarSync />
 
       {/* Monthly Income — editable */}
       <div className="rounded-2xl border border-border bg-card p-5 mb-6">
