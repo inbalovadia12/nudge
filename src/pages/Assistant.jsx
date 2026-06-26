@@ -180,7 +180,6 @@ export default function Assistant() {
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: systemPrompt,
-        model: 'claude_sonnet_4_6',
       });
 
       const aiContent = typeof response === 'string' ? response : (response?.content || String(response));
