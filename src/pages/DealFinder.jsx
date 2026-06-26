@@ -57,9 +57,20 @@ export default function DealFinder() {
     } catch {}
   };
 
-  const detectLocation = () => {
+  const saveLocation = async (locationStr) => {
+    setCountry(locationStr);
+    if (profile) {
+      try {
+        await base44.entities.UserProfile.update(profile.id, { country: locationStr });
+        setProfile({ ...profile, country: locationStr });
+      } catch {}
+    }
+  };
+
+  const detectLocationGPS = () => {
     if (!navigator.geolocation) {
-      setLocationError('Geolocation is not supported by your browser');
+      setLocationError('GPS not supported — using IP location instead');
+      detectLocationIP();
       return;
     }
     setDetecting(true);
@@ -72,22 +83,49 @@ export default function DealFinder() {
           const data = await res.json();
           const parts = [data.city || data.locality, data.countryName].filter(Boolean);
           const locationStr = parts.join(', ') || `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
-          setCountry(locationStr);
-          if (profile) {
-            await base44.entities.UserProfile.update(profile.id, { country: locationStr });
-            setProfile({ ...profile, country: locationStr });
-          }
+          await saveLocation(locationStr);
         } catch {
-          setCountry(`${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
+          await saveLocation(`${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
         }
         setDetecting(false);
       },
       (err) => {
-        setLocationError(err.message || 'Unable to detect location. Please enter it manually.');
         setDetecting(false);
+        // Fall back to IP-based geolocation when GPS is denied or fails
+        detectLocationIP();
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
+  };
+
+  const detectLocationIP = async () => {
+    setDetecting(true);
+    setLocationError('');
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      if (data.error) throw new Error(data.reason || 'IP lookup failed');
+      const parts = [data.city, data.country_name].filter(Boolean);
+      const locationStr = parts.join(', ') || data.country_code || 'Unknown';
+      await saveLocation(locationStr);
+    } catch {
+      try {
+        const res2 = await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=0&longitude=0&localityLanguage=en');
+        // Fallback to BigDataCloud's IP-based endpoint
+        const res3 = await fetch('https://api.bigdatacloud.net/data/ip-geolocation?key=');
+        const data3 = await res3.json();
+        const loc = data3.location;
+        const parts = [loc?.city, loc?.country?.name].filter(Boolean);
+        if (parts.length) {
+          await saveLocation(parts.join(', '));
+        } else {
+          setLocationError('Could not auto-detect location. Please enter it manually.');
+        }
+      } catch {
+        setLocationError('Could not auto-detect location. Please enter it manually.');
+      }
+    }
+    setDetecting(false);
   };
 
   const search = async (searchQuery) => {
@@ -144,7 +182,7 @@ Return JSON with this exact structure:
 - currency (string): the currency code (e.g. "USD", "GBP", "EUR")
 - summary (string): 2-3 sentence summary of what you found and your recommendation`,
         add_context_from_internet: true,
-        model: 'gemini_3_flash',
+        model: 'gemini_3_1_pro',
         response_json_schema: {
           type: 'object',
           properties: {
@@ -278,7 +316,7 @@ Return JSON with this exact structure:
             <span className="text-sm text-foreground flex-1 truncate">
               {detecting ? 'Detecting your location...' : (country || profile?.country || 'Set your location for local deals')}
             </span>
-            <button onClick={detectLocation} disabled={detecting}
+            <button onClick={detectLocationGPS} disabled={detecting}
               className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors flex-shrink-0 disabled:opacity-50"
               title="Use my location">
               {detecting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Crosshair className="w-3.5 h-3.5" />}
