@@ -5,6 +5,9 @@
     "first_name": {
       "type": "string"
     },
+    "country": {
+      "type": "string"
+    },
     "monthly_income": {
       "type": "number"
     },

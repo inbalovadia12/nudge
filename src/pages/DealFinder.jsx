@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { usePremiumStatus } from '@/lib/usePremium';
@@ -6,7 +6,7 @@ import { spendCredits } from '@/lib/useCredits';
 import { base44 } from '@/api/base44Client';
 import CreditBadge from '@/components/CreditBadge';
 import PaywallCard from '@/components/PaywallCard';
-import { ArrowLeft, Search, Loader2, Sparkles, TrendingDown, Store, Tag, AlertTriangle, ExternalLink, RotateCcw, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Search, Loader2, Sparkles, TrendingDown, Store, Tag, AlertTriangle, ExternalLink, RotateCcw, ShoppingCart, MapPin, Check } from 'lucide-react';
 
 const SUGGESTIONS = [
   '27 inch OLED TV',
@@ -17,6 +17,16 @@ const SUGGESTIONS = [
   'Air fryer',
 ];
 
+function safeNum(v) {
+  if (typeof v === 'number') return v;
+  if (typeof v === 'string') {
+    const cleaned = v.replace(/[^0-9.]/g, '');
+    const n = parseFloat(cleaned);
+    return isNaN(n) ? 0 : n;
+  }
+  return 0;
+}
+
 export default function DealFinder() {
   const { isPremium, loading } = usePremiumStatus();
   const [query, setQuery] = useState('');
@@ -24,12 +34,33 @@ export default function DealFinder() {
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState('');
   const [creditRefreshKey, setCreditRefreshKey] = useState(0);
+  const [profile, setProfile] = useState(null);
+  const [country, setCountry] = useState('');
+  const [editingLocation, setEditingLocation] = useState(false);
+
+  useEffect(() => {
+    base44.entities.UserProfile.list().then(profiles => {
+      const p = profiles[0];
+      setProfile(p);
+      if (p?.country) setCountry(p.country);
+    }).catch(() => {});
+  }, []);
+
+  const saveCountry = async () => {
+    if (!profile || !country.trim()) return;
+    try {
+      await base44.entities.UserProfile.update(profile.id, { country: country.trim() });
+      setProfile({ ...profile, country: country.trim() });
+      setEditingLocation(false);
+    } catch {}
+  };
 
   const search = async (searchQuery) => {
     const q = (searchQuery || query).trim();
     if (!q || searching) return;
-
     if (!isPremium) return;
+
+    const userCountry = country.trim() || profile?.country || '';
 
     setSearching(true);
     setError('');
@@ -46,32 +77,44 @@ export default function DealFinder() {
     setCreditRefreshKey(k => k + 1);
 
     try {
+      const locationContext = userCountry
+        ? `The user is located in ${userCountry}. Only find deals from retailers that ship to or operate in ${userCountry}. Use local retailers and Amazon ${userCountry} where available. All prices must be in the local currency of ${userCountry} (or USD if that's standard there).`
+        : 'The user has not specified their location. Find deals from major US retailers like Amazon, Walmart, Best Buy, and Target. Prices in USD.';
+
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are Nudge, a smart deal-finding assistant. The user wants to buy: "${q}"
+        prompt: `You are Nudge's AI Deal Finder. The user wants to buy: "${q}"
 
-Search the web for the best available deals on this product. Find real, current prices from real retailers. 
+${locationContext}
 
-Return your findings as JSON with this structure:
-- best_option: { product_name, price, store, url, in_stock (boolean) }
-- market_average_price (number): the typical market price for this product
-- estimated_savings (number): how much the user saves vs market average
-- is_overpriced (boolean): true if the best price seems suspiciously high
-- alternatives (array of { product_name, price, store, url }): 2-3 cheaper alternatives or similar products
-- price_prediction: { trend ("rising"|"falling"|"stable"), recommendation (string) }
-- price_confidence_score (number 0-100): how confident you are in these prices
+Search the web RIGHT NOW for this exact product (or the closest match). Find at least 3-4 real retailers selling it with current prices. Look at Amazon, major local retailers, and specialist stores.
+
+CRITICAL RULES:
+1. Only return REAL products from REAL stores with REAL prices you found in your web search.
+2. Every store name must be an actual retailer (Amazon, Walmart, Best Buy, Target, etc.) — never invent store names.
+3. Every URL must be a real link to the product page on that retailer's website. Do NOT make up URLs — if you found the product on the store's site, use that URL.
+4. If you cannot find the exact product, return the closest matching product you actually found.
+5. If you genuinely cannot find any results, set best_option to null and explain in the summary.
+6. Prices must reflect what you actually found — do not estimate or guess.
+7. All prices must be numbers (no currency symbols in the price field).
+
+Return JSON with this exact structure:
+- best_option: { product_name (string), price (number), store (string), url (string), in_stock (boolean) } — the cheapest real deal you found, or null
+- market_average_price (number): average price across the retailers you found
+- estimated_savings (number): market_average_price minus best_option price (0 if no best_option)
+- is_overpriced (boolean): true if the best price is above market average
+- alternatives (array): 2-3 other real deals you found, each { product_name, price, store, url }
+- price_prediction: { trend: "rising"|"falling"|"stable", recommendation (string) } — based on seasonality, sales events, or price history
+- price_confidence_score (number 0-100): how confident you are these are current, accurate prices
 - is_grocery (boolean): true if this is a grocery/produce item
-- summary (string): 1-2 sentence summary of the deal landscape
-
-For groceries/produce, compare prices per kg/unit across stores and suggest cheaper substitutes.
-For electronics, check multiple retailers and flag suspiciously overpriced listings.
-Be realistic — only return actual products and stores you find. If you can't find the exact item, suggest the closest match.`,
+- currency (string): the currency code (e.g. "USD", "GBP", "EUR")
+- summary (string): 2-3 sentence summary of what you found and your recommendation`,
         add_context_from_internet: true,
         model: 'gemini_3_flash',
         response_json_schema: {
           type: 'object',
           properties: {
             best_option: {
-              type: 'object',
+              type: ['object', 'null'],
               properties: {
                 product_name: { type: 'string' },
                 price: { type: 'number' },
@@ -104,16 +147,40 @@ Be realistic — only return actual products and stores you find. If you can't f
             },
             price_confidence_score: { type: 'number' },
             is_grocery: { type: 'boolean' },
+            currency: { type: 'string' },
             summary: { type: 'string' },
           },
         },
       });
 
+      // Normalize numeric fields
+      if (response) {
+        if (response.market_average_price != null) response.market_average_price = safeNum(response.market_average_price);
+        if (response.estimated_savings != null) response.estimated_savings = safeNum(response.estimated_savings);
+        if (response.price_confidence_score != null) response.price_confidence_score = safeNum(response.price_confidence_score);
+        if (response.best_option) {
+          response.best_option.price = safeNum(response.best_option.price);
+        }
+        if (response.alternatives) {
+          response.alternatives = response.alternatives.map(a => ({ ...a, price: safeNum(a.price) }));
+        }
+      }
+
       setResults(response);
-    } catch {
-      setError("I couldn't search for deals right now. Try again in a moment.");
+    } catch (err) {
+      console.error('Deal finder error:', err);
+      setError("I couldn't complete the search right now. Please try again.");
     }
     setSearching(false);
+  };
+
+  const fmtPrice = (amount) => {
+    const currency = results?.currency || 'USD';
+    try {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount || 0);
+    } catch {
+      return `$${(amount || 0).toFixed(2)}`;
+    }
   };
 
   if (loading) {
@@ -131,7 +198,7 @@ Be realistic — only return actual products and stores you find. If you can't f
             <Search className="w-6 h-6 text-primary" />
             <h1 className="text-2xl font-bold font-heading">AI Deal Finder</h1>
           </div>
-          <p className="text-sm text-muted-foreground">Find the best deals across retailers with AI-powered search.</p>
+          <p className="text-sm text-muted-foreground">Find the best deals across retailers with AI-powered web search.</p>
         </div>
         <PaywallCard title="AI Deal Finder" description="Search any product and get the best current deals, price comparisons across retailers, cheaper alternatives, and price predictions — powered by AI web search." />
       </div>
@@ -150,7 +217,39 @@ Be realistic — only return actual products and stores you find. If you can't f
         </div>
         <CreditBadge refreshKey={creditRefreshKey} />
       </div>
-      <p className="text-sm text-muted-foreground mb-6">Find the best deals across retailers — powered by AI web search.</p>
+      <p className="text-sm text-muted-foreground mb-4">Find the best deals across retailers — powered by AI web search.</p>
+
+      {/* Location bar */}
+      <div className="mb-4 rounded-2xl border border-border bg-card px-4 py-2.5 flex items-center gap-2">
+        <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
+        {editingLocation ? (
+          <>
+            <input
+              type="text"
+              value={country}
+              onChange={e => setCountry(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && saveCountry()}
+              placeholder="e.g. United States, UK, Israel"
+              autoFocus
+              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none min-w-0"
+            />
+            <button onClick={saveCountry} disabled={!country.trim()}
+              className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center disabled:opacity-40 flex-shrink-0">
+              <Check className="w-3.5 h-3.5 text-primary-foreground" />
+            </button>
+          </>
+        ) : (
+          <>
+            <span className="text-sm text-foreground flex-1">
+              {country || profile?.country || 'Set your location for local deals'}
+            </span>
+            <button onClick={() => { setCountry(country || profile?.country || ''); setEditingLocation(true); }}
+              className="text-xs text-primary hover:underline flex-shrink-0">
+              {country || profile?.country ? 'Change' : 'Set location'}
+            </button>
+          </>
+        )}
+      </div>
 
       {/* Search bar */}
       <div className="flex gap-2 mb-4">
@@ -193,7 +292,7 @@ Be realistic — only return actual products and stores you find. If you can't f
           <div className="w-16 h-16 rounded-3xl bg-primary/15 flex items-center justify-center mb-4">
             <Search className="w-8 h-8 text-primary animate-pulse" />
           </div>
-          <p className="text-sm text-muted-foreground">Searching the web for the best deals...</p>
+          <p className="text-sm text-muted-foreground">Searching the web for the best deals{country ? ` in ${country}` : ''}...</p>
         </motion.div>
       )}
 
@@ -224,7 +323,7 @@ Be realistic — only return actual products and stores you find. If you can't f
             </div>
 
             {/* Best option */}
-            {results.best_option && (
+            {results.best_option ? (
               <div className="rounded-3xl border-2 border-primary/30 bg-primary/5 p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-6 h-6 rounded-lg bg-primary/15 flex items-center justify-center">
@@ -233,9 +332,9 @@ Be realistic — only return actual products and stores you find. If you can't f
                   <span className="text-xs font-bold text-primary uppercase tracking-wide">Best Deal Found</span>
                 </div>
                 <h3 className="text-base font-bold text-foreground mb-2">{results.best_option.product_name}</h3>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 flex-wrap">
                   <div>
-                    <p className="text-2xl font-bold text-primary">${results.best_option.price?.toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-primary">{fmtPrice(results.best_option.price)}</p>
                   </div>
                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                     <Store className="w-4 h-4" />
@@ -245,12 +344,17 @@ Be realistic — only return actual products and stores you find. If you can't f
                     <span className="text-[10px] font-bold bg-danger/10 text-danger px-2 py-1 rounded-full">OUT OF STOCK</span>
                   )}
                 </div>
-                {results.best_option.url && (
+                {results.best_option.url && results.best_option.url.startsWith('http') && (
                   <a href={results.best_option.url} target="_blank" rel="noopener noreferrer"
                     className="mt-3 inline-flex items-center gap-1 text-xs text-primary hover:underline">
                     View deal <ExternalLink className="w-3 h-3" />
                   </a>
                 )}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-warning/30 bg-warning/5 p-5 text-center">
+                <AlertTriangle className="w-8 h-8 text-warning mx-auto mb-2" />
+                <p className="text-sm text-foreground">No exact match found. Check the alternatives below or try a more specific search term.</p>
               </div>
             )}
 
@@ -258,17 +362,17 @@ Be realistic — only return actual products and stores you find. If you can't f
             <div className="grid grid-cols-3 gap-3">
               <div className="rounded-2xl border border-border bg-card p-3 text-center">
                 <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Market avg</p>
-                <p className="text-sm font-bold text-foreground mt-1">${results.market_average_price?.toFixed(2)}</p>
+                <p className="text-sm font-bold text-foreground mt-1">{fmtPrice(results.market_average_price)}</p>
               </div>
               <div className="rounded-2xl border border-border bg-card p-3 text-center">
                 <p className="text-[10px] uppercase tracking-wide text-muted-foreground">You save</p>
-                <p className="text-sm font-bold text-success mt-1">${results.estimated_savings?.toFixed(2)}</p>
+                <p className="text-sm font-bold text-success mt-1">{fmtPrice(results.estimated_savings)}</p>
               </div>
               <div className="rounded-2xl border border-border bg-card p-3 text-center">
                 <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Confidence</p>
-                <p className="text-sm font-bold text-foreground mt-1">{results.price_confidence_score}%
+                <p className="text-sm font-bold text-foreground mt-1">{Math.round(results.price_confidence_score)}%
                   <span className="block w-full h-1 bg-surface-3 rounded-full mt-1.5 overflow-hidden">
-                    <span className="block h-full bg-primary rounded-full" style={{ width: `${results.price_confidence_score}%` }} />
+                    <span className="block h-full bg-primary rounded-full" style={{ width: `${Math.min(100, Math.max(0, results.price_confidence_score))}%` }} />
                   </span>
                 </p>
               </div>
@@ -299,7 +403,7 @@ Be realistic — only return actual products and stores you find. If you can't f
             {/* Alternatives */}
             {results.alternatives && results.alternatives.length > 0 && (
               <div className="rounded-3xl border border-border bg-card p-5">
-                <h3 className="text-sm font-semibold mb-3">Cheaper alternatives</h3>
+                <h3 className="text-sm font-semibold mb-3">Other deals found</h3>
                 <div className="space-y-2">
                   {results.alternatives.map((alt, i) => (
                     <div key={i} className="flex items-center justify-between rounded-xl bg-surface-2 px-3 py-2.5">
@@ -310,8 +414,8 @@ Be realistic — only return actual products and stores you find. If you can't f
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="text-sm font-bold text-success">${alt.price?.toFixed(2)}</span>
-                        {alt.url && (
+                        <span className="text-sm font-bold text-success">{fmtPrice(alt.price)}</span>
+                        {alt.url && alt.url.startsWith('http') && (
                           <a href={alt.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                             <ExternalLink className="w-3.5 h-3.5" />
                           </a>
