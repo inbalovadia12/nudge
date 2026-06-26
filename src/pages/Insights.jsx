@@ -10,7 +10,7 @@ import HabitCard from '@/components/HabitCard';
 import BillItem from '@/components/BillItem';
 import DataMaturityBar from '@/components/DataMaturityBar';
 import PaywallScreen from '@/components/PaywallScreen';
-import { Wallet, CalendarDays, TrendingUp, User, Tag, ChevronRight, AlertTriangle, Heart, Brain, Calendar, Droplets, Crown } from 'lucide-react';
+import { Wallet, CalendarDays, TrendingUp, User, Tag, ChevronRight, AlertTriangle, Heart, Brain, Calendar, Droplets, Crown, Calculator, Search } from 'lucide-react';
 
 export default function Insights() {
   const { isPremium, profile, loading } = usePremiumStatus();
@@ -60,6 +60,8 @@ export default function Insights() {
     { label: 'Simulator', desc: 'What if you changed one thing?', path: '/insights/simulator', icon: TrendingUp },
     { label: 'Personality', desc: 'Your spending type, from data', path: '/insights/personality', icon: User },
     { label: 'Deal Center', desc: 'Price alerts that matter', path: '/insights/deals', icon: Tag },
+    { label: 'Smart Calculators', desc: 'Savings growth & split payments', path: '/insights/calculators', icon: Calculator },
+    { label: 'AI Deal Finder', desc: 'Best deals across retailers', path: '/insights/deal-finder', icon: Search },
   ];
 
   return (

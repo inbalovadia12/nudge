@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { usePremiumStatus } from '@/lib/usePremium';
 import { clearUserDataCache } from '@/lib/nudgeUtils';
-import { ArrowLeft, Check, Crown, Loader2, Zap, Shield, TrendingUp, Brain, Target, Clock, Ticket, Coins } from 'lucide-react';
+import { ArrowLeft, Check, Crown, Loader2, Zap, Shield, TrendingUp, Brain, Target, Clock, Ticket, Coins, Calculator, Tag } from 'lucide-react';
 
 const PLANS = {
   plus: {
@@ -23,6 +23,8 @@ const PLANS = {
       { icon: TrendingUp, label: 'Financial Health Score' },
       { icon: Brain, label: 'AI financial assistant' },
       { icon: Target, label: 'Unlimited savings goals' },
+      { icon: Calculator, label: 'Smart interest & payment calculators' },
+      { icon: Tag, label: 'AI Deal Finder' },
     ],
   },
   pro: {
@@ -39,6 +41,8 @@ const PLANS = {
       { icon: Clock, label: 'Regret tracker with purchase reflection' },
       { icon: Brain, label: 'AI spending personality profile' },
       { icon: Target, label: 'Future Feed — 30-day spending predictions' },
+      { icon: Calculator, label: 'AI-powered calculator insights' },
+      { icon: Tag, label: 'AI Deal Finder with web search' },
       { icon: Zap, label: 'Priority AI responses' },
       { icon: Crown, label: 'Early access to new features' },
     ],

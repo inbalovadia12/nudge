@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Target, MessageCircle, ScanSearch, BarChart3, User, Trophy, LogOut, Shield, Heart, Bell, Calendar } from 'lucide-react';
+import { Home, Target, MessageCircle, ScanSearch, BarChart3, User, Trophy, LogOut, Shield, Heart, Bell, Calendar, Calculator, Search } from 'lucide-react';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 import { useAuth } from '@/lib/AuthContext';
@@ -18,6 +18,8 @@ const navItems = [
 const premiumItems = [
   { label: 'Shopping Shield', path: '/shield', icon: Shield },
   { label: 'Financial Health', path: '/insights/health', icon: Heart },
+  { label: 'Smart Calculators', path: '/insights/calculators', icon: Calculator },
+  { label: 'AI Deal Finder', path: '/insights/deal-finder', icon: Search },
 ];
 
 export default function Sidebar() {

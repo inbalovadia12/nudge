@@ -35,6 +35,8 @@ import FinancialTwin from '@/pages/FinancialTwin';
 import ConnectedAccounts from '@/pages/ConnectedAccounts';
 import Pricing from '@/pages/Pricing';
 import PlaidSandbox from '@/pages/PlaidSandbox';
+import Calculators from '@/pages/Calculators';
+import DealFinder from '@/pages/DealFinder';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import Splash from '@/components/Splash';
 import { ThemeProvider } from 'next-themes';
@@ -74,6 +76,8 @@ function App() {
                   <Route path="/insights/money-leaks" element={<MoneyLeaks />} />
                   <Route path="/insights/health" element={<FinancialHealth />} />
                   <Route path="/insights/financial-twin" element={<FinancialTwin />} />
+                  <Route path="/insights/calculators" element={<Calculators />} />
+                  <Route path="/insights/deal-finder" element={<DealFinder />} />
                   <Route path="/notifications" element={<NotificationCenter />} />
                   <Route path="/shield" element={<ShoppingShield />} />
                   <Route path="/connected-accounts" element={<ConnectedAccounts />} />

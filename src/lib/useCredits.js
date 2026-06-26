@@ -7,12 +7,14 @@ export const CREDIT_COSTS = {
   paycheck_wrapped: 2,
   grocery_optimization: 3,
   financial_simulation: 4,
+  calculator_ai_insight: 2,
+  deal_finder_search: 3,
 };
 
 export const PLAN_FEATURES = {
   free: ['transaction_analysis', 'deep_insight', 'assistant_message'],
-  plus: ['transaction_analysis', 'deep_insight', 'assistant_message', 'paycheck_wrapped', 'grocery_optimization'],
-  pro: ['transaction_analysis', 'deep_insight', 'assistant_message', 'paycheck_wrapped', 'grocery_optimization', 'financial_simulation'],
+  plus: ['transaction_analysis', 'deep_insight', 'assistant_message', 'paycheck_wrapped', 'grocery_optimization', 'calculator_ai_insight', 'deal_finder_search'],
+  pro: ['transaction_analysis', 'deep_insight', 'assistant_message', 'paycheck_wrapped', 'grocery_optimization', 'financial_simulation', 'calculator_ai_insight', 'deal_finder_search'],
 };
 
 export async function getCreditStatus() {
