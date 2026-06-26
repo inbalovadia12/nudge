@@ -44,8 +44,15 @@ export default function DealFinder() {
     base44.entities.UserProfile.list().then(profiles => {
       const p = profiles[0];
       setProfile(p);
-      if (p?.country) setCountry(p.country);
-    }).catch(() => {});
+      if (p?.country) {
+        setCountry(p.country);
+      } else {
+        // Auto-detect via IP if no saved location
+        detectLocationIP();
+      }
+    }).catch(() => {
+      detectLocationIP();
+    });
   }, []);
 
   const saveCountry = async () => {
@@ -102,20 +109,17 @@ export default function DealFinder() {
     setDetecting(true);
     setLocationError('');
     try {
-      const res = await fetch('https://ipapi.co/json/');
+      const res = await fetch('https://ipwho.is/');
       const data = await res.json();
-      if (data.error) throw new Error(data.reason || 'IP lookup failed');
-      const parts = [data.city, data.country_name].filter(Boolean);
+      if (!data.success && data.success !== undefined) throw new Error(data.message || 'IP lookup failed');
+      const parts = [data.city, data.country].filter(Boolean);
       const locationStr = parts.join(', ') || data.country_code || 'Unknown';
       await saveLocation(locationStr);
     } catch {
       try {
-        const res2 = await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=0&longitude=0&localityLanguage=en');
-        // Fallback to BigDataCloud's IP-based endpoint
-        const res3 = await fetch('https://api.bigdatacloud.net/data/ip-geolocation?key=');
-        const data3 = await res3.json();
-        const loc = data3.location;
-        const parts = [loc?.city, loc?.country?.name].filter(Boolean);
+        const res2 = await fetch('https://freeipapi.com/api/json');
+        const data2 = await res2.json();
+        const parts = [data2.cityName, data2.countryName].filter(Boolean);
         if (parts.length) {
           await saveLocation(parts.join(', '));
         } else {
@@ -151,7 +155,7 @@ export default function DealFinder() {
 
     try {
       const locationContext = userCountry
-        ? `The user is located in ${userCountry}. Only find ONLINE deals from retailers that SHIP to this location. Prioritize local online retailers based in the user's country and the local Amazon site (e.g. amazon.co.uk for UK, amazon.de for Germany, amazon.co.il for Israel, amazon.com for US). All prices must be in the local currency of the user's country.`
+        ? `The user is located in ${userCountry}. ABSOLUTE REQUIREMENT: Every single retailer and deal you return MUST ship to ${userCountry}. Do NOT include any retailer that does not deliver to this location. Use the local Amazon domain (amazon.co.uk for UK, amazon.de for Germany, amazon.co.il for Israel, amazon.com for US, amazon.ca for Canada, amazon.com.au for Australia, etc.) and local online stores based in or shipping to ${userCountry}. All prices in the local currency.`
         : 'The user has not specified their location. Find online deals from major US retailers like Amazon, Walmart, Best Buy, and Target. Prices in USD.';
 
       const response = await base44.integrations.Core.InvokeLLM({
@@ -180,7 +184,8 @@ Return JSON with this exact structure:
 - price_confidence_score (number 0-100): how confident you are these are current, accurate prices
 - is_grocery (boolean): true if this is a grocery/produce item
 - currency (string): the currency code (e.g. "USD", "GBP", "EUR")
-- summary (string): 2-3 sentence summary of what you found and your recommendation`,
+- ships_to_location (boolean): MUST be true for every result — only include retailers that ship to ${userCountry || 'the user location'}
+- summary (string): 2-3 sentence summary of what you found and your recommendation. Mention if any stores do NOT ship to the user's location.`,
         add_context_from_internet: true,
         model: 'gemini_3_1_pro',
         response_json_schema: {
