@@ -56,8 +56,8 @@ export default function RegretTracker() {
           <ArrowLeft className="w-4 h-4" /> Insights
         </Link>
         <h1 className="text-2xl font-bold font-heading mb-2">Regret Tracker</h1>
-        <p className="text-sm text-muted-foreground mb-6">One week after each purchase, Vesper checks in. Over time, it learns what actually brings you joy.</p>
-        <PaywallCard title="Learn from your spending" description="Regret tracking trains Vesper's AI to recognize patterns — so it can warn you before the next purchase you'll regret." onUpgrade={() => {}} />
+        <p className="text-sm text-muted-foreground mb-6">One week after each purchase, Nudigo checks in. Over time, it learns what actually brings you joy.</p>
+        <PaywallCard title="Learn from your spending" description="Regret tracking trains Nudigo's AI to recognize patterns — so it can warn you before the next purchase you'll regret." onUpgrade={() => {}} />
       </div>
     );
   }

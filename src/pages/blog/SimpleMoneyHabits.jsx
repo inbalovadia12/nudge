@@ -29,7 +29,7 @@ const FAQ_SCHEMA = {
       "name": "How do I stop impulse spending?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "To stop impulse spending, use the 24-hour rule: wait a full day before any non-essential purchase. You can also use tools like Vesper's Shopping Shield to intercept purchases, block shopping apps during vulnerable hours, and get AI guidance before buying."
+        "text": "To stop impulse spending, use the 24-hour rule: wait a full day before any non-essential purchase. You can also use tools like Nudigo's Shopping Shield to intercept purchases, block shopping apps during vulnerable hours, and get AI guidance before buying."
       }
     }
   ]
@@ -37,7 +37,7 @@ const FAQ_SCHEMA = {
 
 export default function SimpleMoneyHabits() {
   useSeo({
-    title: 'Simple Money Habits That Actually Stick | Vesper',
+    title: 'Simple Money Habits That Actually Stick | Nudigo',
     description: 'Discover small, sustainable money habits that actually work for beginners and young adults. Learn how to build financial habits without willpower or spreadsheets.',
     schema: FAQ_SCHEMA,
   });
@@ -90,7 +90,7 @@ export default function SimpleMoneyHabits() {
             This single habit eliminates the majority of regret purchases. The item in your cart, the thing you saw on Instagram, the deal that's "only available today" — 24 hours later, most of it doesn't feel essential.
           </p>
           <p>
-            <strong className="text-foreground">How to build it:</strong> When you want to buy something non-essential, add it to a wishlist or cart and close the tab. Set a reminder for 24 hours later. If you still want it, buy it guilt-free. Tools like <Link to="/" className="text-primary hover:underline">Vesper</Link> can even intercept purchases and ask you a few questions before you buy.
+            <strong className="text-foreground">How to build it:</strong> When you want to buy something non-essential, add it to a wishlist or cart and close the tab. Set a reminder for 24 hours later. If you still want it, buy it guilt-free. Tools like <Link to="/" className="text-primary hover:underline">Nudigo</Link> can even intercept purchases and ask you a few questions before you buy.
           </p>
 
           <h2 className="text-xl font-bold text-foreground pt-4">Habit 3: Automate Your Savings</h2>
@@ -126,7 +126,7 @@ export default function SimpleMoneyHabits() {
             When you have a specific goal, saving feels like progress toward something you want. When you don't, it feels like deprivation. That's the difference between sustainable saving and crash saving.
           </p>
           <p>
-            <strong className="text-foreground">How to build it:</strong> Pick one goal. Give it a dollar amount and a rough timeline. Track your progress visually — a progress bar, a ring, anything that shows you getting closer. Apps like <Link to="/" className="text-primary hover:underline">Vesper</Link> make this easy with visual goal tracking.
+            <strong className="text-foreground">How to build it:</strong> Pick one goal. Give it a dollar amount and a rough timeline. Track your progress visually — a progress bar, a ring, anything that shows you getting closer. Apps like <Link to="/" className="text-primary hover:underline">Nudigo</Link> make this easy with visual goal tracking.
           </p>
 
           <h2 className="text-xl font-bold text-foreground pt-4">How to Actually Make Habits Stick</h2>
@@ -164,14 +164,14 @@ export default function SimpleMoneyHabits() {
             </div>
             <div>
               <h3 className="text-sm font-bold text-foreground mb-2">How do I stop impulse spending?</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">To stop impulse spending, use the 24-hour rule: wait a full day before any non-essential purchase. You can also use tools like Vesper's Shopping Shield to intercept purchases, block shopping apps during vulnerable hours, and get AI guidance before buying.</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">To stop impulse spending, use the 24-hour rule: wait a full day before any non-essential purchase. You can also use tools like Nudigo's Shopping Shield to intercept purchases, block shopping apps during vulnerable hours, and get AI guidance before buying.</p>
             </div>
           </div>
         </div>
 
         {/* CTA */}
         <div className="mt-12 rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent border border-primary/20 p-6 text-center">
-          <p className="text-base font-bold text-foreground mb-2">Build better money habits with Vesper</p>
+          <p className="text-base font-bold text-foreground mb-2">Build better money habits with Nudigo</p>
           <p className="text-sm text-muted-foreground mb-4">Track spending, set goals, intercept impulse buys, and get AI guidance. Free to start.</p>
           <Link to="/register" className="inline-flex items-center gap-2 bg-primary text-primary-foreground rounded-2xl px-6 py-3 text-sm font-semibold hover:bg-primary/90 transition-colors">
             Get started free <ArrowRight className="w-4 h-4" />

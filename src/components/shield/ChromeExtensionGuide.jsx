@@ -12,7 +12,7 @@ import CompleteStep from '@/components/shield/extension/CompleteStep';
 import HelpModal from '@/components/shield/extension/HelpModal';
 
 const TOTAL_STEPS = 8;
-const STORAGE_KEY = 'vesper_ext_guide_step_v2';
+const STORAGE_KEY = 'nudigo_ext_guide_step_v2';
 
 export default function ChromeExtensionGuide({ isPremium, onUpgrade }) {
   const [step, setStep] = useState(0);
@@ -103,7 +103,7 @@ export default function ChromeExtensionGuide({ isPremium, onUpgrade }) {
           </div>
           <span className="text-xs font-semibold uppercase tracking-wide text-primary">Chrome Extension</span>
         </div>
-        <h2 className="text-xl sm:text-2xl font-bold font-heading text-foreground mb-2">Install the Vesper Chrome Extension</h2>
+        <h2 className="text-xl sm:text-2xl font-bold font-heading text-foreground mb-2">Install the Nudigo Chrome Extension</h2>
         <p className="text-sm text-muted-foreground max-w-md">
           Unlock Shopping Shield, website blocking, price tracking, purchase reminders, and intelligent spending interventions directly in Chrome.
         </p>
@@ -137,7 +137,7 @@ export default function ChromeExtensionGuide({ isPremium, onUpgrade }) {
         </button>
         {isLastStep ? (
           <a href="https://nudgefinance.base44.app" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-bold text-primary-foreground bg-primary px-5 py-2 rounded-xl hover:bg-primary/90 transition-colors">
-            Open Vesper <ExternalLink className="w-3.5 h-3.5" />
+            Open Nudigo <ExternalLink className="w-3.5 h-3.5" />
           </a>
         ) : (
           <button onClick={() => step < TOTAL_STEPS - 1 && setStep(step + 1)} className="flex items-center gap-1 text-sm font-bold text-primary-foreground bg-primary px-5 py-2 rounded-xl hover:bg-primary/90 transition-colors">

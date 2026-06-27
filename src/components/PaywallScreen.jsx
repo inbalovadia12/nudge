@@ -63,7 +63,7 @@ export default function PaywallScreen({ title = 'Unlock Premium', onClose }) {
             transition={{ delay: 0.1 }}
             className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full mb-4"
           >
-            <Sparkles className="w-3 h-3" /> Vesper Premium
+            <Sparkles className="w-3 h-3" /> Nudigo Premium
           </motion.div>
 
           <motion.h1

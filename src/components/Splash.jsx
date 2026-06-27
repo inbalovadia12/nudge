@@ -5,12 +5,12 @@ export default function Splash() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const seen = sessionStorage.getItem('vesper_splash_seen');
+    const seen = sessionStorage.getItem('nudigo_splash_seen');
     if (!seen) {
       setShow(true);
       const timer = setTimeout(() => {
         setShow(false);
-        sessionStorage.setItem('vesper_splash_seen', 'true');
+        sessionStorage.setItem('nudigo_splash_seen', 'true');
       }, 2800);
       return () => clearTimeout(timer);
     }
@@ -45,7 +45,7 @@ export default function Splash() {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="text-5xl font-bold font-heading text-primary tracking-tight"
             >
-              Vesper
+              Nudigo
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 8 }}

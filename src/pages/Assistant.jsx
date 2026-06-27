@@ -10,7 +10,7 @@ import { spendCredits } from '@/lib/useCredits';
 import { Send, Mic, Sparkles, Menu } from 'lucide-react';
 import ChildHeader from '@/components/ChildHeader';
 
-const NUDGE_GREETING = "Hey — I'm Vesper. Ask me anything about your spending, your goals, or whether something's worth buying. No judgment, just an honest read.";
+const NUDGE_GREETING = "Hey — I'm Nudigo. Ask me anything about your spending, your goals, or whether something's worth buying. No judgment, just an honest read.";
 
 export default function Assistant() {
   const [conversations, setConversations] = useState([]);
@@ -176,7 +176,7 @@ export default function Assistant() {
       const recentHistory = messages.slice(-10).map(m => `${m.role}: ${m.content}`).join('\n');
 
       const systemPrompt = buildNudgeSystemPrompt(contextString, {
-        extraRules: `Recent conversation:\n${recentHistory}\n\nThe user's latest message: ${message}\n\nRespond as Thryve:`,
+        extraRules: `Recent conversation:\n${recentHistory}\n\nThe user's latest message: ${message}\n\nRespond as Nudigo:`,
       });
 
       const response = await base44.integrations.Core.InvokeLLM({

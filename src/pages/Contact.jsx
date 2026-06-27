@@ -9,8 +9,8 @@ import { Mail, MessageSquare, ArrowRight, Loader2, Send } from 'lucide-react';
 
 export default function Contact() {
   useSeo({
-    title: 'Contact Vesper — Questions, Feedback, Support',
-    description: 'Get in touch with the Vesper team. We respond to questions about the app, feature requests, and support inquiries.',
+    title: 'Contact Nudigo — Questions, Feedback, Support',
+    description: 'Get in touch with the Nudigo team. We respond to questions about the app, feature requests, and support inquiries.',
   });
 
   const [name, setName] = useState('');
@@ -33,7 +33,7 @@ export default function Contact() {
       });
       setSent(true);
     } catch (err) {
-      setError('Something went wrong. Please try again or email us at hello@vesper.app.');
+      setError('Something went wrong. Please try again or email us at hello@nudigo.app.');
     } finally {
       setSending(false);
     }
@@ -46,7 +46,7 @@ export default function Contact() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-3xl font-bold font-heading text-foreground mb-3">Contact us</h1>
           <p className="text-sm text-muted-foreground leading-relaxed mb-8">
-            Have a question about Vesper, a feature request, or need help with your account? We'd love to hear from you. We read every message and do our best to respond within 1–2 business days.
+            Have a question about Nudigo, a feature request, or need help with your account? We'd love to hear from you. We read every message and do our best to respond within 1–2 business days.
           </p>
         </motion.div>
 
@@ -56,7 +56,7 @@ export default function Contact() {
               <Mail className="w-5 h-5 text-primary" />
             </div>
             <p className="text-sm font-bold text-foreground">Email us</p>
-            <p className="text-sm text-muted-foreground mt-1">hello@vesper.app</p>
+            <p className="text-sm text-muted-foreground mt-1">hello@nudigo.app</p>
           </div>
           <div className="rounded-2xl border border-border bg-card p-5">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3">

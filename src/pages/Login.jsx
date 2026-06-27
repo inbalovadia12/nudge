@@ -122,14 +122,14 @@ export default function Login() {
 
       <div className="mt-8 pt-6 border-t border-border">
         <p className="text-center text-xs text-muted-foreground leading-relaxed">
-          By continuing, you agree to Thryve's{" "}
+          By continuing, you agree to Nudigo's{" "}
           <Link to="/privacy-policy" className="text-primary font-medium hover:underline">
             Privacy Policy
           </Link>
           .
         </p>
         <p className="text-center text-[11px] text-muted-foreground/50 mt-3">
-          © {new Date().getFullYear()} Thryve. All rights reserved.
+          © {new Date().getFullYear()} Nudigo. All rights reserved.
         </p>
       </div>
     </AuthLayout>

@@ -22,7 +22,7 @@ export default function HelpModal({ onClose }) {
     },
     {
       title: "Can't find the pin icon",
-      steps: "Click the puzzle piece icon in the Chrome toolbar. If Vesper isn't listed, the extension may be disabled — enable it from chrome://extensions/.",
+      steps: "Click the puzzle piece icon in the Chrome toolbar. If Nudigo isn't listed, the extension may be disabled — enable it from chrome://extensions/.",
     },
     {
       title: 'Download did not start',

@@ -7,8 +7,8 @@ import { ArrowRight, Target, Users, Shield } from 'lucide-react';
 
 export default function About() {
   useSeo({
-    title: 'About Vesper — Why We Built a Simpler Finance App',
-    description: 'Vesper was built to make money management simple for beginners and young adults. Learn about our mission to replace complex budgeting with sustainable habits.',
+    title: 'About Nudigo — Why We Built a Simpler Finance App',
+    description: 'Nudigo was built to make money management simple for beginners and young adults. Learn about our mission to replace complex budgeting with sustainable habits.',
   });
 
   return (
@@ -16,12 +16,12 @@ export default function About() {
       <PublicNav />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-3xl font-bold font-heading text-foreground mb-4">About Vesper</h1>
+          <h1 className="text-3xl font-bold font-heading text-foreground mb-4">About Nudigo</h1>
         </motion.div>
 
         <div className="prose prose-invert prose-sm max-w-none space-y-5 text-muted-foreground leading-relaxed">
           <p>
-            Vesper started with a simple observation: most personal finance apps are built for people who already love spreadsheets. They assume you know what a "category" is, that you'll log every coffee, and that you'll stick to a rigid budget month after month.
+            Nudigo started with a simple observation: most personal finance apps are built for people who already love spreadsheets. They assume you know what a "category" is, that you'll log every coffee, and that you'll stick to a rigid budget month after month.
           </p>
           <p>
             But that's not how most people interact with money. Real people — students, young professionals, parents — don't need another app that makes them feel guilty about spending $4 on a latte. They need tools that help them build better habits without becoming a finance expert.
@@ -32,7 +32,7 @@ export default function About() {
             We're on a mission to make money management accessible to everyone — especially beginners and young adults who were never taught how to handle money. We believe financial wellness shouldn't require a degree, a spreadsheet, or a guilt trip.
           </p>
           <p>
-            Instead of complex budgets, Vesper focuses on habits: small, sustainable actions that add up over time. Track your spending, set goals that matter to you, get honest guidance when you need it, and build confidence with every small win.
+            Instead of complex budgets, Nudigo focuses on habits: small, sustainable actions that add up over time. Track your spending, set goals that matter to you, get honest guidance when you need it, and build confidence with every small win.
           </p>
 
           <h2 className="text-xl font-bold text-foreground pt-4">Why we built it</h2>
@@ -43,7 +43,7 @@ export default function About() {
             The tools on the market either did too little (basic expense trackers) or too much (complex budgeting systems that took hours to maintain). Nothing felt like it was built for someone just starting out.
           </p>
           <p>
-            So we built Vesper to be the middle ground — powerful enough to actually help, simple enough that you'll actually use it.
+            So we built Nudigo to be the middle ground — powerful enough to actually help, simple enough that you'll actually use it.
           </p>
 
           <h2 className="text-xl font-bold text-foreground pt-4">What we believe</h2>
@@ -63,7 +63,7 @@ export default function About() {
               </div>
               <div>
                 <p className="text-sm font-bold text-foreground">Built for real people</p>
-                <p className="text-sm text-muted-foreground mt-1">Not for accountants. If you've never been taught how to manage money, Vesper is designed for you.</p>
+                <p className="text-sm text-muted-foreground mt-1">Not for accountants. If you've never been taught how to manage money, Nudigo is designed for you.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -79,7 +79,7 @@ export default function About() {
 
           <h2 className="text-xl font-bold text-foreground pt-4">Get started</h2>
           <p>
-            Ready to take control of your money without the overwhelm? Vesper is free to start. No credit card, no commitment, no judgment.
+            Ready to take control of your money without the overwhelm? Nudigo is free to start. No credit card, no commitment, no judgment.
           </p>
           <div className="not-prose">
             <Link to="/register" className="inline-flex items-center gap-2 bg-primary text-primary-foreground rounded-2xl px-6 py-3 text-sm font-semibold hover:bg-primary/90 transition-colors">

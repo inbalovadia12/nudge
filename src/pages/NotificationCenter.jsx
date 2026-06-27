@@ -68,13 +68,13 @@ export default function NotificationCenter() {
         if (alerts.length < 3) {
           try {
             const response = await base44.integrations.Core.InvokeLLM({
-              prompt: `You are Vesper, a calm financial coach. Give ONE actionable financial recommendation based on this context. Be encouraging, specific, and under 2 sentences. Never shame.
+              prompt: `You are Nudigo, a calm financial coach. Give ONE actionable financial recommendation based on this context. Be encouraging, specific, and under 2 sentences. Never shame.
 
 Financial context: ${buildContextString(ctx)}
 
 Return just the recommendation text.`,
             });
-            alerts.push({ id: 'ai-rec', type: 'ai', icon: Sparkles, title: 'Vesper recommends', desc: response, color: 'text-primary bg-primary/10', read: false });
+            alerts.push({ id: 'ai-rec', type: 'ai', icon: Sparkles, title: 'Nudigo recommends', desc: response, color: 'text-primary bg-primary/10', read: false });
           } catch {}
         }
 

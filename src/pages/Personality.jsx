@@ -102,7 +102,7 @@ export default function Personality() {
 
         <PaywallCard
           title="Discover your spending type"
-          description="After 60 days of data, Vesper generates a detailed personality profile from your actual behavior — strengths, vulnerabilities, and personalized suggestions."
+          description="After 60 days of data, Nudigo generates a detailed personality profile from your actual behavior — strengths, vulnerabilities, and personalized suggestions."
           onUpgrade={() => {}}
         />
       </div>

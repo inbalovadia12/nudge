@@ -15,7 +15,7 @@ export default function DownloadStep({ step, downloadStatus, onDownload, downloa
           </div>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Your Vesper Chrome Extension is downloading now. Check your browser's download bar — once the ZIP file finishes, proceed to extract it.
+          Your Nudigo Chrome Extension is downloading now. Check your browser's download bar — once the ZIP file finishes, proceed to extract it.
         </p>
         {downloadUrl && (
           <a href={downloadUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
@@ -29,7 +29,7 @@ export default function DownloadStep({ step, downloadStatus, onDownload, downloa
         <div className="flex items-center justify-center py-2">
           <div className="w-20 h-24 rounded-xl border-2 border-dashed border-border bg-surface-2 flex flex-col items-center justify-center gap-1">
             <FileArchive className="w-8 h-8 text-primary" />
-            <span className="text-[10px] font-medium text-muted-foreground">vesper-extension.zip</span>
+            <span className="text-[10px] font-medium text-muted-foreground">nudigo-extension.zip</span>
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@ export default function DownloadStep({ step, downloadStatus, onDownload, downloa
           </div>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Please wait while we securely verify your Vesper Premium subscription before generating your download link.
+          Please wait while we securely verify your Nudigo Premium subscription before generating your download link.
         </p>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <ShieldCheck className="w-3.5 h-3.5 text-primary" /> Secure verification in progress…
@@ -92,7 +92,7 @@ export default function DownloadStep({ step, downloadStatus, onDownload, downloa
         </div>
       </div>
       <p className="text-sm text-muted-foreground leading-relaxed">
-        Download the Vesper Chrome Extension securely through our verified premium download system. Your subscription will be checked before the download begins.
+        Download the Nudigo Chrome Extension securely through our verified premium download system. Your subscription will be checked before the download begins.
       </p>
       <button onClick={onDownload} className="w-full flex items-center gap-4 p-5 rounded-2xl border-2 border-primary bg-primary/10 hover:bg-primary/15 hover:border-primary/50 transition-all">
         <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center flex-shrink-0">
@@ -105,7 +105,7 @@ export default function DownloadStep({ step, downloadStatus, onDownload, downloa
         <ChevronRight className="w-5 h-5 text-primary flex-shrink-0" />
       </button>
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <ShieldCheck className="w-3.5 h-3.5 text-primary" /> No external file-sharing links — verified through your Vesper account
+        <ShieldCheck className="w-3.5 h-3.5 text-primary" /> No external file-sharing links — verified through your Nudigo account
       </div>
     </div>
   );

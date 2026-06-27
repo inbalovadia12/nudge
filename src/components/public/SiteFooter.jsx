@@ -37,7 +37,7 @@ export default function SiteFooter() {
           </div>
         </div>
         <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Vesper. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Nudigo. All rights reserved.</p>
           <p className="text-xs text-muted-foreground">Built for people who want simpler money management.</p>
         </div>
       </div>

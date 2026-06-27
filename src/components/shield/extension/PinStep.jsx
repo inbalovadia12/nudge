@@ -20,7 +20,7 @@ export default function PinStep() {
         </li>
         <li className="flex gap-3">
           <span className="w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
-          Find <span className="font-semibold text-foreground">Vesper</span>.
+          Find <span className="font-semibold text-foreground">Nudigo</span>.
         </li>
         <li className="flex gap-3">
           <span className="w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
@@ -37,7 +37,7 @@ export default function PinStep() {
             <Pin className="w-3.5 h-3.5 text-primary" />
             <span className="text-[8px] text-primary font-bold">PIN</span>
           </div>
-          <span className="text-[10px] text-muted-foreground">Vesper</span>
+          <span className="text-[10px] text-muted-foreground">Nudigo</span>
         </div>
       </div>
     </div>

@@ -32,11 +32,11 @@ export default function CompleteStep() {
       </div>
 
       <p className="text-sm text-muted-foreground leading-relaxed text-center">
-        You're all set! The Vesper Chrome Extension is installed and ready to protect your spending.
+        You're all set! The Nudigo Chrome Extension is installed and ready to protect your spending.
       </p>
 
       <a href="https://nudgefinance.base44.app" target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-4 rounded-2xl text-base font-bold hover:bg-primary/90 transition-colors">
-        Open Vesper Dashboard <ExternalLink className="w-4 h-4" />
+        Open Nudigo Dashboard <ExternalLink className="w-4 h-4" />
       </a>
     </div>
   );

@@ -115,7 +115,7 @@ export default function Pricing() {
 
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full mb-4">
-          <Crown className="w-3 h-3" /> Vesper Premium
+          <Crown className="w-3 h-3" /> Nudigo Premium
         </div>
         <h1 className="text-3xl font-bold font-heading mb-2">Choose your plan</h1>
         <p className="text-sm text-muted-foreground max-w-md mx-auto">Unlock all premium insights and tools to transform your spending habits.</p>
