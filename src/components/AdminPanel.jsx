@@ -75,7 +75,7 @@ export default function AdminPanel({ open, onOpenChange }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/50 z-50"
-            onClick={onOpenChange}
+            onClick={() => onOpenChange(false)}
           />
           <motion.div
             initial={{ x: '100%' }}
@@ -91,7 +91,7 @@ export default function AdminPanel({ open, onOpenChange }) {
                 </div>
                 <h2 className="text-base font-bold font-heading text-foreground">Admin Panel</h2>
               </div>
-              <button onClick={onOpenChange} className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors">
+              <button onClick={() => onOpenChange(false)} className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors">
                 <X className="w-4 h-4" />
               </button>
             </div>
