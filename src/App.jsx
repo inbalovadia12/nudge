@@ -41,6 +41,7 @@ import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import Landing from '@/pages/Landing';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
+import AdminMessages from '@/pages/AdminMessages';
 import Terms from '@/pages/Terms';
 import ManageMoneyBeginners from '@/pages/blog/ManageMoneyBeginners';
 import WhyBudgetingAppsFail from '@/pages/blog/WhyBudgetingAppsFail';
@@ -96,6 +97,7 @@ function App() {
                   <Route path="/connected-accounts" element={<ConnectedAccounts />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/plaid-sandbox" element={<PlaidSandbox />} />
+                  <Route path="/admin/messages" element={<AdminMessages />} />
                 </Route>
               </Route>
               <Route path="*" element={<PageNotFound />} />

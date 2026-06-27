@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { base44 } from '@/api/base44Client';
 import PublicNav from '@/components/public/PublicNav';
 import SiteFooter from '@/components/public/SiteFooter';
 import { useSeo } from '@/lib/useSeo';
-import { Mail, MessageSquare, ArrowRight } from 'lucide-react';
+import { Mail, MessageSquare, ArrowRight, Loader2, Send } from 'lucide-react';
 
 export default function Contact() {
   useSeo({
@@ -16,13 +17,26 @@ export default function Contact() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Vesper contact from ${name || 'a user'}`);
-    const body = encodeURIComponent(`${message}\n\n— ${name}\n${email}`);
-    window.location.href = `mailto:hello@vesper.app?subject=${subject}&body=${body}`;
-    setSent(true);
+    setSending(true);
+    setError(null);
+    try {
+      await base44.functions.invoke('contact-messages', {
+        action: 'create',
+        name,
+        email,
+        message,
+      });
+      setSent(true);
+    } catch (err) {
+      setError('Something went wrong. Please try again or email us at hello@vesper.app.');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -56,7 +70,7 @@ export default function Contact() {
         {sent ? (
           <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 text-center">
             <p className="text-sm font-bold text-foreground">Thanks for reaching out!</p>
-            <p className="text-sm text-muted-foreground mt-1">Your email client should have opened. If not, email us directly at hello@vesper.app.</p>
+            <p className="text-sm text-muted-foreground mt-1">Your message has been sent to our team. We'll get back to you at {email} within 1–2 business days.</p>
             <Link to="/" className="inline-flex items-center gap-1 text-sm text-primary mt-3 hover:underline">
               Back to home <ArrowRight className="w-4 h-4" />
             </Link>
@@ -96,11 +110,16 @@ export default function Contact() {
                 placeholder="How can we help?"
               />
             </div>
+            {error && (
+              <p className="text-sm text-danger">{error}</p>
+            )}
             <button
               type="submit"
-              className="w-full bg-primary text-primary-foreground rounded-xl py-3 text-sm font-semibold hover:bg-primary/90 transition-colors"
+              disabled={sending}
+              className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded-xl py-3 text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
-              Send message
+              {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              {sending ? 'Sending...' : 'Send message'}
             </button>
           </form>
         )}
