@@ -9,7 +9,7 @@ import {
 
 const TOTAL_STEPS = 6;
 const STORAGE_KEY = 'vesper_chrome_ext_guide_step';
-const DOWNLOAD_URL = 'https://drive.google.com/file/d/1DpOnP-iYEqeYkOSnS-b3-ehVhnW88ZII/view?usp=sharing';
+const DOWNLOAD_URL = 'https://drive.google.com/file/d/19psxdxNAKn7IIPRSa_hY_D5C34pwlnnF/view?usp=sharing';
 const APP_URL = 'https://nudgefinance.base44.app';
 
 const stepIcons = [Download, FileArchive, Chrome, ToggleRight, FolderOpen, Pin];
