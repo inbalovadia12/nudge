@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 const ADMIN_EMAILS = ['inbalto.ovadia@gmail.com', 'inbalovadia292@gmail.com'];
+const ADMIN_CODE = '12252012Io';
 
 Deno.serve(async (req) => {
   try {
@@ -21,10 +22,13 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, id: created.id });
     }
 
-    // All remaining actions require admin auth
+    // All remaining actions require admin auth + secret code (two-factor)
     const user = await base44.auth.me();
     if (!user || !ADMIN_EMAILS.includes(user.email)) {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+    if (body.admin_code !== ADMIN_CODE) {
+      return Response.json({ error: 'Invalid access code' }, { status: 403 });
     }
 
     if (body.action === 'list') {

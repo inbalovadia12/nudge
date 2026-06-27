@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Target, MessageCircle, ScanSearch, BarChart3, User, Trophy, LogOut, Shield, Heart, Bell, Calendar, Calculator, Search } from 'lucide-react';
+import { Home, Target, MessageCircle, ScanSearch, BarChart3, User, Trophy, LogOut, Shield, Heart, Bell, Calendar, Calculator, Search, Lock } from 'lucide-react';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
+import AdminPanel from './AdminPanel';
 import { useAuth } from '@/lib/AuthContext';
 
 const navItems = [
@@ -25,6 +27,7 @@ const premiumItems = [
 export default function Sidebar() {
   const location = useLocation();
   const { user, logout } = useAuth();
+  const [adminOpen, setAdminOpen] = useState(false);
 
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r border-border bg-sidebar fixed h-screen z-30">
@@ -98,6 +101,13 @@ export default function Sidebar() {
             </p>
             <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
+          <button
+            onClick={() => setAdminOpen(true)}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground/40 hover:text-primary hover:bg-primary/5 transition-colors"
+            title="Admin"
+          >
+            <Lock className="w-3.5 h-3.5" />
+          </button>
           <ThemeToggle />
           <button
             onClick={() => logout(false)}
@@ -108,6 +118,8 @@ export default function Sidebar() {
           </button>
         </div>
       </div>
+
+      <AdminPanel open={adminOpen} onOpenChange={setAdminOpen} />
     </aside>
   );
 }

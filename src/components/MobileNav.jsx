@@ -4,8 +4,9 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   Menu, Home, BarChart3, Target, Trophy, MessageCircle, Calendar, Bell, User,
   Heart, Shield, Brain, Wallet, CalendarDays, Clock, TrendingUp, CreditCard,
-  Droplets, ScanSearch, Tag
+  Droplets, ScanSearch, Tag, Lock
 } from 'lucide-react';
+import AdminPanel from './AdminPanel';
 
 const navItems = [
   { label: 'Home', path: '/', icon: Home },
@@ -34,6 +35,7 @@ const premiumItems = [
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
   const location = useLocation();
 
   return (
@@ -44,8 +46,15 @@ export default function MobileNav() {
         </button>
       </SheetTrigger>
       <SheetContent side="left" className="w-72 p-0 overflow-y-auto">
-        <div className="p-6 pb-4">
+        <div className="p-6 pb-4 flex items-center justify-between">
           <span className="font-bold text-foreground text-lg">Nudigo</span>
+          <button
+            onClick={() => setAdminOpen(true)}
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground/30 hover:text-primary transition-colors"
+            aria-label="Admin"
+          >
+            <Lock className="w-3.5 h-3.5" />
+          </button>
         </div>
         <div className="px-4 pb-4">
           <Link
@@ -101,6 +110,7 @@ export default function MobileNav() {
           </div>
         </div>
       </SheetContent>
+      <AdminPanel open={adminOpen} onOpenChange={setAdminOpen} />
     </Sheet>
   );
 }

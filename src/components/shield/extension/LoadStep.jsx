@@ -20,7 +20,7 @@ export default function LoadStep() {
         </li>
         <li className="flex gap-3">
           <span className="w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
-          Select the extracted folder named <code className="text-xs bg-surface-2 px-1.5 py-0.5 rounded text-foreground font-mono">nudigo-extension</code>.
+          Select the extracted folder named <code className="text-xs bg-surface-2 px-1.5 py-0.5 rounded text-foreground font-mono">nudigo-extension-v16</code>.
         </li>
         <li className="flex gap-3">
           <span className="w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
@@ -60,7 +60,7 @@ export default function LoadStep() {
         <div className="flex items-center gap-3 bg-card rounded-lg border border-border p-3">
           <Folder className="w-8 h-8 text-primary flex-shrink-0" />
           <div>
-            <p className="text-sm font-semibold text-foreground">nudigo-extension</p>
+            <p className="text-sm font-semibold text-foreground">nudigo-extension-v16</p>
             <p className="text-[10px] text-muted-foreground">Contains: manifest.json, content.js, background.js, icons/</p>
           </div>
           <Check className="w-5 h-5 text-success ml-auto flex-shrink-0" />

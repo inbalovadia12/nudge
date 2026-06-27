@@ -13,7 +13,7 @@ export default function ExtractStep() {
         </div>
       </div>
       <p className="text-sm text-muted-foreground leading-relaxed">
-        Locate the downloaded file named <code className="text-xs bg-surface-2 px-1.5 py-0.5 rounded text-foreground font-mono">nudigo-extension.zip</code> in your Downloads folder.
+        Locate the downloaded file named <code className="text-xs bg-surface-2 px-1.5 py-0.5 rounded text-foreground font-mono">nudigo-extension-v16.zip</code> in your Downloads folder.
       </p>
 
       <div className="rounded-2xl border border-border bg-surface-2/50 p-4">
@@ -54,7 +54,7 @@ export default function ExtractStep() {
         <ChevronRight className="w-5 h-5 text-muted-foreground" />
         <div className="w-16 h-20 rounded-xl border-2 border-primary/30 bg-primary/5 flex flex-col items-center justify-center">
           <Folder className="w-7 h-7 text-primary" />
-          <span className="text-[9px] text-primary mt-1">nudigo-extension</span>
+          <span className="text-[9px] text-primary mt-1">nudigo-extension-v16</span>
         </div>
       </div>
     </div>

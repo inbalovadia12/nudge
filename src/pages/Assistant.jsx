@@ -176,7 +176,7 @@ export default function Assistant() {
       const recentHistory = messages.slice(-10).map(m => `${m.role}: ${m.content}`).join('\n');
 
       const systemPrompt = buildNudgeSystemPrompt(contextString, {
-        extraRules: `Recent conversation:\n${recentHistory}\n\nThe user's latest message: ${message}\n\nRespond as Nudigo:`,
+        extraRules: `Recent conversation:\n${recentHistory}\n\nThe user's latest message: ${message}\n\nRespond as Thryve:`,
       });
 
       const response = await base44.integrations.Core.InvokeLLM({

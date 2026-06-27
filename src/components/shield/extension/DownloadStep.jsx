@@ -29,7 +29,7 @@ export default function DownloadStep({ step, downloadStatus, onDownload, downloa
         <div className="flex items-center justify-center py-2">
           <div className="w-20 h-24 rounded-xl border-2 border-dashed border-border bg-surface-2 flex flex-col items-center justify-center gap-1">
             <FileArchive className="w-8 h-8 text-primary" />
-            <span className="text-[10px] font-medium text-muted-foreground">nudigo-extension.zip</span>
+            <span className="text-[10px] font-medium text-muted-foreground">nudigo-extension-v16.zip</span>
           </div>
         </div>
       </div>

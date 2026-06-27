@@ -33,7 +33,7 @@ export default function Contact() {
       });
       setSent(true);
     } catch (err) {
-      setError('Something went wrong. Please try again or email us at hello@nudigo.app.');
+      setError('Something went wrong. Please try again or email us at hello@vesper.app.');
     } finally {
       setSending(false);
     }
@@ -56,7 +56,7 @@ export default function Contact() {
               <Mail className="w-5 h-5 text-primary" />
             </div>
             <p className="text-sm font-bold text-foreground">Email us</p>
-            <p className="text-sm text-muted-foreground mt-1">hello@nudigo.app</p>
+            <p className="text-sm text-muted-foreground mt-1">hello@vesper.app</p>
           </div>
           <div className="rounded-2xl border border-border bg-card p-5">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3">

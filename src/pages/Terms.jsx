@@ -43,7 +43,7 @@ export default function Terms() {
           <p>Nudigo is provided "as is" without warranties of any kind. We are not liable for any financial losses, decisions made based on the Service, or any indirect or consequential damages arising from your use of the Service.</p>
 
           <h2 className="text-lg font-bold text-foreground">9. Contact</h2>
-          <p>If you have questions about these Terms, please contact us at hello@nudigo.app.</p>
+          <p>If you have questions about these Terms, please contact us at hello@vesper.app.</p>
         </div>
       </div>
       <SiteFooter />

@@ -106,7 +106,7 @@ export default function PrivacyPolicy() {
         <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-5 text-center">
           <p className="text-sm text-muted-foreground">
             Questions about your privacy?{' '}
-            <a href="mailto:support@nudigo.app" className="text-primary font-medium hover:underline">Contact us</a>
+            <a href="mailto:support@vesper.app" className="text-primary font-medium hover:underline">Contact us</a>
           </p>
         </div>
       </div>
