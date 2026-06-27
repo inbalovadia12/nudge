@@ -21,7 +21,7 @@ const FAQ_SCHEMA = {
       "name": "What's a better alternative to traditional budgeting?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Instead of rigid budgets, use a habit-based approach: track spending automatically, set meaningful savings goals, automate your savings, review weekly, and use tools that provide guidance rather than guilt. Apps like Thryve are built around this approach."
+        "text": "Instead of rigid budgets, use a habit-based approach: track spending automatically, set meaningful savings goals, automate your savings, review weekly, and use tools that provide guidance rather than guilt. Apps like Vesper are built around this approach."
       }
     },
     {
@@ -37,7 +37,7 @@ const FAQ_SCHEMA = {
 
 export default function WhyBudgetingAppsFail() {
   useSeo({
-    title: 'Why Budgeting Apps Fail — and a Better Way | Thryve',
+    title: 'Why Budgeting Apps Fail — and a Better Way | Vesper',
     description: 'Most budgeting apps fail within months. Learn why traditional budgeting doesn\'t work and discover a simpler, habit-based approach to managing money without spreadsheets.',
     schema: FAQ_SCHEMA,
   });
@@ -73,7 +73,7 @@ export default function WhyBudgetingAppsFail() {
             Nobody sustains that. Life is busy, and money management shouldn't feel like a second job. The moment tracking becomes a chore, the habit dies — and so does the app.
           </p>
           <p>
-            The fix is simple: <strong className="text-foreground">automate the tracking.</strong> Modern tools like <Link to="/" className="text-primary hover:underline">Thryve</Link> can connect to your accounts and categorize spending automatically, so you see the full picture without lifting a finger.
+            The fix is simple: <strong className="text-foreground">automate the tracking.</strong> Modern tools like <Link to="/" className="text-primary hover:underline">Vesper</Link> can connect to your accounts and categorize spending automatically, so you see the full picture without lifting a finger.
           </p>
 
           <h2 className="text-xl font-bold text-foreground pt-4">Reason 2: Rigid Categories Don't Match Real Life</h2>
@@ -138,7 +138,7 @@ export default function WhyBudgetingAppsFail() {
             <li><strong className="text-foreground">Get guidance, not guilt.</strong> Use tools that help you make better decisions, not ones that shame you.</li>
           </ol>
           <p>
-            This is exactly why we built <Link to="/" className="text-primary hover:underline">Thryve</Link> — a personal finance app designed for people who want to manage money without spreadsheets, guilt, or overwhelm. It tracks your spending, helps you set goals, blocks impulse purchases, and gives you honest AI guidance when you need it.
+            This is exactly why we built <Link to="/" className="text-primary hover:underline">Vesper</Link> — a personal finance app designed for people who want to manage money without spreadsheets, guilt, or overwhelm. It tracks your spending, helps you set goals, blocks impulse purchases, and gives you honest AI guidance when you need it.
           </p>
 
           <h2 className="text-xl font-bold text-foreground pt-4">The Bottom Line</h2>
@@ -160,7 +160,7 @@ export default function WhyBudgetingAppsFail() {
             </div>
             <div>
               <h3 className="text-sm font-bold text-foreground mb-2">What's a better alternative to traditional budgeting?</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">Instead of rigid budgets, use a habit-based approach: track spending automatically, set meaningful savings goals, automate your savings, review weekly, and use tools that provide guidance rather than guilt. Apps like Thryve are built around this approach.</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">Instead of rigid budgets, use a habit-based approach: track spending automatically, set meaningful savings goals, automate your savings, review weekly, and use tools that provide guidance rather than guilt. Apps like Vesper are built around this approach.</p>
             </div>
             <div>
               <h3 className="text-sm font-bold text-foreground mb-2">Can I manage money without a spreadsheet?</h3>
@@ -172,7 +172,7 @@ export default function WhyBudgetingAppsFail() {
         {/* CTA */}
         <div className="mt-12 rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent border border-primary/20 p-6 text-center">
           <p className="text-base font-bold text-foreground mb-2">Try a finance app that doesn't fail you</p>
-          <p className="text-sm text-muted-foreground mb-4">Thryve is built on habits, not budgets. Free to start, no spreadsheet required.</p>
+          <p className="text-sm text-muted-foreground mb-4">Vesper is built on habits, not budgets. Free to start, no spreadsheet required.</p>
           <Link to="/register" className="inline-flex items-center gap-2 bg-primary text-primary-foreground rounded-2xl px-6 py-3 text-sm font-semibold hover:bg-primary/90 transition-colors">
             Get started free <ArrowRight className="w-4 h-4" />
           </Link>

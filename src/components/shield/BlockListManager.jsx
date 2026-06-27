@@ -133,7 +133,7 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
             <p className="text-sm font-medium text-foreground">Apple Screen Time</p>
             <p className="text-xs text-muted-foreground">
               {screenTimeConnected
-                ? 'Connected — block list syncs to your device via the Thryve iOS companion app'
+                ? 'Connected — block list syncs to your device via the Vesper iOS companion app'
                 : 'Connect to sync your block list with Screen Time (requires iOS companion app)'}
             </p>
           </div>
@@ -156,8 +156,8 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
       <div className="rounded-2xl border border-warning/30 bg-warning/5 p-4 mb-4 flex items-start gap-3">
         <Info className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" />
         <div>
-          <p className="text-xs font-medium text-foreground mb-0.5">Blocking works within Thryve</p>
-          <p className="text-xs text-muted-foreground">This blocklist intercepts sites when you check them through Thryve's URL checker. To block sites across your entire browser or device, connect Apple Screen Time above or use a browser extension.</p>
+          <p className="text-xs font-medium text-foreground mb-0.5">Blocking works within Vesper</p>
+          <p className="text-xs text-muted-foreground">This blocklist intercepts sites when you check them through Vesper's URL checker. To block sites across your entire browser or device, connect Apple Screen Time above or use a browser extension.</p>
         </div>
       </div>
 
@@ -320,7 +320,7 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
             <div className="w-14 h-14 rounded-2xl bg-danger/10 flex items-center justify-center mx-auto mb-4">
               <Lock className="w-7 h-7 text-danger" />
             </div>
-            <h3 className="text-lg font-bold mb-2">Blocked by Thryve</h3>
+            <h3 className="text-lg font-bold mb-2">Blocked by Vesper</h3>
             <p className="text-sm text-muted-foreground mb-4">This site is on your blocklist. To visit it, remove it from your blocklist or switch to "Ask questions" mode.</p>
             <button onClick={() => setShowBlocked(null)} className="w-full text-sm font-medium py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
               Go back

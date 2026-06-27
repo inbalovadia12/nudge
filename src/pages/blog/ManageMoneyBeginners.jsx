@@ -70,7 +70,7 @@ export default function ManageMoneyBeginners() {
             The biggest mistake beginners make is jumping straight into budgeting. Before you decide how much you "should" spend on groceries or entertainment, you need to know what you're actually spending right now.
           </p>
           <p>
-            For one month, simply track where your money goes. You don't need to change anything — just observe. Write it down, use an app like <Link to="/" className="text-primary hover:underline">Thryve</Link>, or review your bank statements. The goal is awareness, not judgment.
+            For one month, simply track where your money goes. You don't need to change anything — just observe. Write it down, use an app like <Link to="/" className="text-primary hover:underline">Vesper</Link>, or review your bank statements. The goal is awareness, not judgment.
           </p>
           <p>
             Most people are surprised by what they find. Those small daily purchases add up fast, and seeing the full picture is the first step toward making better choices — without anyone telling you what to do.
@@ -122,7 +122,7 @@ export default function ManageMoneyBeginners() {
 
           <h2 className="text-xl font-bold text-foreground pt-4">Use Tools That Work With You, Not Against You</h2>
           <p>
-            The right tools can make money management feel effortless. <Link to="/" className="text-primary hover:underline">Thryve</Link> was built specifically for beginners who want to manage money without spreadsheets or guilt. It tracks your spending, helps you set goals, and gives you honest, plain-English guidance — no finance degree required.
+            The right tools can make money management feel effortless. <Link to="/" className="text-primary hover:underline">Vesper</Link> was built specifically for beginners who want to manage money without spreadsheets or guilt. It tracks your spending, helps you set goals, and gives you honest, plain-English guidance — no finance degree required.
           </p>
           <p>
             The key is finding tools that fit your life. If an app makes you feel bad about your spending, it's the wrong app. Good money tools should reduce stress, not add to it.
@@ -159,7 +159,7 @@ export default function ManageMoneyBeginners() {
         {/* CTA */}
         <div className="mt-12 rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent border border-primary/20 p-6 text-center">
           <p className="text-base font-bold text-foreground mb-2">Ready to start managing your money?</p>
-          <p className="text-sm text-muted-foreground mb-4">Thryve makes it simple — track spending, set goals, and build habits. Free to start.</p>
+          <p className="text-sm text-muted-foreground mb-4">Vesper makes it simple — track spending, set goals, and build habits. Free to start.</p>
           <Link to="/register" className="inline-flex items-center gap-2 bg-primary text-primary-foreground rounded-2xl px-6 py-3 text-sm font-semibold hover:bg-primary/90 transition-colors">
             Get started free <ArrowRight className="w-4 h-4" />
           </Link>

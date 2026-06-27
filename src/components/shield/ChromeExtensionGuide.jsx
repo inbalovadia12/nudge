@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 
 const TOTAL_STEPS = 6;
-const STORAGE_KEY = 'nudge_chrome_ext_guide_step';
+const STORAGE_KEY = 'vesper_chrome_ext_guide_step';
 const DOWNLOAD_URL = 'https://drive.google.com/file/d/1DpOnP-iYEqeYkOSnS-b3-ehVhnW88ZII/view?usp=sharing';
 const APP_URL = 'https://nudgefinance.base44.app';
 
@@ -50,7 +50,7 @@ export default function ChromeExtensionGuide({ isPremium, onUpgrade }) {
         </div>
         <h3 className="text-xl font-bold text-foreground mb-2">Chrome Extension Setup</h3>
         <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6">
-          The Thryve Chrome Extension unlocks Spending Guard, website blocking, price tracking, and intelligent spending interventions — directly in your browser. Upgrade to Plus or Pro to access the guided setup.
+          The Vesper Chrome Extension unlocks Spending Guard, website blocking, price tracking, and intelligent spending interventions — directly in your browser. Upgrade to Plus or Pro to access the guided setup.
         </p>
         <button
           onClick={onUpgrade}
@@ -76,7 +76,7 @@ export default function ChromeExtensionGuide({ isPremium, onUpgrade }) {
           <span className="text-xs font-semibold uppercase tracking-wide text-primary">Chrome Extension</span>
         </div>
         <h2 className="text-xl sm:text-2xl font-bold font-heading text-foreground mb-2">
-          Install the Thryve Chrome Extension
+          Install the Vesper Chrome Extension
         </h2>
         <p className="text-sm text-muted-foreground max-w-md">
           Unlock Shopping Shield, website blocking, price tracking, purchase reminders, and intelligent spending interventions directly in Chrome.
@@ -146,7 +146,7 @@ export default function ChromeExtensionGuide({ isPremium, onUpgrade }) {
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-sm font-bold text-primary-foreground bg-primary px-5 py-2 rounded-xl hover:bg-primary/90 transition-colors"
           >
-            Open Thryve <ExternalLink className="w-3.5 h-3.5" />
+            Open Vesper <ExternalLink className="w-3.5 h-3.5" />
           </a>
         ) : (
           <button
@@ -204,7 +204,7 @@ function Step1Download({ downloaded, onDownload }) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground leading-relaxed">
-        Download the Thryve Chrome Extension package from Google Drive. You'll get a ZIP file containing everything needed.
+        Download the Vesper Chrome Extension package from Google Drive. You'll get a ZIP file containing everything needed.
       </p>
 
       {/* Download button */}
@@ -220,7 +220,7 @@ function Step1Download({ downloaded, onDownload }) {
           {downloaded ? <Check className="w-7 h-7 text-success" /> : <Download className="w-7 h-7 text-primary" />}
         </div>
         <div className="text-left flex-1">
-          <p className="text-base font-bold text-foreground">Download Thryve Extension v1.3</p>
+          <p className="text-base font-bold text-foreground">Download Vesper Extension v1.3</p>
           <p className="text-xs text-muted-foreground">
             {downloaded ? 'Downloaded — continue to step 2' : 'Click to open in Google Drive'}
           </p>
@@ -259,7 +259,7 @@ function Step1Download({ downloaded, onDownload }) {
         <div className="flex flex-col items-center gap-2">
           <div className="w-20 h-24 rounded-xl border-2 border-dashed border-border bg-surface-2 flex flex-col items-center justify-center gap-1">
             <FileArchive className="w-8 h-8 text-primary" />
-            <span className="text-[10px] font-medium text-muted-foreground">nudge_v1.3.zip</span>
+            <span className="text-[10px] font-medium text-muted-foreground">vesper_v1.3.zip</span>
           </div>
         </div>
       </div>
@@ -272,7 +272,7 @@ function Step2Extract() {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground leading-relaxed">
-        Locate the downloaded file named <code className="text-xs bg-surface-2 px-1.5 py-0.5 rounded text-foreground font-mono">nudge_v1.3.zip</code> in your Downloads folder.
+        Locate the downloaded file named <code className="text-xs bg-surface-2 px-1.5 py-0.5 rounded text-foreground font-mono">vesper_v1.3.zip</code> in your Downloads folder.
       </p>
 
       {/* Windows */}
@@ -319,7 +319,7 @@ function Step2Extract() {
         <ChevronRight className="w-5 h-5 text-muted-foreground" />
         <div className="w-16 h-20 rounded-xl border-2 border-primary/30 bg-primary/5 flex flex-col items-center justify-center">
           <Folder className="w-7 h-7 text-primary" />
-          <span className="text-[9px] text-primary mt-1">nudge_v1.3</span>
+          <span className="text-[9px] text-primary mt-1">vesper_v1.3</span>
         </div>
       </div>
     </div>
@@ -443,7 +443,7 @@ function Step5Load() {
         </li>
         <li className="flex gap-3">
           <span className="w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
-          Select the extracted folder named <code className="text-xs bg-surface-2 px-1.5 py-0.5 rounded text-foreground font-mono">nudge_v1.3</code>.
+          Select the extracted folder named <code className="text-xs bg-surface-2 px-1.5 py-0.5 rounded text-foreground font-mono">vesper_v1.3</code>.
         </li>
         <li className="flex gap-3">
           <span className="w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
@@ -485,7 +485,7 @@ function Step5Load() {
         <div className="flex items-center gap-3 bg-card rounded-lg border border-border p-3">
           <Folder className="w-8 h-8 text-primary flex-shrink-0" />
           <div>
-            <p className="text-sm font-semibold text-foreground">nudge_v1.3</p>
+            <p className="text-sm font-semibold text-foreground">vesper_v1.3</p>
             <p className="text-[10px] text-muted-foreground">Contains: manifest.json, content.js, background.js, icons/</p>
           </div>
           <Check className="w-5 h-5 text-success ml-auto flex-shrink-0" />
@@ -506,7 +506,7 @@ function Step6Pin() {
         </li>
         <li className="flex gap-3">
           <span className="w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
-          Find <span className="font-semibold text-foreground">Thryve v1.3</span>.
+          Find <span className="font-semibold text-foreground">Vesper v1.3</span>.
         </li>
         <li className="flex gap-3">
           <span className="w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
@@ -524,7 +524,7 @@ function Step6Pin() {
             <Pin className="w-3.5 h-3.5 text-primary" />
             <span className="text-[8px] text-primary font-bold">PIN</span>
           </div>
-          <span className="text-[10px] text-muted-foreground">Thryve v1.3</span>
+          <span className="text-[10px] text-muted-foreground">Vesper v1.3</span>
         </div>
       </div>
 
@@ -550,14 +550,14 @@ function Step6Pin() {
         ))}
       </div>
 
-      {/* Open Thryve button */}
+      {/* Open Vesper button */}
       <a
         href={APP_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-4 rounded-2xl text-base font-bold hover:bg-primary/90 transition-colors"
       >
-        Open Thryve <ExternalLink className="w-4 h-4" />
+        Open Vesper <ExternalLink className="w-4 h-4" />
       </a>
     </div>
   );
@@ -584,7 +584,7 @@ function HelpModal({ onClose }) {
     },
     {
       title: 'Can\'t find the pin icon',
-      steps: 'Click the puzzle piece icon in the Chrome toolbar. If Thryve isn\'t listed, the extension may be disabled — enable it from chrome://extensions/.',
+      steps: 'Click the puzzle piece icon in the Chrome toolbar. If Vesper isn\'t listed, the extension may be disabled — enable it from chrome://extensions/.',
     },
   ];
 

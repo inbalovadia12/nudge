@@ -8,8 +8,8 @@ import { Mail, MessageSquare, ArrowRight } from 'lucide-react';
 
 export default function Contact() {
   useSeo({
-    title: 'Contact Thryve — Questions, Feedback, Support',
-    description: 'Get in touch with the Thryve team. We respond to questions about the app, feature requests, and support inquiries.',
+    title: 'Contact Vesper — Questions, Feedback, Support',
+    description: 'Get in touch with the Vesper team. We respond to questions about the app, feature requests, and support inquiries.',
   });
 
   const [name, setName] = useState('');
@@ -19,9 +19,9 @@ export default function Contact() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Thryve contact from ${name || 'a user'}`);
+    const subject = encodeURIComponent(`Vesper contact from ${name || 'a user'}`);
     const body = encodeURIComponent(`${message}\n\n— ${name}\n${email}`);
-    window.location.href = `mailto:hello@thryve.app?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:hello@vesper.app?subject=${subject}&body=${body}`;
     setSent(true);
   };
 
@@ -32,7 +32,7 @@ export default function Contact() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-3xl font-bold font-heading text-foreground mb-3">Contact us</h1>
           <p className="text-sm text-muted-foreground leading-relaxed mb-8">
-            Have a question about Thryve, a feature request, or need help with your account? We'd love to hear from you. We read every message and do our best to respond within 1–2 business days.
+            Have a question about Vesper, a feature request, or need help with your account? We'd love to hear from you. We read every message and do our best to respond within 1–2 business days.
           </p>
         </motion.div>
 
@@ -42,7 +42,7 @@ export default function Contact() {
               <Mail className="w-5 h-5 text-primary" />
             </div>
             <p className="text-sm font-bold text-foreground">Email us</p>
-            <p className="text-sm text-muted-foreground mt-1">hello@thryve.app</p>
+            <p className="text-sm text-muted-foreground mt-1">hello@vesper.app</p>
           </div>
           <div className="rounded-2xl border border-border bg-card p-5">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
@@ -56,7 +56,7 @@ export default function Contact() {
         {sent ? (
           <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 text-center">
             <p className="text-sm font-bold text-foreground">Thanks for reaching out!</p>
-            <p className="text-sm text-muted-foreground mt-1">Your email client should have opened. If not, email us directly at hello@thryve.app.</p>
+            <p className="text-sm text-muted-foreground mt-1">Your email client should have opened. If not, email us directly at hello@vesper.app.</p>
             <Link to="/" className="inline-flex items-center gap-1 text-sm text-primary mt-3 hover:underline">
               Back to home <ArrowRight className="w-4 h-4" />
             </Link>

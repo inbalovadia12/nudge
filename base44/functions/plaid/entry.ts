@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
     if (action === 'create_link_token') {
       const res = await plaidRequest('/link/token/create', {
         user: { client_user_id: user.id },
-        client_name: 'Nudge',
+        client_name: 'Vesper',
         products: ['transactions'],
         country_codes: ['US'],
         language: 'en',

@@ -42,7 +42,7 @@ export default function Calculators() {
     try {
       const ctx = await getFinancialContext();
       const contextString = buildContextString(ctx);
-      const prompt = `You are Thryve, a financial coach. The user just used a financial calculator. Here is their calculation result:\n\n${calcData.summary}\n\nTheir financial context:\n${contextString}\n\nGive 2-3 short, actionable insights. For savings: how increasing contributions helps, alternative scenarios, tips to reach goals faster. For split payments: whether splitting is a good or bad idea, cheaper alternatives, impact on goals. Be warm, concise, and specific to their numbers. 3-4 sentences max.`;
+      const prompt = `You are Vesper, a financial coach. The user just used a financial calculator. Here is their calculation result:\n\n${calcData.summary}\n\nTheir financial context:\n${contextString}\n\nGive 2-3 short, actionable insights. For savings: how increasing contributions helps, alternative scenarios, tips to reach goals faster. For split payments: whether splitting is a good or bad idea, cheaper alternatives, impact on goals. Be warm, concise, and specific to their numbers. 3-4 sentences max.`;
 
       const response = await base44.integrations.Core.InvokeLLM({ prompt, model: 'claude_sonnet_4_6' });
       setInsight(typeof response === 'string' ? response : response?.content || String(response));

@@ -45,7 +45,7 @@ export default function MobileNav() {
       </SheetTrigger>
       <SheetContent side="left" className="w-72 p-0 overflow-y-auto">
         <div className="p-6 pb-4">
-          <span className="font-bold text-foreground text-lg">Thryve</span>
+          <span className="font-bold text-foreground text-lg">Vesper</span>
         </div>
         <div className="px-4 pb-4">
           <Link

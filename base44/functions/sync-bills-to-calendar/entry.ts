@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
 
         const event = {
           summary: `Bill Due: ${bill.name}`,
-          description: `Amount: $${bill.amount}\nCategory: ${bill.category || 'other'}\nStatus: ${bill.status}\n\nSynced from Nudge.`,
+          description: `Amount: $${bill.amount}\nCategory: ${bill.category || 'other'}\nStatus: ${bill.status}\n\nSynced from Vesper.`,
           start: { dateTime: eventStart.toISOString(), timeZone: 'UTC' },
           end: { dateTime: eventEnd.toISOString(), timeZone: 'UTC' },
           reminders: { useDefault: false, overrides: [{ method: 'popup', minutes: 1440 }, { method: 'popup', minutes: 60 }] },

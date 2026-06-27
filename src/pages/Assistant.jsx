@@ -10,7 +10,7 @@ import { spendCredits } from '@/lib/useCredits';
 import { Send, Mic, Sparkles, Menu } from 'lucide-react';
 import ChildHeader from '@/components/ChildHeader';
 
-const NUDGE_GREETING = "Hey — I'm Thryve. Ask me anything about your spending, your goals, or whether something's worth buying. No judgment, just an honest read.";
+const NUDGE_GREETING = "Hey — I'm Vesper. Ask me anything about your spending, your goals, or whether something's worth buying. No judgment, just an honest read.";
 
 export default function Assistant() {
   const [conversations, setConversations] = useState([]);

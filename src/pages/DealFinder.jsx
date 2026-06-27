@@ -255,7 +255,7 @@ export default function DealFinder() {
         : 'The user has not specified their location. Find online deals from major US retailers. Prices in USD.';
 
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are Thryve's AI Deal Finder. The user wants to buy: "${q}"
+        prompt: `You are Vesper's AI Deal Finder. The user wants to buy: "${q}"
 
 ${locationContext}
 

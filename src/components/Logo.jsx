@@ -15,7 +15,7 @@ export default function Logo({ size = 'md' }) {
         </svg>
       </div>
       <div className="flex flex-col leading-none">
-        <span className={`${s.text} font-bold font-heading tracking-tight text-foreground`}>THRYVE</span>
+        <span className={`${s.text} font-bold font-heading tracking-tight text-foreground`}>VESPER</span>
         <span className="text-[8px] sm:text-[9px] font-medium text-muted-foreground tracking-wider uppercase mt-0.5">AI Financial Advisor</span>
       </div>
     </div>

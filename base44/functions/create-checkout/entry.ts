@@ -2,38 +2,38 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 const PLANS = {
   plus_monthly: {
-    name: 'Thryve Plus - Monthly',
+    name: 'Vesper Plus - Monthly',
     price: '4.99',
     subscriptionInfo: {
       subscriptionSettings: { frequency: 'MONTH' },
-      title: 'Thryve Plus Monthly',
+      title: 'Vesper Plus Monthly',
       description: 'All premium insights and tools, billed monthly',
     },
   },
   plus_yearly: {
-    name: 'Thryve Plus - Annual',
+    name: 'Vesper Plus - Annual',
     price: '39.99',
     subscriptionInfo: {
       subscriptionSettings: { frequency: 'YEAR' },
-      title: 'Thryve Plus Annual',
+      title: 'Vesper Plus Annual',
       description: 'All premium insights and tools, billed yearly',
     },
   },
   pro_monthly: {
-    name: 'Thryve Pro - Monthly',
+    name: 'Vesper Pro - Monthly',
     price: '9.99',
     subscriptionInfo: {
       subscriptionSettings: { frequency: 'MONTH' },
-      title: 'Thryve Pro Monthly',
+      title: 'Vesper Pro Monthly',
       description: 'Advanced AI tools for deep financial transformation, billed monthly',
     },
   },
   pro_yearly: {
-    name: 'Thryve Pro - Annual',
+    name: 'Vesper Pro - Annual',
     price: '79.99',
     subscriptionInfo: {
       subscriptionSettings: { frequency: 'YEAR' },
-      title: 'Thryve Pro Annual',
+      title: 'Vesper Pro Annual',
       description: 'Advanced AI tools for deep financial transformation, billed yearly',
     },
   },

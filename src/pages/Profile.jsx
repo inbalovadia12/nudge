@@ -110,7 +110,7 @@ export default function Profile() {
         <div className="flex items-center gap-3 mb-3">
           {isPremium ? <Crown className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-muted-foreground" />}
           <div>
-            <p className="font-semibold">{isPremium ? 'Thryve Premium' : 'Free Plan'}</p>
+            <p className="font-semibold">{isPremium ? 'Vesper Premium' : 'Free Plan'}</p>
             <p className="text-xs text-muted-foreground">
               {isPremium ? 'All features unlocked' : trialDays > 0 ? `${trialDays} days left in your trial` : 'Upgrade for full access'}
             </p>
@@ -296,7 +296,7 @@ export default function Profile() {
         Sign out
       </button>
 
-      <p className="text-center text-xs text-muted-foreground/50 mt-6">Thryve v2.0 · Your data is private</p>
+      <p className="text-center text-xs text-muted-foreground/50 mt-6">Vesper v2.0 · Your data is private</p>
 
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>

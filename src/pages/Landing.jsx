@@ -7,8 +7,8 @@ import { ArrowRight, Shield, Target, TrendingDown, Sparkles, Check, Wallet, Brai
 
 export default function Landing() {
   useSeo({
-    title: 'Thryve — Personal Finance App for Beginners & Young Adults',
-    description: 'Thryve is a simple personal finance app that helps beginners and young adults manage money through small habits, not complex spreadsheets. Track spending, build savings, and get AI guidance.',
+    title: 'Vesper — Personal Finance App for Beginners & Young Adults',
+    description: 'Vesper is a simple personal finance app that helps beginners and young adults manage money through small habits, not complex spreadsheets. Track spending, build savings, and get AI guidance.',
   });
 
   return (
@@ -24,7 +24,7 @@ export default function Landing() {
           Manage your money through habits, not spreadsheets
         </motion.h1>
         <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-base sm:text-lg text-muted-foreground mt-5 max-w-2xl mx-auto leading-relaxed">
-          Thryve is a personal finance app that helps you manage money easily — no jargon, no complex budgets, no guilt. Just simple tools that build better money habits, designed for beginners and young adults starting their financial journey.
+          Vesper is a personal finance app that helps you manage money easily — no jargon, no complex budgets, no guilt. Just simple tools that build better money habits, designed for beginners and young adults starting their financial journey.
         </motion.p>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
           <Link to="/register" className="w-full sm:w-auto bg-primary text-primary-foreground rounded-2xl px-6 py-3.5 text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
@@ -37,13 +37,13 @@ export default function Landing() {
         <p className="text-xs text-muted-foreground mt-4">Free to start · No credit card required</p>
       </section>
 
-      {/* What is Thryve */}
+      {/* What is Vesper */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid sm:grid-cols-2 gap-8 items-center">
           <div>
-            <h2 className="text-2xl font-bold font-heading text-foreground mb-4">What Thryve is</h2>
+            <h2 className="text-2xl font-bold font-heading text-foreground mb-4">What Vesper is</h2>
             <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-              Thryve is a money management app built for people who feel overwhelmed by personal finance. Instead of forcing you to build complex spreadsheets or categorize every transaction, Thryve focuses on one thing: helping you build better money habits through small, daily actions.
+              Vesper is a money management app built for people who feel overwhelmed by personal finance. Instead of forcing you to build complex spreadsheets or categorize every transaction, Vesper focuses on one thing: helping you build better money habits through small, daily actions.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Track your spending automatically, set savings goals that actually make sense, and get plain-English guidance from an AI advisor that knows your financial picture. No judgment, no finance degree required.
@@ -75,9 +75,9 @@ export default function Landing() {
       {/* Who it's for */}
       <section className="bg-surface-2 py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-2xl font-bold font-heading text-foreground mb-3">Who Thryve is for</h2>
+          <h2 className="text-2xl font-bold font-heading text-foreground mb-3">Who Vesper is for</h2>
           <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-8">
-            Thryve is designed for beginners and young adults who want to take control of their money without becoming finance experts. Whether you're a student, a recent grad, or just someone who's never felt confident about money, Thryve meets you where you are.
+            Vesper is designed for beginners and young adults who want to take control of their money without becoming finance experts. Whether you're a student, a recent grad, or just someone who's never felt confident about money, Vesper meets you where you are.
           </p>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
@@ -100,8 +100,8 @@ export default function Landing() {
         <p className="text-sm text-muted-foreground text-center mb-10">Three simple steps. No finance degree required.</p>
         <div className="grid sm:grid-cols-3 gap-6">
           {[
-            { step: '1', title: 'Set your goals', desc: 'Tell Thryve what you\'re saving for — a trip, an emergency fund, paying off debt. Set a target and a timeline.' },
-            { step: '2', title: 'Track your money', desc: 'Log purchases or connect your accounts. Thryve organizes everything automatically and shows you where your money goes.' },
+            { step: '1', title: 'Set your goals', desc: 'Tell Vesper what you\'re saving for — a trip, an emergency fund, paying off debt. Set a target and a timeline.' },
+            { step: '2', title: 'Track your money', desc: 'Log purchases or connect your accounts. Vesper organizes everything automatically and shows you where your money goes.' },
             { step: '3', title: 'Build better habits', desc: 'Get daily guidance, block impulse purchases, and watch your savings grow — one small win at a time.' },
           ].map((item, i) => (
             <div key={i} className="relative rounded-2xl border border-border bg-card p-6">
@@ -116,7 +116,7 @@ export default function Landing() {
       {/* Benefits */}
       <section className="bg-surface-2 py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <h2 className="text-2xl font-bold font-heading text-foreground mb-8 text-center">Why people choose Thryve</h2>
+          <h2 className="text-2xl font-bold font-heading text-foreground mb-8 text-center">Why people choose Vesper</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {[
               { icon: Check, title: 'Clarity over complexity', desc: 'See your full financial picture in plain English — no charts you need a degree to read.' },
@@ -142,7 +142,7 @@ export default function Landing() {
       <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 text-center">
         <h2 className="text-2xl font-bold font-heading text-foreground mb-2">Built on trust</h2>
         <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-8">
-          We believe finance apps should be transparent. Here's what you can expect from Thryve:
+          We believe finance apps should be transparent. Here's what you can expect from Vesper:
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           {['No selling your data', 'Cancel anytime', 'Transparent pricing', 'Plain-English guidance', 'No hidden fees'].map((item, i) => (
@@ -175,7 +175,7 @@ export default function Landing() {
       {/* CTA */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
         <div className="rounded-3xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent border border-primary/20 p-8 text-center">
-          <h2 className="text-2xl font-bold font-heading text-foreground mb-3">Ready to thryve?</h2>
+          <h2 className="text-2xl font-bold font-heading text-foreground mb-3">Ready to get started?</h2>
           <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">Start building better money habits today. It's free to begin.</p>
           <Link to="/register" className="inline-flex items-center gap-2 bg-primary text-primary-foreground rounded-2xl px-6 py-3.5 text-sm font-semibold hover:bg-primary/90 transition-colors">
             Create your free account <ArrowRight className="w-4 h-4" />

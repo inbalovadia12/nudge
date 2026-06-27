@@ -101,7 +101,7 @@ export default function MoneyLeaks() {
       if (detectedLeaks.length < 3) {
         try {
           const response = await base44.integrations.Core.InvokeLLM({
-            prompt: `You are Thryve, a financial coach. Analyze this user's financial data and identify 2-3 "money leaks" — wasteful spending patterns they might not notice. Be specific and encouraging, never shaming.
+            prompt: `You are Vesper, a financial coach. Analyze this user's financial data and identify 2-3 "money leaks" — wasteful spending patterns they might not notice. Be specific and encouraging, never shaming.
 
 Financial context: ${buildContextString(finCtx)}
 

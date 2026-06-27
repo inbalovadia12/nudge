@@ -12,7 +12,7 @@ export default function ConnectAccountsStep({ connections, onToggle, onBack, onC
   return (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <h1 className="text-3xl font-bold text-foreground mb-2">Connect accounts</h1>
-      <p className="text-muted-foreground mb-6">Optional, but it makes Thryve much smarter. You can skip for now.</p>
+      <p className="text-muted-foreground mb-6">Optional, but it makes Vesper much smarter. You can skip for now.</p>
 
       <div className="space-y-3 mb-8">
         {accounts.map(acc => {
@@ -44,7 +44,7 @@ export default function ConnectAccountsStep({ connections, onToggle, onBack, onC
 
       <div className="flex items-center gap-2 mb-6 text-xs text-muted-foreground">
         <Shield className="w-3.5 h-3.5 flex-shrink-0" />
-        <span>Bank-level encryption. Thryve never stores your credentials.</span>
+        <span>Bank-level encryption. Vesper never stores your credentials.</span>
       </div>
 
       <div className="flex gap-3">
