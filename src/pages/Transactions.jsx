@@ -224,7 +224,7 @@ export default function Transactions() {
           <div className="rounded-2xl border border-border bg-card p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <Landmark className="w-5 h-5 text-primary" />
-                  <span className="text-sm font-medium text-foreground">Connect your bank - In Beta  - </span>
+                  <span className="text-sm font-medium text-foreground">Connect your bank - Beta   </span>
                 </div>
                 <ConnectPlaid connected={false} onConnected={loadTransactions} />
               </div> :
