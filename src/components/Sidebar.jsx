@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Target, MessageCircle, ScanSearch, BarChart3, User, Trophy, LogOut, Shield, Heart, Bell, Calendar, Calculator, Search, Lock } from 'lucide-react';
+import { Home, Target, MessageCircle, ScanSearch, BarChart3, User, Trophy, LogOut, Shield, Heart, Bell, Calendar, Calculator, Search, Lock, Receipt } from 'lucide-react';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 import AdminPanel from './AdminPanel';
@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/AuthContext';
 
 const navItems = [
   { label: 'Home', path: '/', icon: Home },
+  { label: 'Transactions', path: '/transactions', icon: Receipt },
   { label: 'My Finances', path: '/insights', icon: BarChart3 },
   { label: 'Goals & Planning', path: '/goals', icon: Target },
   { label: 'Challenges', path: '/challenges', icon: Trophy },

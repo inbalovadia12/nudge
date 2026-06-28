@@ -35,6 +35,7 @@ import FinancialTwin from '@/pages/FinancialTwin';
 import ConnectedAccounts from '@/pages/ConnectedAccounts';
 import Pricing from '@/pages/Pricing';
 import PlaidSandbox from '@/pages/PlaidSandbox';
+import Transactions from '@/pages/Transactions';
 import Calculators from '@/pages/Calculators';
 import DealFinder from '@/pages/DealFinder';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
@@ -72,6 +73,7 @@ function App() {
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route element={<Layout />}>
                   <Route path="/" element={<Home />} />
+                  <Route path="/transactions" element={<Transactions />} />
                   <Route path="/check" element={<Check />} />
                   <Route path="/goals" element={<Goals />} />
                   <Route path="/insights" element={<Insights />} />

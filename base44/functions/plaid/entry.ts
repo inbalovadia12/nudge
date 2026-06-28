@@ -27,6 +27,16 @@ function isTokenError(err) {
     err.plaid_error_code === 'ITEM_EXPIRED';
 }
 
+// Hash for deduplication when syncing into UnifiedTransaction
+function makeUnifiedHash(date, merchant, amount, currency) {
+  const key = [date, (merchant || '').toLowerCase().trim(), String(amount), (currency || '').toUpperCase().trim()].join('|');
+  let hash = 5381;
+  for (let i = 0; i < key.length; i++) {
+    hash = ((hash << 5) + hash) + key.charCodeAt(i);
+  }
+  return (hash >>> 0).toString(16);
+}
+
 // Simple recurring detection: group by normalized merchant name, find regular intervals
 function detectRecurring(transactions) {
   const groups = {};
@@ -333,6 +343,35 @@ Deno.serve(async (req) => {
       await base44.asServiceRole.entities.UserProfile.update(profile.id, {
         plaid_last_sync_date: now,
       });
+
+      // Sync into UnifiedTransaction (unified model)
+      const unifiedExisting = await base44.asServiceRole.entities.UnifiedTransaction.filter({ source: 'plaid' });
+      const unifiedMap = new Map(unifiedExisting.map(e => [e.source_hash, e]));
+      const unifiedToCreate = [];
+      for (const t of txnsRes.transactions) {
+        const merchant = t.merchant_name || t.name || 'Unknown';
+        const hash = makeUnifiedHash(t.date, merchant, t.amount, 'USD');
+        if (unifiedMap.has(hash)) continue;
+        unifiedMap.set(hash, true);
+        const isRec = recurringTxnIds.has(t.transaction_id);
+        unifiedToCreate.push({
+          date: t.date,
+          description: t.name,
+          normalized_merchant: merchant,
+          amount: t.amount,
+          currency: 'USD',
+          category: t.category ? t.category[0] : 'other',
+          source: 'plaid',
+          source_hash: hash,
+          is_income: t.amount < 0,
+          account_id: t.account_id,
+          is_recurring: isRec,
+          recurring_type: isRec ? (recurring.find(r => (r.merchant || '').toLowerCase() === merchant.toLowerCase())?.type) : null,
+        });
+      }
+      if (unifiedToCreate.length > 0) {
+        await base44.asServiceRole.entities.UnifiedTransaction.bulkCreate(unifiedToCreate);
+      }
 
       // Income estimation
       const incomeRecurring = recurring.filter(r => r.type === 'income');

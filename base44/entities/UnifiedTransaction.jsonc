@@ -1,0 +1,77 @@
+{
+  "name": "UnifiedTransaction",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "description": {
+      "type": "string"
+    },
+    "normalized_merchant": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "category": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "csv",
+        "manual",
+        "plaid"
+      ]
+    },
+    "source_hash": {
+      "type": "string"
+    },
+    "is_income": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_recurring": {
+      "type": "boolean",
+      "default": false
+    },
+    "recurring_type": {
+      "type": "string",
+      "enum": [
+        "subscription",
+        "income",
+        "bill"
+      ]
+    },
+    "account_id": {
+      "type": "string"
+    },
+    "import_batch_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "date",
+    "description",
+    "amount",
+    "source"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}
