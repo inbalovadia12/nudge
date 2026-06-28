@@ -52,30 +52,19 @@ function detectRecurring(transactions) {
     if (txns.length < 2) continue;
     const amounts = txns.map(t => t.amount);
     const avg = amounts.reduce((a, b) => a + b, 0) / amounts.length;
-    // Check if amounts are similar (within 10%)
     const allSimilar = amounts.every(a => Math.abs(a - avg) / Math.abs(avg) < 0.15);
     if (!allSimilar) continue;
 
-    // Check date intervals
     const dates = txns.map(t => new Date(t.date).getTime()).sort((a, b) => a - b);
     const intervals = [];
     for (let i = 1; i < dates.length; i++) {
       intervals.push((dates[i] - dates[i - 1]) / (1000 * 60 * 60 * 24));
     }
     const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
-    // Roughly weekly (5-9), biweekly (12-18), monthly (25-35)
     const isRegular = (avgInterval >= 5 && avgInterval <= 40) && intervals.every(i => Math.abs(i - avgInterval) / avgInterval < 0.3);
     if (!isRegular) continue;
 
     let recurringType = 'bill';
-    if (avg < 0) {
-      // Income is positive in Plaid (money in), but let me check... actually in Plaid, positive = money out, negative = money in
-      // Wait no: in Plaid, positive amounts = money spent (outflow), negative amounts = money received (inflow)
-      // Actually it's the opposite: in Plaid, positive = outflow (debit), negative = inflow (credit)
-      // Hmm, let me think... Plaid docs: "amount": The value of the transaction. Positive = money spent, negative = money received
-      // So income would be negative amounts
-    }
-    // avg > 0 means money spent (subscriptions/bills), avg < 0 means money received (income)
     if (avg < 0) recurringType = 'income';
     else if (avgInterval >= 25 && avgInterval <= 35) recurringType = 'subscription';
     else if (avgInterval >= 5 && avgInterval <= 9) recurringType = 'bill';
@@ -118,7 +107,7 @@ Deno.serve(async (req) => {
     if (action === 'create_link_token') {
       const res = await plaidRequest('/link/token/create', {
         user: { client_user_id: user.id },
-        client_name: 'Vesper',
+        client_name: 'Nudigo',
         products: ['transactions'],
         country_codes: ['US'],
         language: 'en',
@@ -130,12 +119,9 @@ Deno.serve(async (req) => {
       if (!public_token) return Response.json({ error: 'public_token is required' }, { status: 400 });
       const res = await plaidRequest('/item/public_token/exchange', { public_token });
 
-      // Get institution name
       let institutionName = 'Unknown Bank';
       try {
-        const itemRes = await plaidRequest('/item/get', {
-          access_token: res.access_token,
-        });
+        const itemRes = await plaidRequest('/item/get', { access_token: res.access_token });
         if (itemRes.item?.institution_id) {
           const instRes = await plaidRequest('/institutions/get_by_id', {
             institution_id: itemRes.item.institution_id,
@@ -163,9 +149,7 @@ Deno.serve(async (req) => {
       }
       let res;
       try {
-        res = await plaidRequest('/accounts/balance/get', {
-          access_token: profile.plaid_access_token,
-        });
+        res = await plaidRequest('/accounts/balance/get', { access_token: profile.plaid_access_token });
       } catch (err) {
         if (isTokenError(err)) {
           return Response.json({ error: 'Your bank connection has expired. Please reconnect.', needs_reconnect: true }, { status: 401 });
@@ -188,7 +172,6 @@ Deno.serve(async (req) => {
         last_synced: now,
       }));
 
-      // Sync to BankAccount entity
       const existing = await base44.asServiceRole.entities.BankAccount.filter({});
       const existingMap = new Map(existing.map(e => [e.account_id, e]));
       for (const acc of accounts) {
@@ -199,10 +182,7 @@ Deno.serve(async (req) => {
         }
       }
 
-      await base44.asServiceRole.entities.UserProfile.update(profile.id, {
-        plaid_last_sync_date: now,
-      });
-
+      await base44.asServiceRole.entities.UserProfile.update(profile.id, { plaid_last_sync_date: now });
       return Response.json({ accounts, institution_name: profile.plaid_institution_name });
     }
 
@@ -247,12 +227,9 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'No bank account connected' }, { status: 400 });
       }
 
-      // Fetch accounts
       let accountsRes;
       try {
-        accountsRes = await plaidRequest('/accounts/balance/get', {
-          access_token: profile.plaid_access_token,
-        });
+        accountsRes = await plaidRequest('/accounts/balance/get', { access_token: profile.plaid_access_token });
       } catch (err) {
         if (isTokenError(err)) {
           return Response.json({ error: 'Your bank connection has expired. Please reconnect.', needs_reconnect: true }, { status: 401 });
@@ -260,7 +237,6 @@ Deno.serve(async (req) => {
         throw err;
       }
 
-      // Fetch transactions (last 90 days for recurring detection)
       const end = new Date().toISOString().split('T')[0];
       const start = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       let txnsRes;
@@ -280,7 +256,6 @@ Deno.serve(async (req) => {
 
       const now = new Date().toISOString();
 
-      // Sync accounts
       const accounts = accountsRes.accounts.map(a => ({
         account_id: a.account_id,
         name: a.name,
@@ -305,10 +280,8 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Detect recurring transactions
       const recurring = detectRecurring(txnsRes.transactions);
       const recurringTxnIds = new Set();
-      const recurringMerchantSet = new Set(recurring.map(r => r.merchant?.toLowerCase()));
       for (const r of recurring) {
         for (const t of txnsRes.transactions) {
           const tName = (t.merchant_name || t.name || '').toLowerCase();
@@ -316,7 +289,6 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Sync transactions
       const transactions = txnsRes.transactions.map(t => {
         const isRec = recurringTxnIds.has(t.transaction_id);
         const recMatch = recurring.find(r => {
@@ -336,7 +308,6 @@ Deno.serve(async (req) => {
         };
       });
 
-      // Bulk upsert transactions
       const existingTxns = await base44.asServiceRole.entities.BankTransaction.filter({});
       const txnMap = new Map(existingTxns.map(e => [e.transaction_id, e]));
       const toCreate = [];
@@ -351,9 +322,7 @@ Deno.serve(async (req) => {
       if (toCreate.length > 0) await base44.asServiceRole.entities.BankTransaction.bulkCreate(toCreate);
       if (toUpdate.length > 0) await base44.asServiceRole.entities.BankTransaction.bulkUpdate(toUpdate);
 
-      await base44.asServiceRole.entities.UserProfile.update(profile.id, {
-        plaid_last_sync_date: now,
-      });
+      await base44.asServiceRole.entities.UserProfile.update(profile.id, { plaid_last_sync_date: now });
 
       // Sync into UnifiedTransaction (unified model)
       const unifiedExisting = await base44.asServiceRole.entities.UnifiedTransaction.filter({ source: 'plaid' });
@@ -384,7 +353,6 @@ Deno.serve(async (req) => {
         await base44.asServiceRole.entities.UnifiedTransaction.bulkCreate(unifiedToCreate);
       }
 
-      // Income estimation
       const incomeRecurring = recurring.filter(r => r.type === 'income');
       const nextPaycheck = incomeRecurring.length > 0
         ? new Date(Date.now() + incomeRecurring[0].interval_days * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
@@ -435,9 +403,7 @@ Deno.serve(async (req) => {
     if (action === 'disconnect') {
       if (profile?.plaid_access_token) {
         try {
-          await plaidRequest('/item/remove', {
-            access_token: profile.plaid_access_token,
-          });
+          await plaidRequest('/item/remove', { access_token: profile.plaid_access_token });
         } catch {}
 
         await base44.asServiceRole.entities.UserProfile.update(profile.id, {
@@ -448,7 +414,6 @@ Deno.serve(async (req) => {
           connected_bank: false,
         });
 
-        // Clean up synced data
         await base44.asServiceRole.entities.BankAccount.deleteMany({});
         await base44.asServiceRole.entities.BankTransaction.deleteMany({});
       }

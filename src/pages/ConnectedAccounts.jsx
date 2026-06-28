@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency, clearUserDataCache } from '@/lib/nudgeUtils';
-import { ArrowLeft, Landmark, RefreshCw, Trash2, Loader2, AlertCircle, Wallet, Building2, TrendingUp, TrendingDown, Check, Link2, PiggyBank } from 'lucide-react';
+import { isPremiumUser } from '@/lib/usePremium';
+import { ArrowLeft, Landmark, RefreshCw, Trash2, Loader2, AlertCircle, Wallet, Building2, TrendingUp, TrendingDown, Check, Link2, PiggyBank, Lock, ArrowRight } from 'lucide-react';
 import GoogleCalendarSync from '@/components/GoogleCalendarSync';
 
 export default function ConnectedAccounts() {
@@ -90,6 +91,35 @@ export default function ConnectedAccounts() {
     return (
       <div className="p-6 flex items-center justify-center min-h-[60vh]">
         <div className="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Non-premium users cannot access bank features
+  if (!isPremiumUser(profile)) {
+    return (
+      <div className="p-4 sm:p-6 max-w-2xl mx-auto pb-24 lg:pb-6">
+        <button onClick={() => navigate('/profile')} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
+          <ArrowLeft className="w-4 h-4" /> Profile
+        </button>
+        <div className="flex items-center gap-2 mb-1">
+          <Landmark className="w-6 h-6 text-primary" />
+          <h1 className="text-2xl bold font-heading">Connected Accounts</h1>
+        </div>
+        <p className="text-sm text-muted-foreground mb-6">Bank connections require Premium</p>
+
+        <div className="rounded-2xl border-2 border-dashed border-border bg-card p-8 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-7 h-7 text-primary" />
+          </div>
+          <h3 className="text-base font-semibold text-foreground mb-1">Bank sync is a Premium feature</h3>
+          <p className="text-sm text-muted-foreground mb-4 max-w-xs mx-auto">Upgrade to Premium to connect your bank via Plaid and automatically sync transactions, balances, and recurring bills.</p>
+          <Link to="/pricing" className="inline-flex items-center gap-1 text-sm font-medium text-primary-foreground bg-primary px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-colors">
+            View plans <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <GoogleCalendarSync />
       </div>
     );
   }

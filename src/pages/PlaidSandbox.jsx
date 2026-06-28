@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency } from '@/lib/nudgeUtils';
-import { ArrowLeft, Bug, CheckCircle2, XCircle, Loader2, RefreshCw, Building2, Receipt, Landmark } from 'lucide-react';
+import { isPremiumUser } from '@/lib/usePremium';
+import { ArrowLeft, Bug, CheckCircle2, XCircle, Loader2, RefreshCw, Building2, Receipt, Landmark, Lock, ArrowRight } from 'lucide-react';
 
 export default function PlaidSandbox() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ export default function PlaidSandbox() {
   const [accounts, setAccounts] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [syncing, setSyncing] = useState(false);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     loadStatus();
@@ -19,15 +21,19 @@ export default function PlaidSandbox() {
   async function loadStatus() {
     setLoading(true);
     try {
-      const res = await base44.functions.invoke('plaid', { action: 'get_status' });
-      setStatus(res.data);
-      if (res.data.connected) {
-        const accRes = await base44.functions.invoke('plaid', { action: 'get_accounts' });
-        if (accRes.data?.accounts) setAccounts(accRes.data.accounts);
-        const profiles = await base44.entities.UserProfile.list();
-        const start = profiles[0] ? new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : undefined;
-        const txnRes = await base44.functions.invoke('plaid', { action: 'get_transactions', start_date: start });
-        if (txnRes.data?.transactions) setTransactions(txnRes.data.transactions);
+      const profiles = await base44.entities.UserProfile.list();
+      setProfile(profiles[0]);
+
+      if (isPremiumUser(profiles[0])) {
+        const res = await base44.functions.invoke('plaid', { action: 'get_status' });
+        setStatus(res.data);
+        if (res.data.connected) {
+          const accRes = await base44.functions.invoke('plaid', { action: 'get_accounts' });
+          if (accRes.data?.accounts) setAccounts(accRes.data.accounts);
+          const start = profiles[0] ? new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : undefined;
+          const txnRes = await base44.functions.invoke('plaid', { action: 'get_transactions', start_date: start });
+          if (txnRes.data?.transactions) setTransactions(txnRes.data.transactions);
+        }
       }
     } catch {}
     setLoading(false);
@@ -46,6 +52,26 @@ export default function PlaidSandbox() {
     return (
       <div className="p-6 flex items-center justify-center min-h-[60vh]">
         <div className="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isPremiumUser(profile)) {
+    return (
+      <div className="p-4 sm:p-6 max-w-2xl mx-auto pb-24 lg:pb-6">
+        <button onClick={() => navigate('/profile')} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
+          <ArrowLeft className="w-4 h-4" /> Profile
+        </button>
+        <div className="rounded-2xl border-2 border-dashed border-border bg-card p-8 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-7 h-7 text-primary" />
+          </div>
+          <h3 className="text-base font-semibold text-foreground mb-1">Premium required</h3>
+          <p className="text-sm text-muted-foreground mb-4 max-w-xs mx-auto">Plaid sandbox access requires a Premium subscription.</p>
+          <Link to="/pricing" className="inline-flex items-center gap-1 text-sm font-medium text-primary-foreground bg-primary px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-colors">
+            View plans <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
     );
   }
