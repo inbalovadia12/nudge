@@ -11,6 +11,7 @@ export default function Contact() {
   useSeo({
     title: 'Contact Nudigo — Questions, Feedback, Support',
     description: 'Get in touch with the Nudigo team. We respond to questions about the app, feature requests, and support inquiries.',
+    path: '/contact',
   });
 
   const [name, setName] = useState('');

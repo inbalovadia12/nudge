@@ -1,6 +1,7 @@
 import { Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { useSeo } from '@/lib/useSeo';
 
 const SECTIONS = [
   {
@@ -64,6 +65,11 @@ const SECTIONS = [
 ];
 
 export default function PrivacyPolicy() {
+  useSeo({
+    title: 'Privacy Policy — Nudigo',
+    description: 'How Nudigo collects, uses, and protects your personal and financial data. Read our full privacy policy covering account info, bank connections, and data security.',
+    path: '/privacy-policy',
+  });
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10 pb-24">

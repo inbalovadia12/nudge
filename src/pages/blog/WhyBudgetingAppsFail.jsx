@@ -40,6 +40,7 @@ export default function WhyBudgetingAppsFail() {
     title: 'Why Budgeting Apps Fail — and a Better Way | Nudigo',
     description: 'Most budgeting apps fail within months. Learn why traditional budgeting doesn\'t work and discover a simpler, habit-based approach to managing money without spreadsheets.',
     schema: FAQ_SCHEMA,
+    path: '/blog/why-budgeting-apps-fail',
   });
 
   return (

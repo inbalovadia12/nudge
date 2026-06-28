@@ -9,6 +9,7 @@ export default function Landing() {
   useSeo({
     title: 'Nudigo — Personal Finance App for Beginners & Young Adults',
     description: 'Nudigo is a simple personal finance app that helps beginners and young adults manage money through small habits, not complex spreadsheets. Track spending, build savings, and get AI guidance.',
+    path: '/',
   });
 
   return (

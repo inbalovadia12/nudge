@@ -40,6 +40,7 @@ export default function ManageMoneyBeginners() {
     title: 'How to Manage Money for Beginners (Without Overwhelm)',
     description: 'A simple, step-by-step guide to managing money for beginners. Learn how to track spending, save without a strict budget, and build financial habits that actually stick.',
     schema: FAQ_SCHEMA,
+    path: '/blog/manage-money-beginners',
   });
 
   return (

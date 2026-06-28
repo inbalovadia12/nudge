@@ -9,6 +9,7 @@ export default function About() {
   useSeo({
     title: 'About Nudigo — Why We Built a Simpler Finance App',
     description: 'Nudigo was built to make money management simple for beginners and young adults. Learn about our mission to replace complex budgeting with sustainable habits.',
+    path: '/about',
   });
 
   return (

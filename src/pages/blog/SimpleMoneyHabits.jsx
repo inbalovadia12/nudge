@@ -40,6 +40,7 @@ export default function SimpleMoneyHabits() {
     title: 'Simple Money Habits That Actually Stick | Nudigo',
     description: 'Discover small, sustainable money habits that actually work for beginners and young adults. Learn how to build financial habits without willpower or spreadsheets.',
     schema: FAQ_SCHEMA,
+    path: '/blog/simple-money-habits',
   });
 
   return (

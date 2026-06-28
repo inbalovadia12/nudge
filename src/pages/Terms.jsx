@@ -6,6 +6,7 @@ export default function Terms() {
   useSeo({
     title: 'Terms of Service — Nudigo',
     description: 'The terms and conditions for using Nudigo, a personal finance app. Read about your rights, responsibilities, and our service policies.',
+    path: '/terms',
   });
 
   return (
