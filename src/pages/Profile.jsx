@@ -7,7 +7,7 @@ import { useTheme } from 'next-themes';
 import { usePremiumStatus } from '@/lib/usePremium';
 import { clearUserDataCache } from '@/lib/nudgeUtils';
 import ConnectPlaid from '@/components/ConnectPlaid';
-import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark, Bug, FileText, Trash2 } from 'lucide-react';
+import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark, Bug, FileText, Trash2, Lock } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 export default function Profile() {
@@ -236,24 +236,37 @@ export default function Profile() {
       {/* Bank connection via Plaid */}
       <div className="rounded-3xl border border-border bg-card p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
-          <Landmark className="w-4 h-4 text-primary" />
+          {isPremium ? <Landmark className="w-4 h-4 text-primary" /> : <Lock className="w-4 h-4 text-muted-foreground" />}
           <h2 className="text-sm font-semibold">Bank Account</h2>
         </div>
-        <p className="text-xs text-muted-foreground mb-4">
-          Connect your bank via Plaid to automatically track transactions, balances, and bills.
-        </p>
-        <ConnectPlaid
-          connected={bankConnected}
-          onConnected={() => { setBankConnected(true); clearUserDataCache(); }}
-          onDisconnect={handleDisconnectBank}
-        />
-        {bankConnected && (
-          <button
-            onClick={() => navigate('/plaid-sandbox')}
-            className="w-full mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors py-1"
-          >
-            <Bug className="w-3.5 h-3.5" /> Plaid Sandbox (dev testing)
-          </button>
+        {isPremium ? (
+          <>
+            <p className="text-xs text-muted-foreground mb-4">
+              Connect your bank via Plaid to automatically track transactions, balances, and bills.
+            </p>
+            <ConnectPlaid
+              connected={bankConnected}
+              onConnected={() => { setBankConnected(true); clearUserDataCache(); }}
+              onDisconnect={handleDisconnectBank}
+            />
+            {bankConnected && (
+              <button
+                onClick={() => navigate('/plaid-sandbox')}
+                className="w-full mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors py-1"
+              >
+                <Bug className="w-3.5 h-3.5" /> Plaid Sandbox (dev testing)
+              </button>
+            )}
+          </>
+        ) : (
+          <>
+            <p className="text-xs text-muted-foreground mb-4">
+              Bank sync is a Premium feature. Upgrade to connect your bank via Plaid and automatically track transactions, balances, and bills.
+            </p>
+            <Link to="/pricing" className="block w-full bg-primary text-primary-foreground rounded-2xl py-2.5 text-sm font-semibold text-center hover:bg-primary/90 transition-colors">
+              Upgrade to Premium
+            </Link>
+          </>
         )}
       </div>
 
