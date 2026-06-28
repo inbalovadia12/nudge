@@ -58,6 +58,8 @@ export default function Pricing() {
   const [redeemLoading, setRedeemLoading] = useState(false);
   const [redeemError, setRedeemError] = useState('');
   const [redeemSuccess, setRedeemSuccess] = useState(false);
+  const [cancelError, setCancelError] = useState('');
+  const [cancelSuccess, setCancelSuccess] = useState(false);
 
   async function handleUpgrade(planName) {
     const planId = `${planName}_${billing}`;
@@ -90,11 +92,14 @@ export default function Pricing() {
 
   async function handleCancel() {
     setCheckoutLoading('cancel');
+    setCancelError('');
     try {
       await base44.functions.invoke('create-checkout', { action: 'cancel' });
-      window.location.reload();
+      clearUserDataCache();
+      setCancelSuccess(true);
+      setTimeout(() => window.location.reload(), 1500);
     } catch (err) {
-      console.error('Cancel error:', err);
+      setCancelError(err?.response?.data?.error || err?.data?.error || 'Failed to cancel. Please try again.');
     }
     setCheckoutLoading(null);
   }
@@ -153,6 +158,8 @@ export default function Pricing() {
               You're on the {profile?.subscription_plan?.startsWith('pro') ? 'Pro' : 'Plus'} plan
             </p>
             <p className="text-xs text-muted-foreground capitalize">Status: {profile?.subscription_status || 'active'}</p>
+            {cancelError && <p className="text-xs text-danger mt-1">{cancelError}</p>}
+            {cancelSuccess && <p className="text-xs text-success mt-1">Subscription canceled. Reloading...</p>}
           </div>
           {profile?.subscription_status === 'active' && (
             <button

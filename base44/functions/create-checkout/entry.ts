@@ -43,13 +43,8 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
-    const origin = req.headers.get('origin');
 
-    if (!origin) {
-      return Response.json({ error: 'Missing origin header' }, { status: 400 });
-    }
-
-    // Cancel subscription
+    // Cancel subscription (doesn't need origin)
     if (body.action === 'cancel') {
       const user = await base44.auth.me();
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
@@ -60,34 +55,63 @@ Deno.serve(async (req) => {
 
       if (!profile.subscription_id) return Response.json({ error: 'No active subscription' }, { status: 400 });
 
-      const cancelRes = await fetch(
-        `https://www.wixapis.com/payments/base44/v1/subscriptions/${profile.subscription_id}/cancel`,
+      const subId = profile.subscription_id;
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': Deno.env.get('PAYMENTS_BY_WIX_API_KEY'),
+        'wix-site-id': Deno.env.get('PAYMENTS_BY_WIX_SITE_ID'),
+      };
+
+      // Try soft cancellation first (keeps access until end of billing cycle)
+      let cancelRes = await fetch(
+        `https://www.wixapis.com/payments/base44/v1/subscriptions/${subId}/cancel`,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': Deno.env.get('PAYMENTS_BY_WIX_API_KEY'),
-            'wix-site-id': Deno.env.get('PAYMENTS_BY_WIX_SITE_ID'),
-          },
+          headers,
           body: JSON.stringify({
-            subscription_id: profile.subscription_id,
+            subscription_id: subId,
             immediate: false,
             reason: 'User requested cancellation',
           }),
         }
       );
 
+      let errData = await cancelRes.json().catch(() => ({}));
+
+      // If soft cancel fails (e.g. auto-renew already off), retry with immediate cancel
       if (!cancelRes.ok) {
-        const errData = await cancelRes.json().catch(() => ({}));
-        console.error('Cancel error:', JSON.stringify(errData));
-        return Response.json({ error: 'Failed to cancel subscription' }, { status: 500 });
+        console.error('Soft cancel failed, trying immediate:', JSON.stringify(errData));
+        cancelRes = await fetch(
+          `https://www.wixapis.com/payments/base44/v1/subscriptions/${subId}/cancel`,
+          {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              subscription_id: subId,
+              immediate: true,
+              reason: 'User requested cancellation',
+            }),
+          }
+        );
+        errData = await cancelRes.json().catch(() => ({}));
       }
 
+      if (!cancelRes.ok) {
+        console.error('Cancel error:', JSON.stringify(errData));
+        return Response.json({ error: errData.message || 'Failed to cancel subscription' }, { status: 500 });
+      }
+
+      // Update local status; webhook will set is_premium=false when the contract is actually canceled/ended
       await base44.entities.UserProfile.update(profile.id, { subscription_status: 'canceled' });
       return Response.json({ success: true });
     }
 
     // Create checkout
+    const origin = req.headers.get('origin');
+    if (!origin) {
+      return Response.json({ error: 'Missing origin header' }, { status: 400 });
+    }
+
     const plan = body.plan;
     const planConfig = PLANS[plan];
     if (!planConfig) return Response.json({ error: 'Invalid plan' }, { status: 400 });
