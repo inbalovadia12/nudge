@@ -16,7 +16,7 @@ import PullToRefresh from '@/components/PullToRefresh';
 const TIER_BADGE_COLORS = {
   free: 'bg-muted text-muted-foreground',
   plus: 'bg-primary/15 text-primary',
-  pro: 'bg-gradient-to-r from-primary to-cyan-400 text-primary-foreground',
+  pro: 'bg-gradient-to-r from-primary to-cyan-400 text-primary-foreground'
 };
 
 export default function Transactions() {
@@ -58,17 +58,17 @@ export default function Transactions() {
   const handleDelete = async (txn) => {
     try {
       await base44.entities.UnifiedTransaction.delete(txn.id);
-      setTransactions(prev => prev.filter(t => t.id !== txn.id));
+      setTransactions((prev) => prev.filter((t) => t.id !== txn.id));
     } catch {}
   };
 
   // Stats
-  const income = transactions.filter(t => t.is_income).reduce((s, t) => s + Math.abs(t.amount), 0);
-  const expenses = transactions.filter(t => !t.is_income).reduce((s, t) => s + t.amount, 0);
+  const income = transactions.filter((t) => t.is_income).reduce((s, t) => s + Math.abs(t.amount), 0);
+  const expenses = transactions.filter((t) => !t.is_income).reduce((s, t) => s + t.amount, 0);
   const balance = income - expenses;
 
   // Filtered transactions
-  const filtered = transactions.filter(t => {
+  const filtered = transactions.filter((t) => {
     if (filter === 'income') return t.is_income;
     if (filter === 'expense') return !t.is_income;
     return true;
@@ -77,16 +77,16 @@ export default function Transactions() {
   // Monthly summary (Tier 2+)
   const now = new Date();
   const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  const thisMonth = transactions.filter(t => t.date?.startsWith(monthStr));
-  const monthIncome = thisMonth.filter(t => t.is_income).reduce((s, t) => s + Math.abs(t.amount), 0);
-  const monthExpenses = thisMonth.filter(t => !t.is_income).reduce((s, t) => s + t.amount, 0);
+  const thisMonth = transactions.filter((t) => t.date?.startsWith(monthStr));
+  const monthIncome = thisMonth.filter((t) => t.is_income).reduce((s, t) => s + Math.abs(t.amount), 0);
+  const monthExpenses = thisMonth.filter((t) => !t.is_income).reduce((s, t) => s + t.amount, 0);
 
   if (loading || pageLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" />
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -108,8 +108,8 @@ export default function Transactions() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
-          className="grid grid-cols-3 gap-2 mt-4"
-        >
+          className="grid grid-cols-3 gap-2 mt-4">
+          
           <div className="rounded-2xl border border-border bg-card p-3 sm:p-4">
             <div className="flex items-center gap-1 mb-1">
               <TrendingUp className="w-3 h-3 text-success" />
@@ -136,13 +136,13 @@ export default function Transactions() {
         </motion.div>
 
         {/* Monthly summary (Tier 2+) */}
-        {tier !== 'free' && thisMonth.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mt-3 rounded-2xl border border-primary/20 bg-primary/5 p-4"
-          >
+        {tier !== 'free' && thisMonth.length > 0 &&
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mt-3 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+          
             <p className="text-xs font-bold text-foreground mb-2">This Month</p>
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">
@@ -153,22 +153,22 @@ export default function Transactions() {
               </span>
             </div>
           </motion.div>
-        )}
+        }
 
         {/* Data source actions */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="mt-4 space-y-3"
-        >
+          className="mt-4 space-y-3">
+          
           {/* CSV Import */}
           <button
-            onClick={() => { setShowCsvWizard(!showCsvWizard); setShowManualForm(false); }}
+            onClick={() => {setShowCsvWizard(!showCsvWizard);setShowManualForm(false);}}
             className={`w-full flex items-center gap-3 rounded-2xl p-4 border transition-colors ${
-              showCsvWizard ? 'bg-primary/10 border-primary/30' : 'bg-card border-border hover:border-primary/30'
-            }`}
-          >
+            showCsvWizard ? 'bg-primary/10 border-primary/30' : 'bg-card border-border hover:border-primary/30'}`
+            }>
+            
             <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
               <FileSpreadsheet className="w-5 h-5 text-primary" />
             </div>
@@ -183,11 +183,11 @@ export default function Transactions() {
 
           {/* Manual Entry */}
           <button
-            onClick={() => { setShowManualForm(!showManualForm); setShowCsvWizard(false); }}
+            onClick={() => {setShowManualForm(!showManualForm);setShowCsvWizard(false);}}
             className={`w-full flex items-center gap-3 rounded-2xl p-4 border transition-colors ${
-              showManualForm ? 'bg-primary/10 border-primary/30' : 'bg-card border-border hover:border-primary/30'
-            }`}
-          >
+            showManualForm ? 'bg-primary/10 border-primary/30' : 'bg-card border-border hover:border-primary/30'}`
+            }>
+            
             <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
               <PenLine className="w-5 h-5 text-primary" />
             </div>
@@ -197,13 +197,13 @@ export default function Transactions() {
             </div>
           </button>
           <AnimatePresence>
-            {showManualForm && <ManualTransactionForm onSaved={() => { setShowManualForm(false); loadTransactions(); }} />}
+            {showManualForm && <ManualTransactionForm onSaved={() => {setShowManualForm(false);loadTransactions();}} />}
           </AnimatePresence>
 
           {/* Plaid Bank Sync (Tier 3 only) */}
-          {tier === 'pro' ? (
-            profile?.connected_bank ? (
-              <div className="rounded-2xl border border-border bg-card p-4">
+          {tier === 'pro' ?
+          profile?.connected_bank ?
+          <div className="rounded-2xl border border-border bg-card p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <Landmark className="w-5 h-5 text-primary" />
@@ -212,28 +212,28 @@ export default function Transactions() {
                   <span className="text-[10px] text-success font-medium">Connected</span>
                 </div>
                 <button
-                  onClick={handlePlaidSync}
-                  disabled={syncing}
-                  className="w-full flex items-center justify-center gap-2 bg-primary/10 text-primary border border-primary/20 rounded-xl py-2 text-sm font-medium hover:bg-primary/15 transition-colors disabled:opacity-50"
-                >
+              onClick={handlePlaidSync}
+              disabled={syncing}
+              className="w-full flex items-center justify-center gap-2 bg-primary/10 text-primary border border-primary/20 rounded-xl py-2 text-sm font-medium hover:bg-primary/15 transition-colors disabled:opacity-50">
+              
                   {syncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                   {syncing ? 'Syncing...' : 'Sync now'}
                 </button>
-              </div>
-            ) : (
-              <div className="rounded-2xl border border-border bg-card p-4">
+              </div> :
+
+          <div className="rounded-2xl border border-border bg-card p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <Landmark className="w-5 h-5 text-primary" />
-                  <span className="text-sm font-medium text-foreground">Connect your bank</span>
+                  <span className="text-sm font-medium text-foreground">Connect your bank - In B</span>
                 </div>
                 <ConnectPlaid connected={false} onConnected={loadTransactions} />
-              </div>
-            )
-          ) : (
-            <Link
-              to="/pricing"
-              className="w-full flex items-center gap-3 rounded-2xl p-4 border border-dashed border-border bg-muted/30 hover:border-primary/30 transition-colors group"
-            >
+              </div> :
+
+
+          <Link
+            to="/pricing"
+            className="w-full flex items-center gap-3 rounded-2xl p-4 border border-dashed border-border bg-muted/30 hover:border-primary/30 transition-colors group">
+            
               <div className="w-11 h-11 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
                 {tier === 'free' ? <Lock className="w-5 h-5 text-muted-foreground" /> : <Landmark className="w-5 h-5 text-muted-foreground" />}
               </div>
@@ -243,73 +243,73 @@ export default function Transactions() {
               </div>
               <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </Link>
-          )}
+          }
         </motion.div>
 
         {/* Category Breakdown (Tier 2+) */}
-        {tier !== 'free' && transactions.filter(t => !t.is_income).length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mt-4"
-          >
+        {tier !== 'free' && transactions.filter((t) => !t.is_income).length > 0 &&
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mt-4">
+          
             <CategoryBreakdown transactions={transactions} />
           </motion.div>
-        )}
+        }
 
         {/* Transaction List */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className="mt-6"
-        >
+          className="mt-6">
+          
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-medium text-muted-foreground">
               {filtered.length} transaction{filtered.length !== 1 ? 's' : ''}
             </h3>
             <div className="flex gap-1">
-              {['all', 'income', 'expense'].map(f => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`text-xs px-2.5 py-1 rounded-lg capitalize transition-colors ${
-                    filter === f ? 'bg-primary/15 text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
+              {['all', 'income', 'expense'].map((f) =>
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`text-xs px-2.5 py-1 rounded-lg capitalize transition-colors ${
+                filter === f ? 'bg-primary/15 text-primary font-medium' : 'text-muted-foreground hover:text-foreground'}`
+                }>
+                
                   {f}
                 </button>
-              ))}
+              )}
             </div>
           </div>
 
-          {filtered.length > 0 ? (
-            <div className="bg-card border border-border rounded-2xl p-2 sm:p-4 divide-y divide-border/50">
-              {filtered.map(t => (
-                <TransactionItem key={t.id} transaction={t} onDelete={handleDelete} />
-              ))}
-            </div>
-          ) : (
-            <div className="bg-card border border-dashed border-border rounded-2xl p-8 text-center">
+          {filtered.length > 0 ?
+          <div className="bg-card border border-border rounded-2xl p-2 sm:p-4 divide-y divide-border/50">
+              {filtered.map((t) =>
+            <TransactionItem key={t.id} transaction={t} onDelete={handleDelete} />
+            )}
+            </div> :
+
+          <div className="bg-card border border-dashed border-border rounded-2xl p-8 text-center">
               <Sparkles className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
               <p className="text-sm text-muted-foreground">
-                {transactions.length === 0
-                  ? 'No transactions yet. Import a CSV or add one manually to get started.'
-                  : 'No transactions match this filter.'}
+                {transactions.length === 0 ?
+              'No transactions yet. Import a CSV or add one manually to get started.' :
+              'No transactions match this filter.'}
               </p>
             </div>
-          )}
+          }
         </motion.div>
 
         {/* Upgrade CTA for free users */}
-        {tier === 'free' && transactions.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mt-6 rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent border border-primary/20 p-5"
-          >
+        {tier === 'free' && transactions.length > 0 &&
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mt-6 rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent border border-primary/20 p-5">
+          
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
               <span className="text-[10px] font-bold text-primary uppercase tracking-wide">Upgrade for more</span>
@@ -318,14 +318,14 @@ export default function Transactions() {
               Get smart auto-mapping, category breakdowns, and automatic bank sync with Basic or Premium.
             </p>
             <Link
-              to="/pricing"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
-            >
+            to="/pricing"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+            
               View plans <ArrowRight className="w-4 h-4" />
             </Link>
           </motion.div>
-        )}
+        }
       </div>
-    </PullToRefresh>
-  );
+    </PullToRefresh>);
+
 }
