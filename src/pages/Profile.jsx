@@ -237,7 +237,7 @@ export default function Profile() {
       <div className="rounded-3xl border border-border bg-card p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
           {isPremium ? <Landmark className="w-4 h-4 text-primary" /> : <Lock className="w-4 h-4 text-muted-foreground" />}
-          <h2 className="text-sm font-semibold">Bank Account - Plaid </h2>
+          <h2 className="text-sm font-semibold">Bank Account - Beta - Sandbox </h2>
         </div>
         {isPremium ?
         <>
