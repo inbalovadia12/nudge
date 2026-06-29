@@ -20,7 +20,7 @@ export default function PurchaseItem({ purchase }) {
   const colorClass = CATEGORY_COLORS[purchase.category] || CATEGORY_COLORS.other;
 
   return (
-    <div className="flex items-center gap-3 py-2.5">
+    <div className="flex items-center gap-3 py-3">
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${colorClass}`}>
         <Icon className="w-4 h-4" />
       </div>
