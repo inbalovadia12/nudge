@@ -95,13 +95,14 @@ export default function Home() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.02 }}
-        className="mt-3 mb-4 rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent border border-primary/20 p-4"
+        className="mt-3 mb-4 rounded-2xl bg-gradient-to-br from-primary/15 via-violet-500/8 to-transparent border border-primary/20 p-4 relative overflow-hidden"
       >
-        <div className="flex items-center gap-2 mb-1">
+        <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-violet-500/10 blur-2xl" />
+        <div className="flex items-center gap-2 mb-1 relative">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           <span className="text-[10px] font-bold text-primary uppercase tracking-wide">Your AI Financial Advisor</span>
         </div>
-        <p className="text-sm text-foreground/80 leading-relaxed">Personal financial guidance that used to cost $200/hr — now in your pocket.</p>
+        <p className="text-sm text-foreground/80 leading-relaxed relative">Personal financial guidance that used to cost $200/hr — now in your pocket.</p>
       </motion.div>
 
       {/* Spending summary */}
@@ -125,25 +126,25 @@ export default function Home() {
             )}
           </div>
           <div className="grid grid-cols-3 gap-2 mb-3">
-            <div>
+            <div className="rounded-xl bg-emerald-500/8 px-2.5 py-1.5">
               <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Income</p>
               <p className="text-sm sm:text-base font-semibold text-foreground">{formatCurrency(monthlyIncome)}</p>
             </div>
-            <div>
+            <div className="rounded-xl bg-orange-500/8 px-2.5 py-1.5">
               <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Spent</p>
               <p className="text-sm sm:text-base font-semibold text-foreground">{formatCurrency(totalSpent)}</p>
             </div>
-            <div>
+            <div className={`rounded-xl px-2.5 py-1.5 ${balance >= 0 ? 'bg-success/10' : 'bg-danger/10'}`}>
               <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Left</p>
               <p className={`text-sm sm:text-base font-semibold ${balance >= 0 ? 'text-success' : 'text-danger'}`}>{formatCurrency(balance)}</p>
             </div>
           </div>
-          <div className="h-2 rounded-full bg-muted overflow-hidden">
+          <div className="h-2.5 rounded-full bg-muted overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${spentPct}%` }}
               transition={{ delay: 0.3, duration: 0.5 }}
-              className={`h-full rounded-full ${spentPct > 80 ? 'bg-danger' : 'bg-primary'}`}
+              className={`h-full rounded-full bg-gradient-to-r ${spentPct > 80 ? 'from-orange-500 to-danger' : 'from-primary to-emerald-500'}`}
             />
           </div>
         </motion.div>
@@ -208,11 +209,11 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-3">
           <Link
             to="/check"
-            className="block bg-card border border-border rounded-2xl p-4 hover:border-primary/30 transition-colors group"
+            className="block bg-card border border-border rounded-2xl p-4 hover:border-violet-500/40 transition-colors group"
           >
             <div className="flex flex-col items-start gap-2">
-              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
-                <ScanSearch className="w-5 h-5 text-primary" />
+              <div className="w-11 h-11 rounded-xl bg-violet-500/12 flex items-center justify-center">
+                <ScanSearch className="w-5 h-5 text-violet-400" />
               </div>
               <div>
                 <p className="font-medium text-foreground text-sm">Ask Before You Buy</p>
@@ -222,11 +223,11 @@ export default function Home() {
           </Link>
           <Link
             to="/goals"
-            className="block bg-card border border-border rounded-2xl p-4 hover:border-primary/30 transition-colors group"
+            className="block bg-card border border-border rounded-2xl p-4 hover:border-emerald-500/40 transition-colors group"
           >
             <div className="flex flex-col items-start gap-2">
-              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Target className="w-5 h-5 text-primary" />
+              <div className="w-11 h-11 rounded-xl bg-emerald-500/12 flex items-center justify-center">
+                <Target className="w-5 h-5 text-emerald-400" />
               </div>
               <div>
                 <p className="font-medium text-foreground text-sm">My Goals</p>
