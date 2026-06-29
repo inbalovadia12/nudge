@@ -45,12 +45,13 @@ export default function SavingsRing({
           initial={{ strokeDashoffset: circumference }}
           animate={{ strokeDashoffset: offset }}
           transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1], delay: 0.2 }}
-          style={{ filter: 'drop-shadow(0 0 6px hsl(186 100% 43% / 0.35))' }}
+          style={{ filter: 'drop-shadow(0 0 8px hsl(186 100% 43% / 0.3))' }}
         />
         <defs>
           <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#00C7D9" />
-            <stop offset="100%" stopColor="#008B99" />
+            <stop offset="0%" stopColor="#a78bfa" />
+            <stop offset="50%" stopColor="#00C7D9" />
+            <stop offset="100%" stopColor="#34d399" />
           </linearGradient>
         </defs>
       </svg>
