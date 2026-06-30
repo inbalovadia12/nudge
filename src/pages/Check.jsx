@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import VerdictCard from '@/components/VerdictCard';
 import { getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
 import { useLogPurchase } from '@/lib/useEntityMutations';
+import { spendCredits } from '@/lib/useCredits';
 import { Search, Loader2, Mic } from 'lucide-react';
 
 export default function Check() {
@@ -36,6 +37,14 @@ export default function Check() {
     setVerdict(null);
 
     try {
+      // ─── Spend credits via backend gateway before AI call ───
+      const spend = await spendCredits('purchase_verdict');
+      if (!spend.success) {
+        setError(spend.message || 'Not enough credits. Upgrade your plan for more.');
+        setLoading(false);
+        return;
+      }
+
       const ctx = await getFinancialContext();
       const contextString = buildContextString(ctx);
       const parsedPrice = parseFloat(price) || 0;

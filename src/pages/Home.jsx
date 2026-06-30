@@ -6,6 +6,7 @@ import SavingsRing from '@/components/SavingsRing';
 import PurchaseItem from '@/components/PurchaseItem';
 import NudgeCard from '@/components/NudgeCard';
 import { getGreeting, formatCurrency, formatDateLong, getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
+import { spendCredits } from '@/lib/useCredits';
 import { ScanSearch, ArrowRight, Target, TrendingDown, Wallet, CalendarClock, Shield, Sparkles, ArrowUpRight, Receipt, Zap } from 'lucide-react';
 import PullToRefresh from '@/components/PullToRefresh';
 
@@ -38,13 +39,49 @@ export default function Home() {
         setCtx(finCtx);
         setLoading(false);
 
+        // ─── 24h cache: only generate nudge once per day, charge 1 credit ───
         try {
+          const usageRecords = await base44.entities.FeatureUsage.filter({
+            feature_name: 'daily_nudge',
+          });
+          const lastNudge = usageRecords.sort((a, b) =>
+            new Date(b.created_date) - new Date(a.created_date)
+          )[0];
+
+          const now = Date.now();
+          const CACHE_MS = 24 * 60 * 60 * 1000;
+
+          if (lastNudge && (now - new Date(lastNudge.last_generated_at || lastNudge.created_date).getTime() < CACHE_MS)) {
+            // Use cached nudge — no AI call, no credit charge
+            setNudge(lastNudge.generated_data_hash || 'Check back tomorrow for a fresh insight.');
+            setNudgeLoading(false);
+            return;
+          }
+
+          // Spend 1 credit for fresh nudge via backend gateway
+          const spend = await spendCredits('assistant_message');
+          if (!spend.success) {
+            // No credits — skip nudge silently
+            setNudge(null);
+            setNudgeLoading(false);
+            return;
+          }
+
           const response = await base44.integrations.Core.InvokeLLM({
             prompt: buildNudgeSystemPrompt(buildContextString(finCtx), {
               extraRules: `Based on the user's financial data, give ONE short, encouraging observation (max 2 sentences). Never negative or guilt-inducing. Be specific with numbers from their actual data. Return just the observation text, nothing else. No quotes.`
             }),
           });
-          setNudge(response);
+          const nudgeText = typeof response === 'string' ? response : String(response);
+          setNudge(nudgeText);
+
+          // Cache the nudge for 24h
+          await base44.entities.FeatureUsage.create({
+            feature_name: 'daily_nudge',
+            cooldown_period: '24h',
+            last_generated_at: new Date().toISOString(),
+            generated_data_hash: nudgeText,
+          });
         } catch {
           setNudge('You\'re here. That\'s a good start — checking in on your goals is the hardest part.');
         }

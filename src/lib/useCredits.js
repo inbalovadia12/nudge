@@ -1,81 +1,72 @@
 import { base44 } from '@/api/base44Client';
 
+// Credit costs per feature type — mirrored from backend consume-credits function
 export const CREDIT_COSTS = {
-  transaction_analysis: 1,
-  deep_insight: 2,
-  assistant_message: 1,
-  paycheck_wrapped: 2,
-  grocery_optimization: 3,
-  financial_simulation: 4,
-  calculator_ai_insight: 2,
-  deal_finder_search: 3,
+  assistant_message: 1,      // Basic AI chat
+  transaction_analysis: 2,  // Standard analysis
+  calculator_ai_insight: 2, // Standard analysis
+  paycheck_wrapped: 2,      // Standard analysis
+  purchase_verdict: 3,      // Standard analysis
+  deep_insight: 3,          // Standard analysis
+  grocery_optimization: 3,  // Standard analysis
+  financial_simulation: 4,  // Heavy AI
+  deal_finder_search: 5,    // Heavy AI
+  bank_sync: 0,             // Free (but premium-gated)
 };
 
+export const PLAN_CAPS = { free: 10, plus: 100, pro: 500 };
+
 export const PLAN_FEATURES = {
-  free: ['transaction_analysis', 'deep_insight', 'assistant_message'],
-  plus: ['transaction_analysis', 'deep_insight', 'assistant_message', 'paycheck_wrapped', 'grocery_optimization', 'calculator_ai_insight', 'deal_finder_search'],
-  pro: ['transaction_analysis', 'deep_insight', 'assistant_message', 'paycheck_wrapped', 'grocery_optimization', 'financial_simulation', 'calculator_ai_insight', 'deal_finder_search'],
+  free: ['assistant_message', 'purchase_verdict'],
+  plus: ['assistant_message', 'purchase_verdict', 'transaction_analysis', 'deep_insight', 'paycheck_wrapped', 'calculator_ai_insight', 'deal_finder_search'],
+  pro: ['assistant_message', 'purchase_verdict', 'transaction_analysis', 'deep_insight', 'paycheck_wrapped', 'grocery_optimization', 'financial_simulation', 'calculator_ai_insight', 'deal_finder_search', 'bank_sync'],
 };
 
 export async function getCreditStatus() {
   const profiles = await base44.entities.UserProfile.list();
   const profile = profiles[0];
-  if (!profile) return { balance: 0, plan: 'free', profile: null };
+  if (!profile) return { balance: 0, plan: 'free', cap: 10, profile: null };
+  const plan = profile.plan_type || 'free';
   return {
-    balance: profile.credits_balance ?? 10,
-    plan: profile.plan_type || 'free',
+    balance: profile.credits_balance ?? 0,
+    plan,
+    cap: PLAN_CAPS[plan] ?? 10,
     profile,
   };
 }
 
-export async function checkFeatureAccess(featureName, incomeCycleId = null) {
-  const { balance, plan, profile } = await getCreditStatus();
-  const cost = CREDIT_COSTS[featureName] || 1;
+// Check if a feature is accessible (plan + balance) without deducting
+export async function checkFeatureAccess(featureName) {
+  const { balance, plan, cap, profile } = await getCreditStatus();
+  const cost = CREDIT_COSTS[featureName] ?? 1;
   const allowed = PLAN_FEATURES[plan] || PLAN_FEATURES.free;
 
   if (!allowed.includes(featureName)) {
-    return { canUse: false, reason: 'plan_locked', cost, balance, plan, profile };
+    return { canUse: false, reason: 'plan_locked', cost, balance, plan, cap, profile };
   }
-
   if (balance < cost) {
-    return { canUse: false, reason: 'insufficient_credits', cost, balance, plan, profile };
+    return { canUse: false, reason: 'insufficient_credits', cost, balance, plan, cap, profile };
   }
-
-  if (incomeCycleId) {
-    const usage = await base44.entities.FeatureUsage.filter({
-      feature_name: featureName,
-      linked_income_cycle_id: incomeCycleId,
-    }).catch(() => []);
-    if (usage.length > 0) {
-      return { canUse: false, reason: 'already_viewed_cycle', cost, balance, plan, profile };
-    }
-  }
-
-  return { canUse: true, cost, balance, plan, profile };
+  return { canUse: true, cost, balance, plan, cap, profile };
 }
 
-export async function spendCredits(featureName, incomeCycleId = null, dataHash = null) {
-  const access = await checkFeatureAccess(featureName, incomeCycleId);
-  if (!access.canUse) return { success: false, ...access };
-
-  const newBalance = (access.profile.credits_balance ?? 10) - access.cost;
-  await base44.entities.UserProfile.update(access.profile.id, { credits_balance: newBalance });
-
-  await base44.entities.CreditTransaction.create({
-    feature_name: featureName,
-    credits_spent: access.cost,
-    balance_after: newBalance,
-  });
-
-  if (incomeCycleId) {
-    await base44.entities.FeatureUsage.create({
+// Spend credits via backend gateway — enforces all rules server-side
+// Returns { success, balance, cost, plan, cap, reason?, message? }
+export async function spendCredits(featureName) {
+  try {
+    const response = await base44.functions.invoke('consume-credits', {
       feature_name: featureName,
-      linked_income_cycle_id: incomeCycleId,
-      cooldown_period: 'cycle',
-      generated_data_hash: dataHash,
-      last_generated_at: new Date().toISOString(),
     });
+    return response.data;
+  } catch (err) {
+    // Axios wraps the response — extract the server's error body
+    const data = err?.response?.data || {};
+    return {
+      success: false,
+      reason: data.reason || 'error',
+      message: data.message || data.error || 'Something went wrong. Please try again.',
+      cost: CREDIT_COSTS[featureName] ?? 1,
+      balance: 0,
+    };
   }
-
-  return { success: true, balance: newBalance, cost: access.cost };
 }

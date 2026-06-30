@@ -179,8 +179,10 @@ export default function Assistant() {
         extraRules: `Recent conversation:\n${recentHistory}\n\nThe user's latest message: ${message}\n\nRespond as Thryve:`,
       });
 
+      // Profit-first: always use the lightweight model for chat
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: systemPrompt,
+        model: 'gpt_5_mini',
       });
 
       const aiContent = typeof response === 'string' ? response : (response?.content || String(response));

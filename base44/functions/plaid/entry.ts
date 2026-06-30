@@ -92,6 +92,26 @@ function detectRecurring(transactions) {
   return recurring;
 }
 
+// ─── Plaid sync limits & caching ───
+const MAX_FULL_SYNCS_PER_DAY = 1;
+const MAX_MANUAL_REFRESHES_PER_DAY = 3;
+const SYNC_CACHE_HOURS = 6;
+
+function isSameDay(dateStr1, dateStr2) {
+  if (!dateStr1 || !dateStr2) return false;
+  return dateStr1.split('T')[0] === dateStr2.split('T')[0];
+}
+
+async function countSyncsToday(base44, userId, syncType) {
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const records = await base44.asServiceRole.entities.CreditTransaction.filter(
+    { feature_name: syncType, created_by_id: userId },
+    '-created_date', 50
+  ).catch(() => []);
+  return records.filter(r => new Date(r.created_date) >= todayStart).length;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -99,12 +119,12 @@ Deno.serve(async (req) => {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const payload = await req.json().catch(() => ({}));
-    const { action, public_token, start_date, end_date } = payload;
+    const { action, public_token, start_date, end_date, force_refresh } = payload;
 
-    const profiles = await base44.asServiceRole.entities.UserProfile.filter({});
+    const profiles = await base44.asServiceRole.entities.UserProfile.filter({ created_by_id: user.id });
     const profile = profiles[0];
 
-    // Enforce premium-only access for Plaid (Tier 3)
+    // Enforce premium-only (Pro tier) access for Plaid bank sync
     const isPremium = profile && (
       profile.is_premium ||
       profile.plan_type === 'pro' ||
@@ -112,7 +132,7 @@ Deno.serve(async (req) => {
       (profile.premium_trial_end_date && new Date(profile.premium_trial_end_date) > new Date())
     );
     if (!isPremium) {
-      return Response.json({ error: 'Bank sync is a Premium feature. Upgrade to connect your bank.', needs_upgrade: true }, { status: 403 });
+      return Response.json({ error: 'Bank sync is a Premium feature. Upgrade to Pro to connect your bank.', needs_upgrade: true }, { status: 403 });
     }
 
     if (action === 'create_link_token') {
@@ -278,7 +298,7 @@ Deno.serve(async (req) => {
         throw err;
       }
 
-      const now = new Date().toISOString();
+      const syncNow = new Date().toISOString();
 
       // Sync accounts
       const accounts = accountsRes.accounts.map(a => ({
@@ -292,7 +312,7 @@ Deno.serve(async (req) => {
         available_balance: a.balances?.available,
         currency: a.balances?.iso_currency_code,
         institution_name: profile.plaid_institution_name || 'Unknown Bank',
-        last_synced: now,
+        last_synced: syncNow,
       }));
 
       const existingAccounts = await base44.asServiceRole.entities.BankAccount.filter({});
@@ -352,7 +372,7 @@ Deno.serve(async (req) => {
       if (toUpdate.length > 0) await base44.asServiceRole.entities.BankTransaction.bulkUpdate(toUpdate);
 
       await base44.asServiceRole.entities.UserProfile.update(profile.id, {
-        plaid_last_sync_date: now,
+        plaid_last_sync_date: syncNow,
       });
 
       // Sync into UnifiedTransaction (unified model)
@@ -392,7 +412,7 @@ Deno.serve(async (req) => {
 
       return Response.json({
         success: true,
-        synced_at: now,
+        synced_at: syncNow,
         accounts_synced: accounts.length,
         transactions_synced: transactions.length,
         recurring_detected: recurring.length,
