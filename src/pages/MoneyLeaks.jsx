@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency } from '@/lib/nudgeUtils';
 import { getFinancialContext, buildContextString } from '@/lib/nudgeUtils';
+import { spendCredits } from '@/lib/useCredits';
 import { ArrowLeft, Droplets, Loader2, TrendingDown, Sparkles } from 'lucide-react';
 
 export default function MoneyLeaks() {
@@ -97,36 +98,56 @@ export default function MoneyLeaks() {
         });
       });
 
-      // Use AI if not enough data
+      // Use AI if not enough data — 24h cache + 2 credit charge
       if (detectedLeaks.length < 3) {
         try {
-          const response = await base44.integrations.Core.InvokeLLM({
-            prompt: `You are Nudigo, a financial coach. Analyze this user's financial data and identify 2-3 "money leaks" — wasteful spending patterns they might not notice. Be specific and encouraging, never shaming.
+          const usageRecords = await base44.entities.FeatureUsage.filter({ feature_name: 'money_leaks' });
+          const lastGen = usageRecords.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
+          const CACHE_MS = 24 * 60 * 60 * 1000;
+          let cachedLeaks = null;
+          if (lastGen && (Date.now() - new Date(lastGen.last_generated_at || lastGen.created_date).getTime() < CACHE_MS)) {
+            cachedLeaks = lastGen.generated_data_hash ? JSON.parse(lastGen.generated_data_hash) : null;
+          }
+          if (cachedLeaks) {
+            cachedLeaks.forEach(l => detectedLeaks.push({ ...l, type: 'ai' }));
+          } else {
+            const spend = await spendCredits('transaction_analysis');
+            if (spend.success) {
+              const response = await base44.integrations.Core.InvokeLLM({
+                prompt: `You are Nudigo, a financial coach. Analyze this user's financial data and identify 2-3 "money leaks" — wasteful spending patterns they might not notice. Be specific and encouraging, never shaming.
 
 Financial context: ${buildContextString(finCtx)}
 
 Return JSON array of objects with: title (short), desc (1-2 sentences), annual (estimated annual savings as number), icon (emoji), action (1-2 word CTA). Return ONLY the JSON array.`,
-            response_json_schema: {
-              type: 'object',
-              properties: {
-                leaks: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      title: { type: 'string' },
-                      desc: { type: 'string' },
-                      annual: { type: 'number' },
-                      icon: { type: 'string' },
-                      action: { type: 'string' },
+                response_json_schema: {
+                  type: 'object',
+                  properties: {
+                    leaks: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          title: { type: 'string' },
+                          desc: { type: 'string' },
+                          annual: { type: 'number' },
+                          icon: { type: 'string' },
+                          action: { type: 'string' },
+                        },
+                      },
                     },
                   },
                 },
-              },
-            },
-          });
-          if (response?.leaks) {
-            response.leaks.forEach(l => detectedLeaks.push({ ...l, type: 'ai' }));
+              });
+              if (response?.leaks) {
+                response.leaks.forEach(l => detectedLeaks.push({ ...l, type: 'ai' }));
+                await base44.entities.FeatureUsage.create({
+                  feature_name: 'money_leaks',
+                  cooldown_period: '24h',
+                  last_generated_at: new Date().toISOString(),
+                  generated_data_hash: JSON.stringify(response.leaks),
+                });
+              }
+            }
           }
         } catch {}
       }

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency } from '@/lib/nudgeUtils';
 import { getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
+import { spendCredits } from '@/lib/useCredits';
 import { ArrowLeft, Heart, Loader2, Activity, TrendingUp, TrendingDown } from 'lucide-react';
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from 'recharts';
 
@@ -58,16 +59,33 @@ export default function FinancialHealth() {
       // AI summary
       let aiSummary = '';
       try {
-        const response = await base44.integrations.Core.InvokeLLM({
-          prompt: buildNudgeSystemPrompt(buildContextString(ctx), {
-            extraRules: `Based on this health score breakdown, give ONE encouraging observation (2 sentences max). Never shame. Focus on what's going well and one area to watch.
+        // 24h cache check
+        const usageRecords = await base44.entities.FeatureUsage.filter({ feature_name: 'financial_health_summary' });
+        const lastGen = usageRecords.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
+        const CACHE_MS = 24 * 60 * 60 * 1000;
+        if (lastGen && (Date.now() - new Date(lastGen.last_generated_at || lastGen.created_date).getTime() < CACHE_MS)) {
+          aiSummary = lastGen.generated_data_hash || '';
+        } else {
+          const spend = await spendCredits('deep_insight');
+          if (spend.success) {
+            const response = await base44.integrations.Core.InvokeLLM({
+              prompt: buildNudgeSystemPrompt(buildContextString(ctx), {
+                extraRules: `Based on this health score breakdown, give ONE encouraging observation (2 sentences max). Never shame. Focus on what's going well and one area to watch.
 
 Scores (0-100): Savings consistency: ${savingsConsistency}, Goal progress: ${goalProgress}, Impulse control: ${impulseControl}, Subscription ratio: ${subscriptionRatio}, Bill timing: ${billTiming}, Emergency fund: ${emergencyFund}. Overall: ${overall}.
 
 Return just the observation text.`
-          }),
-        });
-        aiSummary = response;
+              }),
+            });
+            aiSummary = typeof response === 'string' ? response : String(response);
+            await base44.entities.FeatureUsage.create({
+              feature_name: 'financial_health_summary',
+              cooldown_period: '24h',
+              last_generated_at: new Date().toISOString(),
+              generated_data_hash: aiSummary,
+            });
+          }
+        }
       } catch {}
 
       setScores({

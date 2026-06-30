@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { formatCurrency } from '@/lib/nudgeUtils';
 import { getFinancialContext, buildContextString } from '@/lib/nudgeUtils';
+import { spendCredits } from '@/lib/useCredits';
 import { ArrowLeft, Bell, Check, Zap, TrendingDown, Target, AlertTriangle, Sparkles, Trash2 } from 'lucide-react';
 
 export default function NotificationCenter() {
@@ -64,17 +65,38 @@ export default function NotificationCenter() {
           });
         } catch {}
 
-        // AI recommendation
+        // AI recommendation — 24h cache + 1 credit charge
         if (alerts.length < 3) {
           try {
-            const response = await base44.integrations.Core.InvokeLLM({
-              prompt: `You are Nudigo, a calm financial coach. Give ONE actionable financial recommendation based on this context. Be encouraging, specific, and under 2 sentences. Never shame.
+            const usageRecords = await base44.entities.FeatureUsage.filter({ feature_name: 'notification_rec' });
+            const lastGen = usageRecords.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
+            const CACHE_MS = 24 * 60 * 60 * 1000;
+            let recText = null;
+            if (lastGen && (Date.now() - new Date(lastGen.last_generated_at || lastGen.created_date).getTime() < CACHE_MS)) {
+              recText = lastGen.generated_data_hash;
+            }
+            if (recText) {
+              alerts.push({ id: 'ai-rec', type: 'ai', icon: Sparkles, title: 'Nudigo recommends', desc: recText, color: 'text-primary bg-primary/10', read: false });
+            } else {
+              const spend = await spendCredits('assistant_message');
+              if (spend.success) {
+                const response = await base44.integrations.Core.InvokeLLM({
+                  prompt: `You are Nudigo, a calm financial coach. Give ONE actionable financial recommendation based on this context. Be encouraging, specific, and under 2 sentences. Never shame.
 
 Financial context: ${buildContextString(ctx)}
 
 Return just the recommendation text.`,
-            });
-            alerts.push({ id: 'ai-rec', type: 'ai', icon: Sparkles, title: 'Nudigo recommends', desc: response, color: 'text-primary bg-primary/10', read: false });
+                });
+                recText = typeof response === 'string' ? response : String(response);
+                alerts.push({ id: 'ai-rec', type: 'ai', icon: Sparkles, title: 'Nudigo recommends', desc: recText, color: 'text-primary bg-primary/10', read: false });
+                await base44.entities.FeatureUsage.create({
+                  feature_name: 'notification_rec',
+                  cooldown_period: '24h',
+                  last_generated_at: new Date().toISOString(),
+                  generated_data_hash: recText,
+                });
+              }
+            }
           } catch {}
         }
 
