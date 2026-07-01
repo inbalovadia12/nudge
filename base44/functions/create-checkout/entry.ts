@@ -94,6 +94,28 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
 
+    // Test PayPal credentials
+    if (body.action === 'test') {
+      try {
+        const token = await getAccessToken();
+        // List products to confirm token works
+        const listRes = await fetch(`${BASE_URL}/v1/catalogs/products?page_size=1&total_required=true`, {
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        });
+        return Response.json({
+          success: true,
+          environment: ENV,
+          baseUrl: BASE_URL,
+          tokenReceived: !!token,
+          productsApiOk: listRes.ok,
+          message: 'PayPal credentials are valid and working.'
+        });
+      } catch (error) {
+        console.error('PayPal test error:', error.message);
+        return Response.json({ success: false, error: error.message, environment: ENV, baseUrl: BASE_URL }, { status: 500 });
+      }
+    }
+
     // Cancel subscription
     if (body.action === 'cancel') {
       const user = await base44.auth.me();
