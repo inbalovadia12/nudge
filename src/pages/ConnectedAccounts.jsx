@@ -5,6 +5,7 @@ import { formatCurrency, clearUserDataCache } from '@/lib/nudgeUtils';
 import { isPremiumUser } from '@/lib/usePremium';
 import { ArrowLeft, Landmark, RefreshCw, Trash2, Loader2, AlertCircle, Wallet, Building2, TrendingUp, TrendingDown, Check, Link2, PiggyBank, Lock, ArrowRight } from 'lucide-react';
 import GoogleCalendarSync from '@/components/GoogleCalendarSync';
+import ConnectPlaid from '@/components/ConnectPlaid';
 
 export default function ConnectedAccounts() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function ConnectedAccounts() {
   const [showDisconnect, setShowDisconnect] = useState(false);
   const [editingIncome, setEditingIncome] = useState(false);
   const [incomeValue, setIncomeValue] = useState('');
+  const [status, setStatus] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -32,9 +34,13 @@ export default function ConnectedAccounts() {
       setProfile(p);
       if (p?.monthly_income) setIncomeValue(String(p.monthly_income));
 
-      if (p?.plaid_access_token) {
-        const syncRes = await base44.functions.invoke('plaid', { action: 'get_accounts' });
-        if (syncRes.data?.accounts) setAccounts(syncRes.data.accounts);
+      // Use get_status instead of checking profile.plaid_access_token
+      const statusRes = await base44.functions.invoke('plaid', { action: 'get_status' });
+      setStatus(statusRes.data);
+
+      if (statusRes.data?.connected) {
+        const accRes = await base44.functions.invoke('plaid', { action: 'get_accounts' });
+        if (accRes.data?.accounts) setAccounts(accRes.data.accounts);
 
         const recRes = await base44.functions.invoke('plaid', { action: 'get_recurring' });
         if (recRes.data?.recurring) {
@@ -58,7 +64,7 @@ export default function ConnectedAccounts() {
     try {
       const res = await base44.functions.invoke('plaid', { action: 'sync_data' });
       if (res.data?.needs_reconnect) {
-        setError('Your bank connection has expired. Please reconnect from your Profile.');
+        setError('Your bank connection has expired. Please reconnect.');
         return;
       }
       await loadData();
@@ -124,11 +130,12 @@ export default function ConnectedAccounts() {
     );
   }
 
-  const isBankConnected = !!profile?.plaid_access_token;
+  const isBankConnected = status?.connected;
   const totalBalance = accounts.reduce((sum, a) => sum + (a.current_balance || 0), 0);
-  const lastSync = profile?.plaid_last_sync_date
-    ? new Date(profile.plaid_last_sync_date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+  const lastSync = status?.last_sync
+    ? new Date(status.last_sync).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
     : null;
+  const needsReconnect = status?.needs_reconnect;
 
   const allRecurring = [
     ...recurring.subscriptions.map(r => ({ ...r, label: 'Subscription' })),
@@ -145,12 +152,23 @@ export default function ConnectedAccounts() {
         <Landmark className="w-6 h-6 text-primary" />
         <h1 className="text-2xl font-bold font-heading">Connected Accounts</h1>
       </div>
-      <p className="text-sm text-muted-foreground mb-6">{profile?.plaid_institution_name || (isBankConnected ? 'Bank connected via Plaid' : 'No bank connected yet')}</p>
+      <p className="text-sm text-muted-foreground mb-6">{status?.institution_name || (isBankConnected ? 'Bank connected via Plaid' : 'No bank connected yet')}</p>
 
       {error && (
         <div className="rounded-2xl border-2 border-danger/30 bg-danger/5 p-4 mb-6 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-danger flex-shrink-0 mt-0.5" />
           <p className="text-sm text-foreground">{error}</p>
+        </div>
+      )}
+
+      {/* Reconnect banner */}
+      {needsReconnect && isBankConnected && (
+        <div className="rounded-2xl border-2 border-warning/30 bg-warning/5 p-4 mb-6 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm text-foreground font-medium">Bank connection needs attention</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Your bank connection has expired or encountered an error. Reconnect to continue syncing.</p>
+          </div>
         </div>
       )}
 
@@ -204,6 +222,29 @@ export default function ConnectedAccounts() {
           <button onClick={() => navigate('/profile')} className="text-sm font-medium text-primary-foreground bg-primary px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-colors">
             Connect bank
           </button>
+        </div>
+      ) : needsReconnect ? (
+        <div className="space-y-6">
+          {/* Reconnect flow */}
+          <div className="rounded-2xl border border-border bg-card p-5">
+            <p className="text-sm text-muted-foreground mb-4">Your bank connection needs to be refreshed. Click below to securely reconnect via Plaid.</p>
+            <ConnectPlaid
+              updateMode
+              itemId={status?.items?.[0]?.item_id}
+              onReconnected={async () => {
+                await loadData();
+              }}
+            />
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowDisconnect(true)}
+              className="flex items-center gap-1.5 text-sm font-medium text-danger border border-danger/30 px-4 py-2.5 rounded-xl hover:bg-danger/5 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" /> Disconnect
+            </button>
+          </div>
         </div>
       ) : (
         <>

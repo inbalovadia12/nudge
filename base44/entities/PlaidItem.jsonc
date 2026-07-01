@@ -1,0 +1,77 @@
+{
+  "name": "PlaidItem",
+  "type": "object",
+  "properties": {
+    "item_id": {
+      "type": "string"
+    },
+    "encrypted_access_token": {
+      "type": "string"
+    },
+    "encryption_iv": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "degraded",
+        "error",
+        "relink_needed"
+      ],
+      "default": "active"
+    },
+    "sync_cursor": {
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "institution_name": {
+      "type": "string"
+    },
+    "products": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "last_sync_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_error_code": {
+      "type": "string"
+    },
+    "last_error_type": {
+      "type": "string"
+    },
+    "last_error_message": {
+      "type": "string"
+    },
+    "webhook_last_received": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "webhook_last_code": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "item_id",
+    "encrypted_access_token",
+    "encryption_iv"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Check, Link2, Loader2, Landmark, X, ArrowRight } from 'lucide-react';
+import { Check, Loader2, Landmark, X, ArrowRight, RefreshCw, AlertCircle } from 'lucide-react';
 
-export default function ConnectPlaid({ connected, onConnected, onDisconnect }) {
+export default function ConnectPlaid({ connected, onConnected, onDisconnect, updateMode, itemId, onReconnected }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -25,7 +25,10 @@ export default function ConnectPlaid({ connected, onConnected, onDisconnect }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await base44.functions.invoke('plaid', { action: 'create_link_token' });
+      const payload = { action: 'create_link_token' };
+      if (updateMode && itemId) payload.item_id = itemId;
+
+      const res = await base44.functions.invoke('plaid', payload);
       const linkToken = res.data.link_token;
 
       const handler = window.Plaid.create({
@@ -35,11 +38,15 @@ export default function ConnectPlaid({ connected, onConnected, onDisconnect }) {
             await base44.functions.invoke('plaid', { action: 'exchange_public_token', public_token });
             setLoading(false);
             setShowSuccess(true);
-            // Trigger initial data sync
-            try {
-              await base44.functions.invoke('plaid', { action: 'sync_data' });
-            } catch {}
-            if (onConnected) onConnected();
+
+            if (updateMode && onReconnected) {
+              onReconnected();
+            } else {
+              try {
+                await base44.functions.invoke('plaid', { action: 'sync_data' });
+              } catch {}
+              if (onConnected) onConnected();
+            }
           } catch (err) {
             setLoading(false);
             setError('Failed to save your bank connection. Please try again.');
@@ -52,9 +59,34 @@ export default function ConnectPlaid({ connected, onConnected, onDisconnect }) {
       handler.open();
     } catch (err) {
       setLoading(false);
-      setError('Could not start Plaid Link. Please try again.');
+      setError(err.response?.data?.error || 'Could not start Plaid Link. Please try again.');
     }
   };
+
+  // ─── Update mode (reconnect flow) ───
+  if (updateMode) {
+    return (
+      <div>
+        <button
+          onClick={handleConnect}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-warning text-warning-foreground py-3 text-sm font-semibold hover:bg-warning/90 disabled:opacity-60 transition-colors"
+        >
+          {loading ? (
+            <><Loader2 className="w-4 h-4 animate-spin" /> Reconnecting...</>
+          ) : (
+            <><RefreshCw className="w-4 h-4" /> Reconnect bank</>
+          )}
+        </button>
+        {error && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 flex items-start gap-1.5 text-xs text-danger">
+            <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </motion.div>
+        )}
+      </div>
+    );
+  }
 
   if (connected) {
     return (
