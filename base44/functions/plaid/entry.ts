@@ -135,6 +135,27 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Bank sync is a Premium feature. Upgrade to Pro to connect your bank.', needs_upgrade: true }, { status: 403 });
     }
 
+    if (action === 'test') {
+      try {
+        const res = await plaidRequest('/link/token/create', {
+          user: { client_user_id: 'test_user' },
+          client_name: 'Vesper',
+          products: ['transactions'],
+          country_codes: ['US'],
+          language: 'en',
+        });
+        return Response.json({
+          success: true,
+          environment: PLAID_ENV,
+          linkTokenReceived: !!res.link_token,
+          message: 'Plaid credentials are valid and working.'
+        });
+      } catch (error) {
+        console.error('Plaid test error:', error.message);
+        return Response.json({ success: false, error: error.message, environment: PLAID_ENV }, { status: 500 });
+      }
+    }
+
     if (action === 'create_link_token') {
       const res = await plaidRequest('/link/token/create', {
         user: { client_user_id: user.id },
