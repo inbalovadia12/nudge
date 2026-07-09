@@ -17,7 +17,7 @@ const projects = [
     name: 'Habitude',
     tagline: 'Habit Building & Addiction Destroying',
     description: 'Build positive habits and break free from the ones holding you back. Habitude gives you the tools to track, manage, and conquer your routines.',
-    url: 'https://habit-build-break.base44.app',
+    url: 'https://habitude.base44.app/landing',
     logo: 'https://media.base44.com/images/public/6a3ae5c0253dd0bc3229da04/cd77feb24_generated_image.png',
     icon: Repeat,
     color: 'text-violet-500',
