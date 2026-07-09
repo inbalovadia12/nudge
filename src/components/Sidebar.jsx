@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Target, MessageCircle, ScanSearch, BarChart3, User, Trophy, LogOut, Shield, Heart, Bell, Calendar, Calculator, Search, Lock, Receipt } from 'lucide-react';
+import { Home, Target, MessageCircle, ScanSearch, BarChart3, User, Trophy, LogOut, Shield, Heart, Bell, Calendar, Calculator, Search, Lock, Receipt, Sparkle } from 'lucide-react';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 import AdminPanel from './AdminPanel';
@@ -16,6 +16,7 @@ const navItems = [
   { label: 'Forecast', path: '/insights/future-feed', icon: Calendar },
   { label: 'Notifications', path: '/notifications', icon: Bell },
   { label: 'Profile', path: '/profile', icon: User },
+  { label: 'More Projects', path: '/more-projects', icon: Sparkle },
 ];
 
 const premiumItems = [

@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   Menu, Home, BarChart3, Target, Trophy, MessageCircle, Calendar, Bell, User,
   Heart, Shield, Brain, Wallet, CalendarDays, Clock, TrendingUp, CreditCard,
-  Droplets, ScanSearch, Tag, Lock
+  Droplets, ScanSearch, Tag, Lock, Sparkle
 } from 'lucide-react';
 import AdminPanel from './AdminPanel';
 
@@ -17,6 +17,7 @@ const navItems = [
   { label: 'Future Feed', path: '/insights/future-feed', icon: Calendar },
   { label: 'Notifications', path: '/notifications', icon: Bell },
   { label: 'Profile', path: '/profile', icon: User },
+  { label: 'More Projects', path: '/more-projects', icon: Sparkle },
 ];
 
 const premiumItems = [

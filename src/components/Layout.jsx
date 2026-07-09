@@ -8,6 +8,7 @@ import BottomNav from './BottomNav';
 import MobileNav from './MobileNav';
 import { Bell, Shield } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
+import VardinPopup from './VardinPopup';
 
 export default function Layout() {
   const [checking, setChecking] = useState(true);
@@ -70,6 +71,7 @@ export default function Layout() {
         <AnimatedOutlet />
       </main>
       <BottomNav />
+      <VardinPopup />
     </div>
   );
 }

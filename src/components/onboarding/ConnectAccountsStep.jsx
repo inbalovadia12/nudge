@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 const accounts = [
   { id: 'apple_screen_time', label: 'Apple Screen Time', desc: 'See where your time and money overlap', icon: Smartphone },
   { id: 'credit_card', label: 'Credit Card', desc: 'Auto-detect subscriptions and spending', icon: CreditCard },
-  { id: 'bank', label: 'Bank Account', desc: 'Track cash flow and bills', icon: Landmark },
 ];
 
 export default function ConnectAccountsStep({ connections, onToggle, onBack, onContinue }) {

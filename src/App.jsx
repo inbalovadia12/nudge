@@ -35,6 +35,7 @@ import FinancialTwin from '@/pages/FinancialTwin';
 import ConnectedAccounts from '@/pages/ConnectedAccounts';
 import Pricing from '@/pages/Pricing';
 import PlaidSandbox from '@/pages/PlaidSandbox';
+import MoreProjects from '@/pages/MoreProjects';
 import Transactions from '@/pages/Transactions';
 import Calculators from '@/pages/Calculators';
 import DealFinder from '@/pages/DealFinder';
@@ -98,6 +99,7 @@ function App() {
                   <Route path="/connected-accounts" element={<ConnectedAccounts />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/plaid-sandbox" element={<PlaidSandbox />} />
+                  <Route path="/more-projects" element={<MoreProjects />} />
                 </Route>
               </Route>
               <Route path="*" element={<PageNotFound />} />

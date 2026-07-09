@@ -1,39 +1,26 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useTheme } from 'next-themes';
 import { usePremiumStatus } from '@/lib/usePremium';
 import { clearUserDataCache } from '@/lib/nudgeUtils';
-import ConnectPlaid from '@/components/ConnectPlaid';
-import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark, Bug, FileText, Trash2, Lock } from 'lucide-react';
+import UnderConstruction from '@/components/UnderConstruction';
+import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark, FileText, Trash2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 export default function Profile() {
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const { isPremium, profile, loading } = usePremiumStatus();
-  const navigate = useNavigate();
   const [strictness, setStrictness] = useState('moderate');
   const [notifications, setNotifications] = useState({ daily: true, bills: true, deals: true, overspending: true });
   const [editingIncome, setEditingIncome] = useState(false);
   const [incomeValue, setIncomeValue] = useState('');
   const [incomeSaved, setIncomeSaved] = useState(false);
-  const [bankConnected, setBankConnected] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
-
-  useEffect(() => {
-    if (profile) setBankConnected(!!profile.connected_bank || !!profile.plaid_access_token);
-  }, [profile]);
-
-  const handleDisconnectBank = async () => {
-    if (!profile?.id) return;
-    await base44.functions.invoke('plaid', { action: 'disconnect' });
-    clearUserDataCache();
-    setBankConnected(false);
-  };
 
   const handleDeleteAccount = async () => {
     setDeleting(true);
@@ -233,41 +220,16 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Bank connection via Plaid */}
+      {/* Bank connection — under construction */}
       <div className="rounded-3xl border border-border bg-card p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
-          {isPremium ? <Landmark className="w-4 h-4 text-primary" /> : <Lock className="w-4 h-4 text-muted-foreground" />}
-          <h2 className="text-sm font-semibold">Bank Account - Beta - Sandbox </h2>
+          <Landmark className="w-4 h-4 text-muted-foreground" />
+          <h2 className="text-sm font-semibold">Bank Account</h2>
         </div>
-        {isPremium ?
-        <>
-            <p className="text-xs text-muted-foreground mb-4">
-              Connect your bank via Plaid to automatically track transactions, balances, and bills.
-            </p>
-            <ConnectPlaid
-            connected={bankConnected}
-            onConnected={() => {setBankConnected(true);clearUserDataCache();}}
-            onDisconnect={handleDisconnectBank} />
-          
-            {bankConnected &&
-          <button
-            onClick={() => navigate('/plaid-sandbox')}
-            className="w-full mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors py-1">
-            
-                <Bug className="w-3.5 h-3.5" /> Plaid Sandbox (dev testing)
-              </button>
-          }
-          </> :
-
-        <>
-            <p className="text-xs text-muted-foreground mb-4">
-              Bank sync is a Premium feature. Upgrade to connect your bank via Plaid and automatically track transactions, balances, and bills.
-            </p>
-            <Link to="/pricing" className="block w-full bg-primary text-primary-foreground rounded-2xl py-2.5 text-sm font-semibold text-center hover:bg-primary/90 transition-colors">
-              Upgrade to Premium
-            </Link>
-          </>
-        }
+        <UnderConstruction
+          title="Under Construction"
+          message="Bank connection is being upgraded. Check back soon for a better experience!"
+        />
       </div>
 
       {/* Settings list */}
