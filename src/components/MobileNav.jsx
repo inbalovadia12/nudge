@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   Menu, Home, BarChart3, Target, Trophy, MessageCircle, Calendar, Bell, User,
   Heart, Shield, Brain, Wallet, CalendarDays, Clock, TrendingUp, CreditCard,
-  Droplets, ScanSearch, Tag, Lock, Sparkle
+  Droplets, ScanSearch, Tag, Lock, Sparkle, Mail
 } from 'lucide-react';
 import AdminPanel from './AdminPanel';
 
@@ -32,6 +32,7 @@ const premiumItems = [
   { label: 'Personality', path: '/insights/personality', icon: User },
   { label: 'Deals', path: '/insights/deals', icon: Tag },
   { label: 'Money Leaks', path: '/insights/money-leaks', icon: Droplets },
+  { label: 'Gmail Scanner', path: '/gmail-scan', icon: Mail },
 ];
 
 export default function MobileNav() {

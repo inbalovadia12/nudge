@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Target, MessageCircle, ScanSearch, BarChart3, User, Trophy, LogOut, Shield, Heart, Bell, Calendar, Calculator, Search, Lock, Receipt, Sparkle } from 'lucide-react';
+import { Home, Target, MessageCircle, ScanSearch, BarChart3, User, Trophy, LogOut, Shield, Heart, Bell, Calendar, Calculator, Search, Lock, Receipt, Sparkle, Mail } from 'lucide-react';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 import AdminPanel from './AdminPanel';
@@ -24,6 +24,7 @@ const premiumItems = [
   { label: 'Health Score', path: '/insights/health', icon: Heart },
   { label: 'Smart Calculators', path: '/insights/calculators', icon: Calculator },
   { label: 'AI Deal Finder', path: '/insights/deal-finder', icon: Search },
+  { label: 'Gmail Scanner', path: '/gmail-scan', icon: Mail },
 ];
 
 export default function Sidebar() {
