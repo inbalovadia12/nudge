@@ -115,29 +115,29 @@ export default function GmailScanner() {
       <Header />
 
       {/* Connection card */}
-      <div className="rounded-2xl border border-border bg-card p-5 mb-6 hidden">
-        <div className="flex items-center gap-2 mb-3">
-          <Mail className="w-4 h-4 text-primary" />
-          <h2 className="text-sm font-semibold">Gmail Connection</h2>
-          {connected && <span className="text-[10px] font-bold bg-success/10 text-success px-2 py-0.5 rounded-full">Connected</span>}
-        </div>
+      
 
-        {!connected ?
-        <div>
-            <p className="text-sm text-muted-foreground mb-4">Connect your Gmail so Nudigo's AI can scan for receipts and subscription emails you might have missed. We only read emails — we never send or modify anything.</p>
-            <button onClick={handleConnect} className="text-sm font-medium text-primary-foreground bg-primary px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-colors flex items-center gap-2">
-              <Mail className="w-4 h-4" /> Connect Gmail
-            </button>
-          </div> :
 
-        <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">Your Gmail is connected and ready to scan.</p>
-            <button onClick={handleDisconnect} className="text-xs font-medium text-muted-foreground hover:text-danger transition-colors">
-              Disconnect
-            </button>
-          </div>
-        }
-      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
 
       {/* Scan card */}
       {connected &&
@@ -262,11 +262,11 @@ export default function GmailScanner() {
 function Header() {
   return (
     <>
-      <div className="flex items-center gap-2 mb-1 hidden">
-        <Mail className="w-6 h-6 text-primary" />
-        <h1 className="text-2xl font-bold font-heading hidden">Gmail Receipt Scanner</h1>
-      </div>
-      <p className="text-sm text-muted-foreground mb-6 hidden">AI-powered scan for receipts and subscriptions you might have missed</p>
+      
+
+
+      
+      
     </>);
 
 }
