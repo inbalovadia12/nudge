@@ -7,25 +7,25 @@ import AdminPanel from './AdminPanel';
 import { useAuth } from '@/lib/AuthContext';
 
 const navItems = [
-  { label: 'Home', path: '/', icon: Home },
-  { label: 'Transactions', path: '/transactions', icon: Receipt },
-  { label: 'My Finances', path: '/insights', icon: BarChart3 },
-  { label: 'Goals & Planning', path: '/goals', icon: Target },
-  { label: 'Challenges', path: '/challenges', icon: Trophy },
-  { label: 'AI Advisor', path: '/assistant', icon: MessageCircle },
-  { label: 'Forecast', path: '/insights/future-feed', icon: Calendar },
-  { label: 'Notifications', path: '/notifications', icon: Bell },
-  { label: 'Profile', path: '/profile', icon: User },
-  { label: 'More Projects', path: '/more-projects', icon: Sparkle },
-];
+{ label: 'Home', path: '/', icon: Home },
+{ label: 'Transactions', path: '/transactions', icon: Receipt },
+{ label: 'My Finances', path: '/insights', icon: BarChart3 },
+{ label: 'Goals & Planning', path: '/goals', icon: Target },
+{ label: 'Challenges', path: '/challenges', icon: Trophy },
+{ label: 'AI Advisor', path: '/assistant', icon: MessageCircle },
+{ label: 'Forecast', path: '/insights/future-feed', icon: Calendar },
+{ label: 'Notifications', path: '/notifications', icon: Bell },
+{ label: 'Profile', path: '/profile', icon: User },
+{ label: 'More Projects', path: '/more-projects', icon: Sparkle }];
+
 
 const premiumItems = [
-  { label: 'Spending Guard', path: '/shield', icon: Shield },
-  { label: 'Health Score', path: '/insights/health', icon: Heart },
-  { label: 'Smart Calculators', path: '/insights/calculators', icon: Calculator },
-  { label: 'AI Deal Finder', path: '/insights/deal-finder', icon: Search },
-  { label: 'Gmail Scanner', path: '/gmail-scan', icon: Mail },
-];
+{ label: 'Spending Guard', path: '/shield', icon: Shield },
+{ label: 'Health Score', path: '/insights/health', icon: Heart },
+{ label: 'Smart Calculators', path: '/insights/calculators', icon: Calculator },
+{ label: 'AI Deal Finder', path: '/insights/deal-finder', icon: Search },
+{ label: 'Gmail Scanner', path: '/gmail-scan', icon: Mail }];
+
 
 export default function Sidebar() {
   const location = useLocation();
@@ -42,11 +42,11 @@ export default function Sidebar() {
         <Link
           to="/check"
           className={`flex items-center justify-center gap-2.5 rounded-2xl px-4 py-3 font-semibold text-sm transition-all ${
-            location.pathname === '/check'
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-primary/10 text-primary hover:bg-primary/20'
-          }`}
-        >
+          location.pathname === '/check' ?
+          'bg-primary text-primary-foreground' :
+          'bg-primary/10 text-primary hover:bg-primary/20'}`
+          }>
+          
           <ScanSearch className="w-4 h-4" />
           Ask Before You Buy
         </Link>
@@ -61,15 +61,15 @@ export default function Sidebar() {
                 key={item.path}
                 to={item.path}
                 className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
-                  active
-                    ? 'bg-sidebar-accent text-foreground'
-                    : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'
-                }`}
-              >
+                active ?
+                'bg-sidebar-accent text-foreground' :
+                'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'}`
+                }>
+                
                 <item.icon className="w-4 h-4" />
                 {item.label}
-              </Link>
-            );
+              </Link>);
+
           })}
         </nav>
 
@@ -82,12 +82,12 @@ export default function Sidebar() {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-3 rounded-xl px-4 py-2 text-sm transition-colors ${active ? 'bg-sidebar-accent text-foreground' : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'}`}
-                >
+                  className={`flex items-center gap-3 rounded-xl px-4 py-2 text-sm transition-colors hidden ${active ? 'bg-sidebar-accent text-foreground' : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'}`}>
+                  
                   <item.icon className="w-4 h-4" />
                   {item.label}
-                </Link>
-              );
+                </Link>);
+
             })}
           </div>
         </div>
@@ -107,22 +107,22 @@ export default function Sidebar() {
           <button
             onClick={() => setAdminOpen(true)}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground/40 hover:text-primary hover:bg-primary/5 transition-colors"
-            title="Admin"
-          >
+            title="Admin">
+            
             <Lock className="w-3.5 h-3.5" />
           </button>
           <ThemeToggle />
           <button
             onClick={() => logout(false)}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-danger hover:bg-danger/5 transition-colors"
-            title="Sign out"
-          >
+            title="Sign out">
+            
             <LogOut className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       <AdminPanel open={adminOpen} onOpenChange={setAdminOpen} />
-    </aside>
-  );
+    </aside>);
+
 }
