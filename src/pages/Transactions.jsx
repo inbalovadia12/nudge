@@ -221,7 +221,7 @@ export default function Transactions() {
                 </button>
               </div> :
 
-          <div className="rounded-2xl border border-border bg-card p-4">
+          <div className="rounded-2xl border border-border bg-card p-4 hidden">
                 <div className="flex items-center gap-2 mb-3">
                   <Landmark className="w-5 h-5 text-primary" />
                   <span className="text-sm font-medium text-foreground">Connect your bank - Beta  - Sandbox testing  </span>
