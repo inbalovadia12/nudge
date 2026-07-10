@@ -3,9 +3,11 @@ import { Navigate, Link } from 'react-router-dom';
 import AnimatedOutlet from './AnimatedOutlet';
 import { base44 } from '@/api/base44Client';
 import { clearUserDataCache } from '@/lib/nudgeUtils';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 import Sidebar from './Sidebar';
 import BottomNav from './BottomNav';
 import MobileNav from './MobileNav';
+import LanguageSwitcher from './LanguageSwitcher';
 import { Bell, Shield } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import VardinPopup from './VardinPopup';
@@ -13,21 +15,16 @@ import VardinPopup from './VardinPopup';
 export default function Layout() {
   const [checking, setChecking] = useState(true);
   const [onboarded, setOnboarded] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     async function check() {
       try {
-        // Directly query UserProfile — do NOT use cached getFinancialContext
-        // because it returns a synthetic profile when empty, which could
-        // mask the real onboarding status.
         const profiles = await base44.entities.UserProfile.list();
         if (profiles.length > 0 && profiles[0].onboarding_complete === true) {
           setOnboarded(true);
         }
-        // If profiles is empty or onboarding_complete is not true,
-        // onboarded stays false → redirect to /onboarding
       } catch {
-        // On any API error, keep onboarded=false so user is sent to onboarding
       }
       setChecking(false);
     }
@@ -55,9 +52,10 @@ export default function Layout() {
           <div className="flex items-center justify-between px-4 h-14">
             <div className="flex items-center gap-2">
               <MobileNav />
-              <span className="font-bold text-foreground">Nudigo</span>
+              <span className="font-bold text-foreground">{t('layout.appName')}</span>
             </div>
             <div className="flex items-center gap-2">
+              <LanguageSwitcher compact />
               <ThemeToggle className="w-11 h-11" />
               <Link to="/shield" className="w-11 h-11 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors">
                 <Shield className="w-5 h-5" />

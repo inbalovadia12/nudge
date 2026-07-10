@@ -3,33 +3,35 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, Target, MessageCircle, ScanSearch, BarChart3, User, Trophy, LogOut, Shield, Heart, Bell, Calendar, Calculator, Search, Lock, Receipt, Sparkle } from 'lucide-react';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
+import LanguageSwitcher from './LanguageSwitcher';
 import AdminPanel from './AdminPanel';
 import { useAuth } from '@/lib/AuthContext';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 const navItems = [
-{ label: 'Home', path: '/', icon: Home },
-{ label: 'Transactions', path: '/transactions', icon: Receipt },
-{ label: 'My Finances', path: '/insights', icon: BarChart3 },
-{ label: 'Goals & Planning', path: '/goals', icon: Target },
-{ label: 'Challenges', path: '/challenges', icon: Trophy },
-{ label: 'AI Advisor', path: '/assistant', icon: MessageCircle },
-{ label: 'Forecast', path: '/insights/future-feed', icon: Calendar },
-{ label: 'Notifications', path: '/notifications', icon: Bell },
-{ label: 'Profile', path: '/profile', icon: User },
-{ label: 'More Projects', path: '/more-projects', icon: Sparkle }];
-
-
-const premiumItems = [
-{ label: 'Spending Guard', path: '/shield', icon: Shield },
-{ label: 'Health Score', path: '/insights/health', icon: Heart },
-{ label: 'Smart Calculators', path: '/insights/calculators', icon: Calculator },
-{ label: 'AI Deal Finder', path: '/insights/deal-finder', icon: Search },
+  { labelKey: 'nav.home', path: '/', icon: Home },
+  { labelKey: 'nav.transactions', path: '/transactions', icon: Receipt },
+  { labelKey: 'nav.myFinances', path: '/insights', icon: BarChart3 },
+  { labelKey: 'nav.goalsPlanning', path: '/goals', icon: Target },
+  { labelKey: 'nav.challenges', path: '/challenges', icon: Trophy },
+  { labelKey: 'nav.aiAdvisor', path: '/assistant', icon: MessageCircle },
+  { labelKey: 'nav.forecast', path: '/insights/future-feed', icon: Calendar },
+  { labelKey: 'nav.notifications', path: '/notifications', icon: Bell },
+  { labelKey: 'nav.profile', path: '/profile', icon: User },
+  { labelKey: 'nav.moreProjects', path: '/more-projects', icon: Sparkle }
 ];
 
+const premiumItems = [
+  { labelKey: 'nav.spendingGuard', path: '/shield', icon: Shield },
+  { labelKey: 'nav.healthScore', path: '/insights/health', icon: Heart },
+  { labelKey: 'nav.smartCalculators', path: '/insights/calculators', icon: Calculator },
+  { labelKey: 'nav.aiDealFinder', path: '/insights/deal-finder', icon: Search },
+];
 
 export default function Sidebar() {
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const [adminOpen, setAdminOpen] = useState(false);
 
   return (
@@ -46,9 +48,8 @@ export default function Sidebar() {
           'bg-primary text-primary-foreground' :
           'bg-primary/10 text-primary hover:bg-primary/20'}`
           }>
-          
           <ScanSearch className="w-4 h-4" />
-          Ask Before You Buy
+          {t('nav.askBeforeYouBuy')}
         </Link>
       </div>
 
@@ -65,16 +66,15 @@ export default function Sidebar() {
                 'bg-sidebar-accent text-foreground' :
                 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'}`
                 }>
-                
                 <item.icon className="w-4 h-4" />
-                {item.label}
-              </Link>);
-
+                {t(item.labelKey)}
+              </Link>
+            );
           })}
         </nav>
 
         <div className="pt-3 pb-4">
-          <p className="text-[10px] font-semibold text-muted-foreground/50 uppercase tracking-wider px-4 mb-2">Premium</p>
+          <p className="text-[10px] font-semibold text-muted-foreground/50 uppercase tracking-wider px-4 mb-2">{t('common.premium')}</p>
           <div className="space-y-0.5">
             {premiumItems.map((item) => {
               const active = location.pathname === item.path;
@@ -83,11 +83,10 @@ export default function Sidebar() {
                   key={item.path}
                   to={item.path}
                   className={`flex items-center gap-3 rounded-xl px-4 py-2 text-sm transition-colors ${active ? 'bg-sidebar-accent text-foreground' : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground'}`}>
-                  
                   <item.icon className="w-4 h-4" />
-                  {item.label}
-                </Link>);
-
+                  {t(item.labelKey)}
+                </Link>
+              );
             })}
           </div>
         </div>
@@ -100,29 +99,28 @@ export default function Sidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">
-              {user?.full_name || 'User'}
+              {user?.full_name || t('common.user')}
             </p>
             <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
+          <LanguageSwitcher compact />
           <button
             onClick={() => setAdminOpen(true)}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground/40 hover:text-primary hover:bg-primary/5 transition-colors"
-            title="Admin">
-            
+            title={t('common.admin')}>
             <Lock className="w-3.5 h-3.5" />
           </button>
           <ThemeToggle />
           <button
             onClick={() => logout(false)}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-danger hover:bg-danger/5 transition-colors"
-            title="Sign out">
-            
+            title={t('common.signOut')}>
             <LogOut className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       <AdminPanel open={adminOpen} onOpenChange={setAdminOpen} />
-    </aside>);
-
+    </aside>
+  );
 }

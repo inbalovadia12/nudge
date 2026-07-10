@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { goalOptions, getGoalIcon } from '@/lib/nudgeUtils';
 import { ChevronRight, ChevronLeft, Check, Sparkles, Zap, Shield, ArrowRight, TrendingUp, CalendarDays, Crown } from 'lucide-react';
@@ -9,22 +10,8 @@ import ConnectAccountsStep from '@/components/onboarding/ConnectAccountsStep';
 import AnalysisStep from '@/components/onboarding/AnalysisStep';
 import ResultsStep from '@/components/onboarding/ResultsStep';
 
-const strictnessLevels = [
-  { value: 'gentle', label: 'Gentle', desc: 'I\'ll only speak up for big stuff.', preview: 'This looks fine — no concerns from me. Up to you.' },
-  { value: 'moderate', label: 'Balanced', desc: 'A steady, honest check.', preview: 'Worth a quick pause. Here\'s what I noticed about this one.' },
-  { value: 'strict', label: 'Strict', desc: 'I\'ll be thorough and honest.', preview: 'This would push your goal back about two weeks. Just wanted you to know.' }
-];
-
-const proFeatures = [
-  { icon: Zap, title: 'Unlimited purchase checks', desc: 'Free gives you 10 per month. Pro is unlimited.' },
-  { icon: Sparkles, title: 'Advanced AI insights', desc: 'Deeper spending patterns and weekly summaries.' },
-  { icon: Shield, title: 'Bank-level security', desc: 'Plaid integration for real-time balance tracking.' },
-  { icon: TrendingUp, title: 'Financial simulator', desc: 'Model "what if" scenarios before you spend.' },
-  { icon: CalendarDays, title: 'Spending heatmap', desc: 'See your patterns spatially, day by day.' },
-  { icon: Crown, title: 'Smart deal alerts', desc: 'Price tracking that only alerts when it matters.' },
-];
-
 export default function Onboarding() {
+  const { t } = useLanguage();
   const [step, setStep] = useState(0);
   const [selectedGoal, setSelectedGoal] = useState(null);
   const [targetAmount, setTargetAmount] = useState(2000);
@@ -35,6 +22,21 @@ export default function Onboarding() {
   const [connections, setConnections] = useState({ apple_screen_time: false, credit_card: false, bank: false });
   const [saving, setSaving] = useState(false);
   const [goPro, setGoPro] = useState(false);
+
+  const strictnessLevels = [
+    { value: 'gentle', label: t('profile.gentle'), desc: t('onboarding.gentleDesc'), preview: t('onboarding.gentleDesc') },
+    { value: 'moderate', label: t('profile.balanced'), desc: t('onboarding.balancedDesc'), preview: t('onboarding.balancedDesc') },
+    { value: 'strict', label: t('profile.strict'), desc: t('onboarding.strictDesc'), preview: t('onboarding.strictDesc') }
+  ];
+
+  const proFeatures = [
+    { icon: Zap, title: t('onboarding.proUnlimited'), desc: t('onboarding.proUnlimitedDesc') },
+    { icon: Sparkles, title: t('onboarding.proInsights'), desc: t('onboarding.proInsightsDesc') },
+    { icon: Shield, title: t('onboarding.proSecurity'), desc: t('onboarding.proSecurityDesc') },
+    { icon: TrendingUp, title: t('onboarding.proSimulator'), desc: t('onboarding.proSimulatorDesc') },
+    { icon: CalendarDays, title: t('onboarding.proHeatmap'), desc: t('onboarding.proHeatmapDesc') },
+    { icon: Crown, title: t('onboarding.proDeals'), desc: t('onboarding.proDealsDesc') },
+  ];
 
   const handleGoalSelect = (goal) => {
     setSelectedGoal(goal);
@@ -108,29 +110,29 @@ export default function Onboarding() {
               <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.1, type: 'spring', stiffness: 200 }} className="w-20 h-20 rounded-3xl bg-primary/15 flex items-center justify-center mx-auto mb-6">
                 <Sparkles className="w-10 h-10 text-primary" />
               </motion.div>
-              <h1 className="text-4xl font-bold text-foreground mb-3">Meet Nudigo</h1>
-              <p className="text-foreground text-lg mb-2 leading-relaxed">Let's build better money habits.</p>
+              <h1 className="text-4xl font-bold text-foreground mb-3">{t('onboarding.meetNudigo')}</h1>
+              <p className="text-foreground text-lg mb-2 leading-relaxed">{t('onboarding.buildHabits')}</p>
               <p className="text-muted-foreground/70 mb-10 leading-relaxed max-w-sm mx-auto">
-                I'm your AI financial decision coach. Before you buy something, I'll give you a quick, honest read — no spreadsheets, no guilt, just clarity.
+                {t('onboarding.intro')}
               </p>
               <div className="space-y-3 mb-10 text-left max-w-sm mx-auto">
-                {[{ icon: Check, text: 'Get a verdict in under 10 seconds' }, { icon: Check, text: 'Track savings goals that matter to you' }, { icon: Check, text: 'A calm AI assistant, one tap away' }].map((item, i) => (
+                {[{ icon: Check, text: t('onboarding.verdict10s') }, { icon: Check, text: t('onboarding.trackGoals') }, { icon: Check, text: t('onboarding.calmAssistant') }].map((item, i) => (
                   <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1 }} className="flex items-center gap-3">
                     <div className="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0"><item.icon className="w-3 h-3 text-primary" /></div>
                     <span className="text-sm text-foreground/90">{item.text}</span>
                   </motion.div>
                 ))}
               </div>
-              <Button onClick={() => setStep(1)} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12 text-base">Get started <ArrowRight className="w-4 h-4 ml-1" /></Button>
-              <p className="text-xs text-muted-foreground/60 mt-4">Takes less than 90 seconds. No credit card required.</p>
+              <Button onClick={() => setStep(1)} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12 text-base">{t('onboarding.getStarted')} <ArrowRight className="w-4 h-4 ml-1" /></Button>
+              <p className="text-xs text-muted-foreground/60 mt-4">{t('onboarding.takesTime')}</p>
             </motion.div>
           )}
 
           {/* Step 1 — Goal */}
           {step === 1 && (
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h1 className="text-3xl font-bold text-foreground mb-2">What are you saving for?</h1>
-              <p className="text-muted-foreground mb-6">Pick one to start. You can add more later.</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('onboarding.savingFor')}</h1>
+              <p className="text-muted-foreground mb-6">{t('onboarding.pickOne')}</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
                 {goalOptions.map(goal => {
                   const Icon = getGoalIcon(goal.icon);
@@ -145,11 +147,11 @@ export default function Onboarding() {
               </div>
               {selectedGoal && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-                  <div className="flex items-baseline justify-between mb-3"><label className="text-sm text-muted-foreground">Target amount</label><span className="text-2xl font-bold text-primary">${targetAmount.toLocaleString()}</span></div>
+                  <div className="flex items-baseline justify-between mb-3"><label className="text-sm text-muted-foreground">{t('onboarding.targetAmount')}</label><span className="text-2xl font-bold text-primary">${targetAmount.toLocaleString()}</span></div>
                   <input type="range" min="500" max="20000" step="100" value={targetAmount} onChange={e => setTargetAmount(parseInt(e.target.value))} className="w-full accent-primary" />
                 </motion.div>
               )}
-              <Button disabled={!selectedGoal} onClick={() => setStep(2)} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12">Continue <ChevronRight className="w-4 h-4 ml-1" /></Button>
+              <Button disabled={!selectedGoal} onClick={() => setStep(2)} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12">{t('common.continue')} <ChevronRight className="w-4 h-4 ml-1" /></Button>
             </motion.div>
           )}
 
@@ -161,8 +163,8 @@ export default function Onboarding() {
           {/* Step 3 — Strictness */}
           {step === 3 && (
             <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h1 className="text-3xl font-bold text-foreground mb-2">How cautious should I be?</h1>
-              <p className="text-muted-foreground mb-6">I'll adjust my guidance based on this.</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('onboarding.howCautious')}</h1>
+              <p className="text-muted-foreground mb-6">{t('onboarding.adjustGuidance')}</p>
               <div className="flex gap-2 mb-8">
                 {strictnessLevels.map(level => (
                   <button key={level.value} onClick={() => setStrictness(level.value)} className={`flex-1 p-4 rounded-2xl border text-left transition-all ${strictness === level.value ? 'border-primary bg-primary/5' : 'border-border bg-surface-1 hover:border-primary/30'}`}>
@@ -172,12 +174,12 @@ export default function Onboarding() {
                 ))}
               </div>
               <div className="bg-surface-2 border border-border rounded-2xl p-4 mb-8">
-                <p className="text-xs text-muted-foreground mb-2">Preview — here's what guidance looks like:</p>
+                <p className="text-xs text-muted-foreground mb-2">{t('onboarding.preview')}</p>
                 <p className="text-sm text-foreground/90 italic">"{strictnessLevels.find(l => l.value === strictness).preview}"</p>
               </div>
               <div className="flex gap-3">
-                <Button onClick={() => setStep(2)} variant="ghost" className="rounded-xl h-12 px-6 text-muted-foreground hover:text-foreground"><ChevronLeft className="w-4 h-4" /> Back</Button>
-                <Button onClick={() => setStep(4)} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12">Continue <ChevronRight className="w-4 h-4 ml-1" /></Button>
+                <Button onClick={() => setStep(2)} variant="ghost" className="rounded-xl h-12 px-6 text-muted-foreground hover:text-foreground"><ChevronLeft className="w-4 h-4" /> {t('common.back')}</Button>
+                <Button onClick={() => setStep(4)} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12">{t('common.continue')} <ChevronRight className="w-4 h-4 ml-1" /></Button>
               </div>
             </motion.div>
           )}
@@ -185,25 +187,25 @@ export default function Onboarding() {
           {/* Step 4 — Name + income */}
           {step === 4 && (
             <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h1 className="text-3xl font-bold text-foreground mb-2">One last thing.</h1>
-              <p className="text-muted-foreground mb-6">What's your rough monthly take-home? This helps me calibrate.</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('onboarding.oneLastThing')}</h1>
+              <p className="text-muted-foreground mb-6">{t('onboarding.calibrate')}</p>
               <div className="space-y-4 mb-8">
                 <div>
-                  <label className="text-sm text-muted-foreground mb-2 block">What should I call you?</label>
-                  <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" className="w-full bg-surface-1 border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary text-sm" />
+                  <label className="text-sm text-muted-foreground mb-2 block">{t('onboarding.callYou')}</label>
+                  <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder={t('onboarding.yourName')} className="w-full bg-surface-1 border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary text-sm" />
                 </div>
                 <div>
-                  <label className="text-sm text-muted-foreground mb-2 block">Monthly take-home (approximate)</label>
+                  <label className="text-sm text-muted-foreground mb-2 block">{t('onboarding.monthlyTakeHome')}</label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                     <input type="number" value={monthlyIncome} onChange={e => setMonthlyIncome(e.target.value)} placeholder="5,000" className="w-full bg-surface-1 border border-border rounded-xl pl-8 pr-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary text-sm" />
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">No bank login needed. You can connect one next.</p>
+                  <p className="text-xs text-muted-foreground mt-2">{t('onboarding.noBankNeeded')}</p>
                 </div>
               </div>
               <div className="flex gap-3">
-                <Button onClick={() => setStep(3)} variant="ghost" className="rounded-xl h-12 px-6 text-muted-foreground hover:text-foreground"><ChevronLeft className="w-4 h-4" /> Back</Button>
-                <Button onClick={() => setStep(5)} disabled={!monthlyIncome} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12">Continue <ChevronRight className="w-4 h-4 ml-1" /></Button>
+                <Button onClick={() => setStep(3)} variant="ghost" className="rounded-xl h-12 px-6 text-muted-foreground hover:text-foreground"><ChevronLeft className="w-4 h-4" /> {t('common.back')}</Button>
+                <Button onClick={() => setStep(5)} disabled={!monthlyIncome} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12">{t('common.continue')} <ChevronRight className="w-4 h-4 ml-1" /></Button>
               </div>
             </motion.div>
           )}
@@ -228,8 +230,8 @@ export default function Onboarding() {
             <motion.div key="step8" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <div className="text-center mb-6">
                 <div className="w-14 h-14 rounded-2xl bg-primary/15 flex items-center justify-center mx-auto mb-4"><Zap className="w-7 h-7 text-primary" /></div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">Go Premium?</h1>
-                <p className="text-muted-foreground">Unlock the full Nudigo experience.</p>
+                <h1 className="text-3xl font-bold text-foreground mb-2">{t('onboarding.goPremium')}</h1>
+                <p className="text-muted-foreground">{t('onboarding.unlockFull')}</p>
               </div>
               <div className="space-y-3 mb-8">
                 {proFeatures.map((feature, i) => (
@@ -241,17 +243,17 @@ export default function Onboarding() {
               </div>
               <div className={`rounded-2xl border-2 p-5 mb-4 cursor-pointer transition-all ${goPro ? 'border-primary bg-primary/5' : 'border-border bg-surface-1'}`} onClick={() => setGoPro(!goPro)}>
                 <div className="flex items-center justify-between">
-                  <div><p className="font-semibold text-foreground">Nudigo Premium</p><p className="text-xs text-muted-foreground">Monthly subscription</p></div>
-                  <div className="text-right"><p className="text-2xl font-bold text-primary">$6.99</p><p className="text-xs text-muted-foreground">/month</p></div>
+                  <div><p className="font-semibold text-foreground">{t('profile.nudigoPremium')}</p><p className="text-xs text-muted-foreground">{t('onboarding.monthlySubscription')}</p></div>
+                  <div className="text-right"><p className="text-2xl font-bold text-primary">$6.99</p><p className="text-xs text-muted-foreground">/{t('common.month')}</p></div>
                 </div>
               </div>
               <div className="flex gap-3">
-                <Button onClick={() => setStep(7)} variant="ghost" className="rounded-xl h-12 px-6 text-muted-foreground hover:text-foreground"><ChevronLeft className="w-4 h-4" /> Back</Button>
+                <Button onClick={() => setStep(7)} variant="ghost" className="rounded-xl h-12 px-6 text-muted-foreground hover:text-foreground"><ChevronLeft className="w-4 h-4" /> {t('common.back')}</Button>
                 <Button onClick={handleComplete} disabled={saving} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12">
-                  {saving ? 'Setting up...' : goPro ? 'Go Premium' : 'Start with Free'}{!saving && <Check className="w-4 h-4 ml-1" />}
+                  {saving ? t('onboarding.settingUp') : goPro ? t('onboarding.goPremium') : t('onboarding.startFree')}{!saving && <Check className="w-4 h-4 ml-1" />}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground/60 text-center mt-4">You can upgrade anytime from settings.</p>
+              <p className="text-xs text-muted-foreground/60 text-center mt-4">{t('onboarding.upgradeAnytime')}</p>
             </motion.div>
           )}
         </AnimatePresence>

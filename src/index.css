@@ -123,6 +123,22 @@
   }
 }
 
+/* RTL Support */
+[dir="rtl"] body {
+  text-align: right;
+}
+
+@media (min-width: 1024px) {
+  [dir="rtl"] aside[class*="fixed"] {
+    left: auto;
+    right: 0;
+  }
+  [dir="rtl"] main[class*="pl-64"] {
+    padding-left: 0;
+    padding-right: 16rem;
+  }
+}
+
 @layer utilities {
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;

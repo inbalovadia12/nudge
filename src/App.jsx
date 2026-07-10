@@ -49,10 +49,12 @@ import WhyBudgetingAppsFail from '@/pages/blog/WhyBudgetingAppsFail';
 import SimpleMoneyHabits from '@/pages/blog/SimpleMoneyHabits';
 import Splash from '@/components/Splash';
 import { ThemeProvider } from 'next-themes';
+import { LanguageProvider } from '@/lib/i18n/LanguageContext';
 
 function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <LanguageProvider>
       <AuthProvider>
         <QueryClientProvider client={queryClientInstance}>
           <Router>
@@ -108,6 +110,7 @@ function App() {
           <Toaster />
         </QueryClientProvider>
       </AuthProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

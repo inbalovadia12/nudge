@@ -5,15 +5,18 @@ import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useTheme } from 'next-themes';
 import { usePremiumStatus } from '@/lib/usePremium';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { clearUserDataCache } from '@/lib/nudgeUtils';
 import UnderConstruction from '@/components/UnderConstruction';
-import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark, FileText, Trash2 } from 'lucide-react';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { Moon, Sun, Bell, Shield, CreditCard, LogOut, ChevronRight, Sparkles, Crown, UserCog, Wallet, Check, Landmark, FileText, Trash2, Globe } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 export default function Profile() {
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const { isPremium, profile, loading } = usePremiumStatus();
+  const { t } = useLanguage();
   const [strictness, setStrictness] = useState('moderate');
   const [notifications, setNotifications] = useState({ daily: true, bills: true, deals: true, overspending: true });
   const [editingIncome, setEditingIncome] = useState(false);
@@ -64,9 +67,9 @@ export default function Profile() {
   0;
 
   const strictnessOptions = [
-  { value: 'gentle', label: 'Gentle', desc: 'Encouraging guidance' },
-  { value: 'moderate', label: 'Balanced', desc: 'Balanced guidance' },
-  { value: 'strict', label: 'Strict', desc: 'Direct feedback' }];
+  { value: 'gentle', label: t('profile.gentle'), desc: t('profile.gentleDesc') },
+  { value: 'moderate', label: t('profile.balanced'), desc: t('profile.balancedDesc') },
+  { value: 'strict', label: t('profile.strict'), desc: t('profile.strictDesc') }];
 
 
   const Toggle = ({ on, onClick }) =>
@@ -77,7 +80,7 @@ export default function Profile() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto pb-24 lg:pb-6">
-      <h1 className="text-2xl font-bold font-heading mb-6">Profile</h1>
+      <h1 className="text-2xl font-bold font-heading mb-6">{t('profile.title')}</h1>
 
       {/* User card */}
       <div className="rounded-3xl border border-border bg-card p-6 mb-6">
@@ -86,7 +89,7 @@ export default function Profile() {
             {(user?.full_name || user?.email || 'U')[0].toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-lg font-semibold">{user?.full_name || 'User'}</p>
+            <p className="text-lg font-semibold">{user?.full_name || t('common.user')}</p>
             <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
           </div>
         </div>
@@ -97,29 +100,39 @@ export default function Profile() {
         <div className="flex items-center gap-3 mb-3">
           {isPremium ? <Crown className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-muted-foreground" />}
           <div>
-            <p className="font-semibold">{isPremium ? 'Nudigo Premium' : 'Free Plan'}</p>
+            <p className="font-semibold">{isPremium ? t('profile.nudigoPremium') : t('profile.freePlan')}</p>
             <p className="text-xs text-muted-foreground">
-              {isPremium ? 'All features unlocked' : trialDays > 0 ? `${trialDays} days left in your trial` : 'Upgrade for full access'}
+              {isPremium ? t('profile.allFeaturesUnlocked') : trialDays > 0 ? `${trialDays} ${t('profile.daysLeftTrial')}` : t('profile.upgradeForFull')}
             </p>
           </div>
         </div>
         {!isPremium &&
         <Link to="/pricing" className="block w-full bg-primary text-primary-foreground rounded-2xl py-2.5 text-sm font-semibold text-center hover:bg-primary/90 transition-colors">
-            {trialDays > 0 ? 'Continue trial' : 'Upgrade to Premium'}
+            {trialDays > 0 ? t('profile.continueTrial') : t('profile.upgradeToPremium')}
           </Link>
         }
         {isPremium &&
         <Link to="/pricing" className="block w-full text-sm font-medium text-primary text-center py-2 hover:underline">
-            Manage subscription
+            {t('profile.manageSubscription')}
           </Link>
         }
+      </div>
+
+      {/* Language */}
+      <div className="rounded-3xl border border-border bg-card p-6 mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Globe className="w-4 h-4 text-primary" />
+          <h2 className="text-sm font-semibold">{t('profile.language')}</h2>
+        </div>
+        <p className="text-xs text-muted-foreground mb-4">{t('profile.languageDesc')}</p>
+        <LanguageSwitcher />
       </div>
 
       {/* Financial Details — editable income */}
       <div className="rounded-3xl border border-border bg-card p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Wallet className="w-4 h-4 text-primary" />
-          <h2 className="text-sm font-semibold">Monthly Income</h2>
+          <h2 className="text-sm font-semibold">{t('profile.monthlyIncome')}</h2>
         </div>
         {editingIncome ?
         <div className="space-y-3">
@@ -132,27 +145,26 @@ export default function Profile() {
               placeholder="5,000"
               className="w-full bg-surface-1 border border-border rounded-xl pl-8 pr-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary text-sm"
               autoFocus />
-            
             </div>
             <div className="flex gap-2">
-              <button onClick={() => {setEditingIncome(false);setIncomeValue(String(profile?.monthly_income || ''));}} className="flex-1 text-sm text-muted-foreground py-2.5 rounded-xl bg-surface-2 hover:bg-surface-3 transition-colors">Cancel</button>
-              <button onClick={saveIncome} disabled={!incomeValue} className="flex-1 text-sm font-medium text-primary-foreground bg-primary py-2.5 rounded-xl disabled:opacity-50 hover:bg-primary/90 transition-colors">Save</button>
+              <button onClick={() => {setEditingIncome(false);setIncomeValue(String(profile?.monthly_income || ''));}} className="flex-1 text-sm text-muted-foreground py-2.5 rounded-xl bg-surface-2 hover:bg-surface-3 transition-colors">{t('common.cancel')}</button>
+              <button onClick={saveIncome} disabled={!incomeValue} className="flex-1 text-sm font-medium text-primary-foreground bg-primary py-2.5 rounded-xl disabled:opacity-50 hover:bg-primary/90 transition-colors">{t('common.save')}</button>
             </div>
           </div> :
 
         <div className="flex items-center justify-between">
             <div>
-              <p className="text-2xl font-bold text-foreground">{profile?.monthly_income ? `$${profile.monthly_income.toLocaleString()}` : 'Not set'}</p>
-              <p className="text-xs text-muted-foreground mt-1">Your monthly take-home pay</p>
+              <p className="text-2xl font-bold text-foreground">{profile?.monthly_income ? `$${profile.monthly_income.toLocaleString()}` : t('common.notSet')}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t('profile.monthlyTakeHome')}</p>
             </div>
             <button onClick={() => setEditingIncome(true)} className="text-sm font-medium text-primary px-4 py-2 rounded-xl bg-primary/10 hover:bg-primary/15 transition-colors">
-              Edit
+              {t('common.edit')}
             </button>
           </div>
         }
         {incomeSaved &&
         <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-1.5 text-xs text-success mt-3">
-            <Check className="w-3.5 h-3.5" /> Saved — all your tools are updated.
+            <Check className="w-3.5 h-3.5" /> {t('profile.savedUpdated')}
           </motion.div>
         }
       </div>
@@ -161,7 +173,7 @@ export default function Profile() {
       <div className="rounded-3xl border border-border bg-card p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <UserCog className="w-4 h-4 text-primary" />
-          <h2 className="text-sm font-semibold">AI Coaching Style</h2>
+          <h2 className="text-sm font-semibold">{t('profile.aiCoachingStyle')}</h2>
         </div>
         <div className="space-y-2">
           {strictnessOptions.map((opt) =>
@@ -185,12 +197,12 @@ export default function Profile() {
       <div className="rounded-3xl border border-border bg-card p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
           {theme === 'dark' ? <Moon className="w-4 h-4 text-primary" /> : <Sun className="w-4 h-4 text-primary" />}
-          <h2 className="text-sm font-semibold">Appearance</h2>
+          <h2 className="text-sm font-semibold">{t('profile.appearance')}</h2>
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium">Dark mode</p>
-            <p className="text-xs text-muted-foreground">Easier on the eyes at night</p>
+            <p className="text-sm font-medium">{t('profile.darkMode')}</p>
+            <p className="text-xs text-muted-foreground">{t('profile.darkModeDesc')}</p>
           </div>
           <Toggle on={theme === 'dark'} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />
         </div>
@@ -200,14 +212,14 @@ export default function Profile() {
       <div className="rounded-3xl border border-border bg-card p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Bell className="w-4 h-4 text-primary" />
-          <h2 className="text-sm font-semibold">Notifications</h2>
+          <h2 className="text-sm font-semibold">{t('profile.notifications')}</h2>
         </div>
         <div className="space-y-3">
           {Object.entries({
-            daily: { label: 'Daily guidance', desc: 'A friendly morning message' },
-            bills: { label: 'Bill reminders', desc: 'Before large expenses' },
-            deals: { label: 'Deal alerts', desc: 'When tracked items drop' },
-            overspending: { label: 'Overspending warnings', desc: 'When spending spikes' }
+            daily: { label: t('profile.dailyGuidance'), desc: t('profile.dailyGuidanceDesc') },
+            bills: { label: t('profile.billReminders'), desc: t('profile.billRemindersDesc') },
+            deals: { label: t('profile.dealAlerts'), desc: t('profile.dealAlertsDesc') },
+            overspending: { label: t('profile.overspendingWarnings'), desc: t('profile.overspendingWarningsDesc') }
           }).map(([key, info]) =>
           <div key={key} className="flex items-center justify-between">
               <div>
@@ -224,11 +236,11 @@ export default function Profile() {
       <div className="rounded-3xl border border-border bg-card p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Landmark className="w-4 h-4 text-muted-foreground" />
-          <h2 className="text-sm font-semibold">Bank Account</h2>
+          <h2 className="text-sm font-semibold">{t('profile.bankAccount')}</h2>
         </div>
         <UnderConstruction
-          title="Under Construction"
-          message="Bank connection is being upgraded. Check back soon for a better experience!"
+          title={t('profile.underConstruction')}
+          message={t('profile.bankUnderConstruction')}
         />
       </div>
 
@@ -237,16 +249,16 @@ export default function Profile() {
         <button className="w-full flex items-center gap-3 p-4 hover:bg-secondary/50 rounded-2xl transition-colors">
           <Shield className="w-4 h-4 text-muted-foreground" />
           <div className="flex-1 text-left">
-            <p className="text-sm font-medium">Privacy & Security</p>
-            <p className="text-xs text-muted-foreground">Data and security settings</p>
+            <p className="text-sm font-medium">{t('profile.privacySecurity')}</p>
+            <p className="text-xs text-muted-foreground">{t('profile.privacySecurityDesc')}</p>
           </div>
           <ChevronRight className="w-4 h-4 text-muted-foreground" />
         </button>
         <Link to="/privacy-policy" className="w-full flex items-center gap-3 p-4 hover:bg-secondary/50 rounded-2xl transition-colors">
           <FileText className="w-4 h-4 text-muted-foreground" />
           <div className="flex-1 text-left">
-            <p className="text-sm font-medium">Privacy Policy</p>
-            <p className="text-xs text-muted-foreground">How we handle your data</p>
+            <p className="text-sm font-medium">{t('profile.privacyPolicy')}</p>
+            <p className="text-xs text-muted-foreground">{t('profile.privacyPolicyDesc')}</p>
           </div>
           <ChevronRight className="w-4 h-4 text-muted-foreground" />
         </Link>
@@ -256,11 +268,11 @@ export default function Profile() {
       <div className="rounded-3xl border border-danger/20 bg-danger/5 p-6 mb-6">
         <div className="flex items-center gap-2 mb-2">
           <Trash2 className="w-4 h-4 text-danger" />
-          <h2 className="text-sm font-semibold">Delete Account</h2>
+          <h2 className="text-sm font-semibold">{t('profile.deleteAccount')}</h2>
         </div>
-        <p className="text-xs text-muted-foreground mb-4">Permanently delete your account and all associated data. This action cannot be undone.</p>
+        <p className="text-xs text-muted-foreground mb-4">{t('profile.deleteAccountDesc')}</p>
         <button onClick={() => setShowDeleteDialog(true)} className="w-full flex items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-card py-3 text-sm font-medium text-danger hover:bg-danger/10 transition-colors">
-          <Trash2 className="w-4 h-4" /> Delete my account
+          <Trash2 className="w-4 h-4" /> {t('profile.deleteMyAccount')}
         </button>
       </div>
 
@@ -268,27 +280,26 @@ export default function Profile() {
       <button onClick={() => logout(false)}
       className="w-full flex items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3 text-sm font-medium text-danger hover:bg-danger/5 transition-colors">
         <LogOut className="w-4 h-4" />
-        Sign out
+        {t('common.signOut')}
       </button>
 
-      <p className="text-center text-xs text-muted-foreground/50 mt-6">Nudigo v2.0 · Your data is private</p>
+      <p className="text-center text-xs text-muted-foreground/50 mt-6">{t('profile.dataPrivate')}</p>
 
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete your account?</AlertDialogTitle>
+            <AlertDialogTitle>{t('profile.deleteDialogTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete all your data — goals, purchases, subscriptions, insights, and chat history. This action cannot be undone.
+              {t('profile.deleteDialogDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteAccount} disabled={deleting} className="bg-danger text-danger-foreground hover:bg-danger/90">
-              {deleting ? 'Deleting...' : 'Delete everything'}
+              {deleting ? t('profile.deleting') : t('profile.deleteEverything')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>);
-
 }

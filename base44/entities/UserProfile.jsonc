@@ -8,6 +8,10 @@
     "country": {
       "type": "string"
     },
+    "language": {
+      "type": "string",
+      "default": "en"
+    },
     "monthly_income": {
       "type": "number"
     },

@@ -2,10 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 import SavingsRing from '@/components/SavingsRing';
 import PurchaseItem from '@/components/PurchaseItem';
 import NudgeCard from '@/components/NudgeCard';
-import { getGreeting, formatCurrency, formatDateLong, getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
+import { formatCurrency, formatDateLong, getFinancialContext, buildContextString, buildNudgeSystemPrompt } from '@/lib/nudgeUtils';
 import { spendCredits } from '@/lib/useCredits';
 import { ScanSearch, ArrowRight, Target, TrendingDown, Wallet, CalendarClock, Shield, Sparkles, ArrowUpRight, Receipt, Zap } from 'lucide-react';
 import PullToRefresh from '@/components/PullToRefresh';
@@ -15,7 +16,15 @@ const fadeUp = {
   animate: { opacity: 1, y: 0 },
 };
 
+function getGreetingKey() {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'home.greetingMorning';
+  if (hour < 18) return 'home.greetingAfternoon';
+  return 'home.greetingEvening';
+}
+
 export default function Home() {
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [primaryGoal, setPrimaryGoal] = useState(null);
@@ -39,7 +48,6 @@ export default function Home() {
         setCtx(finCtx);
         setLoading(false);
 
-        // ─── 24h cache: only generate nudge once per day, charge 1 credit ───
         try {
           const usageRecords = await base44.entities.FeatureUsage.filter({
             feature_name: 'daily_nudge',
@@ -52,16 +60,13 @@ export default function Home() {
           const CACHE_MS = 24 * 60 * 60 * 1000;
 
           if (lastNudge && (now - new Date(lastNudge.last_generated_at || lastNudge.created_date).getTime() < CACHE_MS)) {
-            // Use cached nudge — no AI call, no credit charge
-            setNudge(lastNudge.generated_data_hash || 'Check back tomorrow for a fresh insight.');
+            setNudge(lastNudge.generated_data_hash || t('home.nudgeCheckBack'));
             setNudgeLoading(false);
             return;
           }
 
-          // Spend 1 credit for fresh nudge via backend gateway
           const spend = await spendCredits('assistant_message');
           if (!spend.success) {
-            // No credits — skip nudge silently
             setNudge(null);
             setNudgeLoading(false);
             return;
@@ -75,7 +80,6 @@ export default function Home() {
           const nudgeText = typeof response === 'string' ? response : String(response);
           setNudge(nudgeText);
 
-          // Cache the nudge for 24h
           await base44.entities.FeatureUsage.create({
             feature_name: 'daily_nudge',
             cooldown_period: '24h',
@@ -83,7 +87,7 @@ export default function Home() {
             generated_data_hash: nudgeText,
           });
         } catch {
-          setNudge('You\'re here. That\'s a good start — checking in on your goals is the hardest part.');
+          setNudge(t('home.nudgeFallback'));
         }
         setNudgeLoading(false);
       } catch (err) {
@@ -115,7 +119,7 @@ export default function Home() {
   }
 
   const progress = primaryGoal ? Math.round((primaryGoal.current_amount / primaryGoal.target_amount) * 100) : 0;
-  const greeting = getGreeting(profile?.first_name || 'there');
+  const greeting = `${t(getGreetingKey())}, ${profile?.first_name || 'there'}`;
   const monthlyIncome = profile?.monthly_income || 0;
   const totalSpent = ctx?.totalSpent || 0;
   const balance = ctx?.balance || 0;
@@ -136,7 +140,7 @@ export default function Home() {
       {/* Header */}
       <motion.div {...fadeUp} transition={{ duration: 0.4 }}>
         <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{greeting}.</h1>
-        <p className="text-sm sm:text-base text-muted-foreground mt-1">Here's a snapshot of your financial world today.</p>
+        <p className="text-sm sm:text-base text-muted-foreground mt-1">{t('home.snapshot')}</p>
       </motion.div>
 
       {/* Bento Grid */}
@@ -153,35 +157,35 @@ export default function Home() {
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-6">
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground">This Month</h2>
+                  <h2 className="text-lg font-semibold text-foreground">{t('home.thisMonth')}</h2>
                   <p className="text-sm text-muted-foreground mt-0.5">
-                    {balance >= 0 ? "You're on track" : 'Overspending alert'}
+                    {balance >= 0 ? t('home.onTrack') : t('home.overspendingAlert')}
                   </p>
                 </div>
                 {daysUntilPayday > 0 && (
                   <span className="flex items-center gap-1.5 text-xs text-muted-foreground bg-surface-3/60 rounded-full px-3 py-1">
                     <CalendarClock className="w-3.5 h-3.5" />
-                    {daysUntilPayday}d to payday
+                    {daysUntilPayday}{t('home.daysToPayday')}
                   </span>
                 )}
               </div>
 
               <div className="flex items-end gap-3 mb-6">
                 <span className={`text-3xl sm:text-4xl font-bold ${healthText}`}>{formatCurrency(balance)}</span>
-                <span className="text-sm text-muted-foreground mb-1.5">remaining</span>
+                <span className="text-sm text-muted-foreground mb-1.5">{t('home.remaining')}</span>
               </div>
 
               <div className="grid grid-cols-3 gap-3 mb-4">
                 <div className="rounded-xl bg-emerald-500/[0.08] px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Income</p>
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t('home.income')}</p>
                   <p className="text-sm sm:text-base font-semibold text-foreground">{formatCurrency(monthlyIncome)}</p>
                 </div>
                 <div className="rounded-xl bg-orange-500/[0.08] px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Spent</p>
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t('home.spent')}</p>
                   <p className="text-sm sm:text-base font-semibold text-foreground">{formatCurrency(totalSpent)}</p>
                 </div>
                 <div className={`rounded-xl px-3 py-2 ${balance >= 0 ? 'bg-emerald-500/[0.08]' : 'bg-rose-500/[0.08]'}`}>
-                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Left</p>
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t('home.left')}</p>
                   <p className={`text-sm sm:text-base font-semibold ${balance >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>{formatCurrency(balance)}</p>
                 </div>
               </div>
@@ -194,7 +198,7 @@ export default function Home() {
                   className={`h-full rounded-full bg-gradient-to-r ${spentPct > 80 ? 'from-orange-500 to-rose-500' : 'from-primary to-emerald-400'}`}
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-2">{spentPct}% of income spent</p>
+              <p className="text-xs text-muted-foreground mt-2">{spentPct}{t('home.ofIncomeSpent')}</p>
             </div>
           </motion.div>
         )}
@@ -210,11 +214,11 @@ export default function Home() {
             <SavingsRing progress={progress} size={140} strokeWidth={11} sublabel="there" />
             <h2 className="text-base font-semibold text-foreground mt-4 text-center">{primaryGoal.name}</h2>
             <p className="text-xs text-muted-foreground mt-1 text-center">
-              {formatCurrency(primaryGoal.current_amount)} of {formatCurrency(primaryGoal.target_amount)}
+              {formatCurrency(primaryGoal.current_amount)} {t('home.of')} {formatCurrency(primaryGoal.target_amount)}
             </p>
             {primaryGoal.estimated_completion_date && (
               <p className="text-xs text-primary mt-2 text-center">
-                {progress > 0 ? `On track for ${formatDateLong(primaryGoal.estimated_completion_date)}` : 'Just getting started'}
+                {progress > 0 ? `${t('home.onTrackFor')} ${formatDateLong(primaryGoal.estimated_completion_date)}` : t('home.justGettingStarted')}
               </p>
             )}
           </motion.div>
@@ -225,9 +229,9 @@ export default function Home() {
             className="md:col-span-4 rounded-2xl border border-dashed border-white/[0.08] bg-surface-2/50 p-6 flex flex-col items-center justify-center text-center"
           >
             <Target className="w-8 h-8 text-muted-foreground mb-2" />
-            <p className="text-sm font-medium text-foreground">Set a savings goal</p>
-            <p className="text-xs text-muted-foreground mt-1">Give your money a purpose</p>
-            <Link to="/goals" className="mt-3 text-xs text-primary hover:underline">Get started →</Link>
+            <p className="text-sm font-medium text-foreground">{t('home.setSavingsGoal')}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('home.giveMoneyPurpose')}</p>
+            <Link to="/goals" className="mt-3 text-xs text-primary hover:underline">{t('home.getStarted')} →</Link>
           </motion.div>
         )}
 
@@ -246,8 +250,8 @@ export default function Home() {
               <div className="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center mb-3">
                 <Shield className="w-5 h-5 text-primary" />
               </div>
-              <p className="text-sm font-semibold text-foreground">Spending Guard</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Block & intercept</p>
+              <p className="text-sm font-semibold text-foreground">{t('nav.spendingGuard')}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{t('home.blockIntercept')}</p>
             </div>
           </Link>
           <Link
@@ -259,8 +263,8 @@ export default function Home() {
               <div className="w-11 h-11 rounded-xl bg-violet-500/15 flex items-center justify-center mb-3">
                 <ScanSearch className="w-5 h-5 text-violet-400" />
               </div>
-              <p className="text-sm font-semibold text-foreground">Ask Before You Buy</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Get a verdict first</p>
+              <p className="text-sm font-semibold text-foreground">{t('nav.askBeforeYouBuy')}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{t('home.getVerdictFirst')}</p>
             </div>
           </Link>
           <Link
@@ -272,8 +276,8 @@ export default function Home() {
               <div className="w-11 h-11 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-3">
                 <Target className="w-5 h-5 text-emerald-400" />
               </div>
-              <p className="text-sm font-semibold text-foreground">My Goals</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Track savings</p>
+              <p className="text-sm font-semibold text-foreground">{t('home.myGoals')}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{t('home.trackSavings')}</p>
             </div>
           </Link>
         </motion.div>
@@ -287,10 +291,10 @@ export default function Home() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Receipt className="w-4 h-4 text-muted-foreground" />
-              <h3 className="text-sm font-semibold text-foreground">Recent Transactions</h3>
+              <h3 className="text-sm font-semibold text-foreground">{t('home.recentTransactions')}</h3>
             </div>
             <Link to="/transactions" className="text-xs text-primary hover:underline flex items-center gap-1">
-              See All <ArrowRight className="w-3 h-3" />
+              {t('home.seeAll')} <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
           {purchases.length > 0 ? (
@@ -300,7 +304,7 @@ export default function Home() {
           ) : (
             <div className="py-8 text-center">
               <TrendingDown className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">No purchases yet — they'll show up here once you log them.</p>
+              <p className="text-sm text-muted-foreground">{t('home.noPurchases')}</p>
             </div>
           )}
         </motion.div>
@@ -327,11 +331,11 @@ export default function Home() {
             <Sparkles className="w-5 h-5 text-primary" />
           </div>
           <div className="flex-1">
-            <p className="text-[10px] font-bold text-primary uppercase tracking-wide mb-0.5">Your AI Financial Advisor</p>
-            <p className="text-sm text-foreground/80 leading-relaxed">Personal financial guidance that used to cost $200/hr — now in your pocket.</p>
+            <p className="text-[10px] font-bold text-primary uppercase tracking-wide mb-0.5">{t('home.aiAdvisor')}</p>
+            <p className="text-sm text-foreground/80 leading-relaxed">{t('home.aiAdvisorDesc')}</p>
           </div>
           <Link to="/assistant" className="flex-shrink-0 hidden sm:flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 rounded-full px-4 py-2 hover:bg-primary/20 transition-colors">
-            <Zap className="w-3.5 h-3.5" /> Ask
+            <Zap className="w-3.5 h-3.5" /> {t('nav.ask')}
           </Link>
         </div>
       </motion.div>

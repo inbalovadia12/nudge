@@ -1,7 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Target, ScanSearch, BarChart3, User, MessageCircle } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 function NavItem({ item, active }) {
+  const { t } = useLanguage();
   return (
     <Link
       to={item.path}
@@ -10,18 +12,19 @@ function NavItem({ item, active }) {
       }`}
     >
       <item.icon className="w-5 h-5" />
-      <span className="text-[10px] font-medium">{item.label}</span>
+      <span className="text-[10px] font-medium">{t(item.labelKey)}</span>
     </Link>
   );
 }
 
 export default function BottomNav() {
   const location = useLocation();
+  const { t } = useLanguage();
   const items = [
-    { label: 'Home', path: '/', icon: Home },
-    { label: 'Finances', path: '/insights', icon: BarChart3 },
-    { label: 'Advisor', path: '/assistant', icon: MessageCircle },
-    { label: 'Profile', path: '/profile', icon: User },
+    { labelKey: 'nav.home', path: '/', icon: Home },
+    { labelKey: 'nav.finances', path: '/insights', icon: BarChart3 },
+    { labelKey: 'nav.advisor', path: '/assistant', icon: MessageCircle },
+    { labelKey: 'nav.profile', path: '/profile', icon: User },
   ];
 
   return (
@@ -40,7 +43,7 @@ export default function BottomNav() {
           >
             <ScanSearch className="w-6 h-6" />
           </div>
-          <span className="text-[10px] font-medium mt-0.5 text-primary">Ask</span>
+          <span className="text-[10px] font-medium mt-0.5 text-primary">{t('nav.ask')}</span>
         </Link>
 
         <NavItem item={items[2]} active={location.pathname === '/assistant'} />
