@@ -24,7 +24,7 @@ const premiumItems = [
 { label: 'Health Score', path: '/insights/health', icon: Heart },
 { label: 'Smart Calculators', path: '/insights/calculators', icon: Calculator },
 { label: 'AI Deal Finder', path: '/insights/deal-finder', icon: Search },
-{ label: 'Gmail Scanner', path: '/gmail-scan', icon: Mail }];
+{ label: "", path: '/gmail-scan', icon: Mail }];
 
 
 export default function Sidebar() {
