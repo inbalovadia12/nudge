@@ -39,7 +39,6 @@ import MoreProjects from '@/pages/MoreProjects';
 import Transactions from '@/pages/Transactions';
 import Calculators from '@/pages/Calculators';
 import DealFinder from '@/pages/DealFinder';
-import GmailScanner from '@/pages/GmailScanner';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import Landing from '@/pages/Landing';
 import About from '@/pages/About';
@@ -95,7 +94,6 @@ function App() {
                   <Route path="/insights/financial-twin" element={<FinancialTwin />} />
                   <Route path="/insights/calculators" element={<Calculators />} />
                   <Route path="/insights/deal-finder" element={<DealFinder />} />
-                  <Route path="/gmail-scan" element={<GmailScanner />} />
                   <Route path="/notifications" element={<NotificationCenter />} />
                   <Route path="/shield" element={<ShoppingShield />} />
                   <Route path="/connected-accounts" element={<ConnectedAccounts />} />
