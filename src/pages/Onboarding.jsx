@@ -57,15 +57,11 @@ export default function Onboarding() {
     const completionDate = new Date();
     completionDate.setMonth(completionDate.getMonth() + monthsToTarget);
 
-    const trialEnd = new Date();
-    trialEnd.setDate(trialEnd.getDate() + 14);
     const profileData = {
       first_name: name.trim() || 'there',
       monthly_income: income,
       strictness,
       onboarding_complete: true,
-      is_premium: goPro ? true : false,
-      premium_trial_end_date: goPro ? trialEnd.toISOString().split('T')[0] : undefined,
       spending_categories: spendingCategories,
       connected_apple_screen_time: connections.apple_screen_time,
       connected_credit_card: connections.credit_card,
@@ -89,7 +85,7 @@ export default function Onboarding() {
       estimated_completion_date: completionDate.toISOString().split('T')[0]
     });
 
-    window.location.href = '/';
+    window.location.href = goPro ? '/pricing' : '/';
   };
 
   const progressSteps = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -249,16 +245,10 @@ export default function Onboarding() {
                   <div className="text-right"><p className="text-2xl font-bold text-primary">$6.99</p><p className="text-xs text-muted-foreground">/month</p></div>
                 </div>
               </div>
-              {goPro && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="rounded-2xl bg-primary/10 border border-primary/20 p-4 mb-6">
-                  <p className="text-sm text-primary font-semibold text-center">🎉 14-day free trial included</p>
-                  <p className="text-xs text-muted-foreground text-center mt-1">No charge until your trial ends. Cancel anytime.</p>
-                </motion.div>
-              )}
               <div className="flex gap-3">
                 <Button onClick={() => setStep(7)} variant="ghost" className="rounded-xl h-12 px-6 text-muted-foreground hover:text-foreground"><ChevronLeft className="w-4 h-4" /> Back</Button>
                 <Button onClick={handleComplete} disabled={saving} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-12">
-                  {saving ? 'Setting up...' : goPro ? 'Start 14-day trial' : 'Start with Free'}{!saving && <Check className="w-4 h-4 ml-1" />}
+                  {saving ? 'Setting up...' : goPro ? 'Go Premium' : 'Start with Free'}{!saving && <Check className="w-4 h-4 ml-1" />}
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground/60 text-center mt-4">You can upgrade anytime from settings.</p>
