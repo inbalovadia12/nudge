@@ -219,15 +219,15 @@ export default function Transactions() {
                   {syncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                   {syncing ? 'Syncing...' : 'Sync now'}
                 </button>
-              </div> :
+              </div> : null :
 
-          <div className="rounded-2xl border border-border bg-card p-4 hidden">
-                <div className="flex items-center gap-2 mb-3">
-                  <Landmark className="w-5 h-5 text-primary" />
-                  <span className="text-sm font-medium text-foreground">Connect your bank - Beta  - Sandbox testing  </span>
-                </div>
-                <ConnectPlaid connected={false} onConnected={loadTransactions} />
-              </div> :
+
+
+
+
+
+
+
 
 
           <Link
