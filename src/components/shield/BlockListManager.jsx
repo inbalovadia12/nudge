@@ -31,6 +31,11 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
 
   useEffect(() => {
     loadBlocked();
+    // Real-time sync: reload when BlockedApp changes (from extension or web app)
+    const unsubscribe = base44.entities.BlockedApp.subscribe(() => {
+      loadBlocked();
+    });
+    return unsubscribe;
   }, []);
 
   async function loadBlocked() {

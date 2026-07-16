@@ -39,6 +39,12 @@ export default function ShoppingShield() {
       setLoading(false);
     }
     load();
+    // Real-time sync: reload blocklist when BlockedApp changes (from extension or web app)
+    const unsubscribe = base44.entities.BlockedApp.subscribe(async () => {
+      const apps = await base44.entities.BlockedApp.filter({ is_active: true });
+      setBlockedApps(apps);
+    });
+    return unsubscribe;
   }, []);
 
   function checkUrl(rawUrl) {
