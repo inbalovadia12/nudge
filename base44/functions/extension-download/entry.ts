@@ -97,14 +97,16 @@ Deno.serve(async (req) => {
       // Continue without icon — extension will use default
     }
 
-    // Generate ZIP
+    // Generate ZIP and return directly as binary
     const zipData = await zip.generateAsync({ type: 'uint8array' });
-    const file = new File([zipData], 'nudigo-extension-v2.zip', { type: 'application/zip' });
 
-    // Upload
-    const result = await base44.integrations.Core.UploadFile({ file });
-
-    return Response.json({ download_url: result.file_url, version: '2.0.0' });
+    return new Response(zipData, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/zip',
+        'Content-Disposition': 'attachment; filename="nudigo-extension.zip"'
+      }
+    });
   } catch (error) {
     console.error('extension-download error:', error);
     return Response.json({ error: error.message }, { status: 500 });

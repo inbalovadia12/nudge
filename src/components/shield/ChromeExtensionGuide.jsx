@@ -35,16 +35,37 @@ export default function ChromeExtensionGuide({ isPremium, onUpgrade }) {
   async function handleDownload() {
     setDownloadStatus('verifying');
     try {
-      const res = await base44.functions.invoke('extension-download', {});
-      setDownloadUrl(res.data.download_url);
-      setDownloadStatus('success');
-      window.open(res.data.download_url, '_blank');
-    } catch (err) {
-      if (err?.response?.status === 403) {
-        setDownloadStatus('locked');
-      } else {
+      const token = localStorage.getItem('base44_access_token');
+      const appId = localStorage.getItem('base44_app_id');
+      const response = await fetch(`https://base44.app/api/apps/${appId}/functions/extension-download`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({})
+      });
+      if (response.status === 401) {
         setDownloadStatus('idle');
+        return;
       }
+      if (response.status === 403) {
+        setDownloadStatus('locked');
+        return;
+      }
+      if (!response.ok) throw new Error('Download failed');
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'nudigo-extension.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setDownloadStatus('success');
+    } catch (err) {
+      setDownloadStatus('idle');
     }
   }
 
