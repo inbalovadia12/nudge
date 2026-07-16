@@ -33,17 +33,22 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
   useEffect(() => {
     loadBlocked();
     // Real-time sync: reload when BlockedApp changes (from extension or web app)
-    const unsubscribe = base44.entities.BlockedApp.subscribe(() => {
-      loadBlocked();
-    });
+    let unsubscribe = () => {};
+    try {
+      unsubscribe = base44.entities.BlockedApp.subscribe(() => {
+        loadBlocked();
+      });
+    } catch {}
     return unsubscribe;
   }, []);
 
   async function loadBlocked() {
     try {
-      const items = await base44.entities.BlockedApp.filter({ is_active: true });
-      setBlockedApps(items);
-    } catch {}
+      const res = await base44.functions.invoke('extension-api', { action: 'list_blocks' });
+      setBlockedApps(res.data.blocks);
+    } catch (err) {
+      setError('Failed to load blocklist. Please refresh the page.');
+    }
     setLoading(false);
   }
 

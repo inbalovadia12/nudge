@@ -10,6 +10,11 @@ Deno.serve(async (req) => {
     const { action } = body;
 
     switch (action) {
+      case 'list_blocks': {
+        const blocklist = await base44.entities.BlockedApp.filter({ is_active: true });
+        return Response.json({ blocks: blocklist });
+      }
+
       case 'get_data': {
         const [blocklist, profiles, purchases] = await Promise.all([
           base44.entities.BlockedApp.filter({ is_active: true }),

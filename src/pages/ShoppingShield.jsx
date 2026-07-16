@@ -33,17 +33,22 @@ export default function ShoppingShield() {
         setScreenTimeConnected(finCtx.profile?.connected_apple_screen_time || false);
         const impulse = finCtx.purchases.filter(p => p.source === 'manual' || p.category === 'shopping').slice(0, 3);
         setRecentImpulse(impulse);
-        const apps = await base44.entities.BlockedApp.filter({ is_active: true });
-        setBlockedApps(apps);
+        const res = await base44.functions.invoke('extension-api', { action: 'list_blocks' });
+        setBlockedApps(res.data.blocks);
       } catch {}
       setLoading(false);
     }
     load();
     // Real-time sync: reload blocklist when BlockedApp changes (from extension or web app)
-    const unsubscribe = base44.entities.BlockedApp.subscribe(async () => {
-      const apps = await base44.entities.BlockedApp.filter({ is_active: true });
-      setBlockedApps(apps);
-    });
+    let unsubscribe = () => {};
+    try {
+      unsubscribe = base44.entities.BlockedApp.subscribe(async () => {
+        try {
+          const res = await base44.functions.invoke('extension-api', { action: 'list_blocks' });
+          setBlockedApps(res.data.blocks);
+        } catch {}
+      });
+    } catch {}
     return unsubscribe;
   }, []);
 
