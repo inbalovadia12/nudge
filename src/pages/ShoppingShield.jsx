@@ -48,10 +48,11 @@ export default function ShoppingShield() {
   }, []);
 
   function checkUrl(rawUrl) {
-    const url = rawUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').toLowerCase();
+    const hostname = rawUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].toLowerCase();
     const match = blockedApps.find(app => {
-      const blockUrl = app.block_url.toLowerCase();
-      return url.includes(blockUrl) || blockUrl.includes(url);
+      const blockUrl = app.block_url.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+      if (!blockUrl) return false;
+      return hostname === blockUrl || hostname.endsWith('.' + blockUrl);
     });
     if (match) {
       if (match.gate_mode === 'intercept') {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Plus, Trash2, Globe, Smartphone, Shield, Check, Loader2, Lock, MessageCircleQuestion, Info } from 'lucide-react';
+import { Plus, Trash2, Globe, Smartphone, Shield, Check, Loader2, Lock, MessageCircleQuestion, Info, AlertTriangle } from 'lucide-react';
 import InterceptionQuestions from './InterceptionQuestions';
 
 const popularSites = [
@@ -28,6 +28,7 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
   const [saving, setSaving] = useState(false);
   const [interceptApp, setInterceptApp] = useState(null);
   const [showBlocked, setShowBlocked] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     loadBlocked();
@@ -47,6 +48,7 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
   }
 
   async function toggleBlock(site) {
+    setError(null);
     const existing = blockedApps.find(b => b.block_url === site.block_url);
     if (existing) {
       await base44.entities.BlockedApp.delete(existing.id);
@@ -56,16 +58,20 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
         onHitLimit?.();
         return;
       }
-      const created = await base44.entities.BlockedApp.create({
-        app_name: site.app_name,
-        block_url: site.block_url,
-        category: site.category,
-        app_type: site.app_type,
-        gate_mode: 'block',
-        is_active: true,
-        screen_time_blocked: false
-      });
-      setBlockedApps(prev => [...prev, created]);
+      try {
+        const created = await base44.entities.BlockedApp.create({
+          app_name: site.app_name,
+          block_url: site.block_url,
+          category: site.category,
+          app_type: site.app_type,
+          gate_mode: 'block',
+          is_active: true,
+          screen_time_blocked: false
+        });
+        setBlockedApps(prev => [...prev, created]);
+      } catch (err) {
+        setError(err.status === 405 ? 'Unable to add — please refresh the page and try again.' : (err.message || 'Failed to add. Please try again.'));
+      }
     }
   }
 
@@ -81,20 +87,25 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
       return;
     }
     setSaving(true);
-    const url = customUrl.replace(/^https?:\/\//, '').replace(/^www\./, '');
-    const created = await base44.entities.BlockedApp.create({
-      app_name: customName,
-      block_url: url,
-      category: 'shopping',
-      app_type: 'website',
-      gate_mode: 'block',
-      is_active: true,
-      screen_time_blocked: false
-    });
-    setBlockedApps(prev => [...prev, created]);
-    setCustomName('');
-    setCustomUrl('');
-    setShowAdd(false);
+    setError(null);
+    const url = customUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/.*$/, '');
+    try {
+      const created = await base44.entities.BlockedApp.create({
+        app_name: customName,
+        block_url: url,
+        category: 'shopping',
+        app_type: 'website',
+        gate_mode: 'block',
+        is_active: true,
+        screen_time_blocked: false
+      });
+      setBlockedApps(prev => [...prev, created]);
+      setCustomName('');
+      setCustomUrl('');
+      setShowAdd(false);
+    } catch (err) {
+      setError(err.status === 405 ? 'Unable to add — please refresh the page and try again.' : (err.message || 'Failed to add. Please try again.'));
+    }
     setSaving(false);
   }
 
@@ -223,6 +234,15 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Error message */}
+      {error && (
+        <div className="rounded-2xl border border-danger/30 bg-danger/5 p-4 mb-4 flex items-start gap-3">
+          <AlertTriangle className="w-4 h-4 text-danger flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-foreground flex-1">{error}</p>
+          <button onClick={() => setError(null)} className="text-xs text-muted-foreground hover:text-foreground">×</button>
+        </div>
+      )}
 
       {/* Free tier limit notice */}
       {!isPremium && blockedApps.length >= FREE_BLOCK_LIMIT && (

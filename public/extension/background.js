@@ -133,10 +133,11 @@ async function checkAndBlockUrl(tabId, url) {
 
   if (!blocklist || blocklist.length === 0) return;
 
-  const cleanUrl = url.replace(/^https?:\/\//, '').replace(/^www\./, '').toLowerCase();
+  const hostname = url.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].toLowerCase();
   const matched = blocklist.find(app => {
-    const blockUrl = (app.block_url || '').toLowerCase();
-    return cleanUrl.includes(blockUrl) || blockUrl.includes(cleanUrl.split('/')[0]);
+    const blockUrl = (app.block_url || '').toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+    if (!blockUrl) return false;
+    return hostname === blockUrl || hostname.endsWith('.' + blockUrl);
   });
 
   if (!matched) return;
