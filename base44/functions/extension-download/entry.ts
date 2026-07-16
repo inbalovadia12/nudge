@@ -63,20 +63,32 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Premium subscription required' }, { status: 403 });
     }
 
-    const rawOrigin = req.headers.get('Origin') || FALLBACK_ORIGIN;
-    const origin = rawOrigin.startsWith('http://localhost') ? FALLBACK_ORIGIN : rawOrigin;
+    // Always fetch extension files from the production URL — they are static assets
+    // that only exist at the app's deployed domain, not at the Base44 platform URL
+    const origin = FALLBACK_ORIGIN;
 
     // Create ZIP
     const zip = new JSZip();
 
     // Fetch and add all extension files
     for (const file of EXTENSION_FILES) {
-      const response = await fetch(`${origin}/extension/${file}`);
+      const response = await fetch(`${origin}/extension/${file}?cb=${Date.now()}`, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+      });
       if (!response.ok) {
         console.error(`Failed to fetch ${file}: ${response.status}`);
         return Response.json({ error: `Failed to package extension file: ${file}` }, { status: 500 });
       }
       const content = await response.text();
+      // Detect SPA fallback — if a .js or .json file returns HTML, the file is missing
+      if (file.endsWith('.js') && content.trimStart().startsWith('<!DOCTYPE')) {
+        return Response.json({ error: `Extension file not found: ${file}` }, { status: 500 });
+      }
+      if (file.endsWith('.json')) {
+        try { JSON.parse(content); } catch {
+          return Response.json({ error: `Invalid JSON in extension file: ${file}` }, { status: 500 });
+        }
+      }
       zip.file(file, content);
     }
 
@@ -97,16 +109,10 @@ Deno.serve(async (req) => {
       // Continue without icon — extension will use default
     }
 
-    // Generate ZIP and return directly as binary
-    const zipData = await zip.generateAsync({ type: 'uint8array' });
+    // Generate ZIP as base64 to ensure data integrity through the API gateway
+    const zipBase64 = await zip.generateAsync({ type: 'base64' });
 
-    return new Response(zipData, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/zip',
-        'Content-Disposition': 'attachment; filename="nudigo-extension.zip"'
-      }
-    });
+    return Response.json({ zip_base64: zipBase64, filename: 'nudigo-extension.zip' });
   } catch (error) {
     console.error('extension-download error:', error);
     return Response.json({ error: error.message }, { status: 500 });
