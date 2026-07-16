@@ -38,8 +38,8 @@ Deno.serve(async (req) => {
         const created = await base44.entities.BlockedApp.create({
           app_name: body.app_name,
           block_url: body.block_url,
-          app_type: 'website',
-          category: 'shopping',
+          app_type: body.app_type || 'website',
+          category: body.category || 'shopping',
           gate_mode: body.gate_mode || 'block',
           is_active: true,
           screen_time_blocked: false

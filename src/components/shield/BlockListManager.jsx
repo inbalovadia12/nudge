@@ -51,33 +51,40 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
     setError(null);
     const existing = blockedApps.find(b => b.block_url === site.block_url);
     if (existing) {
-      await base44.entities.BlockedApp.delete(existing.id);
-      setBlockedApps(prev => prev.filter(b => b.id !== existing.id));
+      try {
+        await base44.functions.invoke('extension-api', { action: 'remove_block', block_id: existing.id });
+        setBlockedApps(prev => prev.filter(b => b.id !== existing.id));
+      } catch (err) {
+        setError(err.message || 'Failed to remove. Please try again.');
+      }
     } else {
       if (!isPremium && blockedApps.length >= FREE_BLOCK_LIMIT) {
         onHitLimit?.();
         return;
       }
       try {
-        const created = await base44.entities.BlockedApp.create({
+        const res = await base44.functions.invoke('extension-api', {
+          action: 'add_block',
           app_name: site.app_name,
           block_url: site.block_url,
           category: site.category,
           app_type: site.app_type,
-          gate_mode: 'block',
-          is_active: true,
-          screen_time_blocked: false
+          gate_mode: 'block'
         });
-        setBlockedApps(prev => [...prev, created]);
+        setBlockedApps(prev => [...prev, res.data.block]);
       } catch (err) {
-        setError(err.status === 405 ? 'Unable to add — please refresh the page and try again.' : (err.message || 'Failed to add. Please try again.'));
+        setError(err.message || 'Failed to add. Please try again.');
       }
     }
   }
 
   async function setGateMode(appId, mode) {
-    const updated = await base44.entities.BlockedApp.update(appId, { gate_mode: mode });
-    setBlockedApps(prev => prev.map(b => b.id === appId ? updated : b));
+    try {
+      const res = await base44.functions.invoke('extension-api', { action: 'update_block', block_id: appId, gate_mode: mode });
+      setBlockedApps(prev => prev.map(b => b.id === appId ? res.data.block : b));
+    } catch (err) {
+      setError(err.message || 'Failed to update. Please try again.');
+    }
   }
 
   async function addCustom() {
@@ -90,28 +97,31 @@ export default function BlockListManager({ screenTimeConnected, onConnectScreenT
     setError(null);
     const url = customUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/.*$/, '');
     try {
-      const created = await base44.entities.BlockedApp.create({
+      const res = await base44.functions.invoke('extension-api', {
+        action: 'add_block',
         app_name: customName,
         block_url: url,
         category: 'shopping',
         app_type: 'website',
-        gate_mode: 'block',
-        is_active: true,
-        screen_time_blocked: false
+        gate_mode: 'block'
       });
-      setBlockedApps(prev => [...prev, created]);
+      setBlockedApps(prev => [...prev, res.data.block]);
       setCustomName('');
       setCustomUrl('');
       setShowAdd(false);
     } catch (err) {
-      setError(err.status === 405 ? 'Unable to add — please refresh the page and try again.' : (err.message || 'Failed to add. Please try again.'));
+      setError(err.message || 'Failed to add. Please try again.');
     }
     setSaving(false);
   }
 
   async function removeBlocked(id) {
-    await base44.entities.BlockedApp.delete(id);
-    setBlockedApps(prev => prev.filter(b => b.id !== id));
+    try {
+      await base44.functions.invoke('extension-api', { action: 'remove_block', block_id: id });
+      setBlockedApps(prev => prev.filter(b => b.id !== id));
+    } catch (err) {
+      setError(err.message || 'Failed to remove. Please try again.');
+    }
   }
 
   function handleAppClick(app) {
